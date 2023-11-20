@@ -1,2 +1,2 @@
 # AdmissionConsultingDNTU
-This is a back-end project supporting admission consulting at dntu school
+This is a project supporting admission consulting at dntu school
