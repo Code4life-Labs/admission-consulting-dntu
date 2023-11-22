@@ -25,6 +25,17 @@ function concate(o, vals) {
   }
 }
 
+/**
+ * __Building... Please don't use this function__
+ * 
+ * Use this function to render content from json file in `assets`.
+ * @param {*} content 
+ */
+function convertToJSX(content) {
+  return content;
+}
+
 export const StringUtils = {
-  concate
+  concate,
+  convertToJSX
 };
