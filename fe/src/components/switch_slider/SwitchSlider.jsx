@@ -3,10 +3,13 @@
 // Import from hooks
 import { useStateWESSFns } from 'src/hooks/useStateWESSFns'
 
+// Import styles
+import './SwitchSlider.styles.css';
+
 /**
  * @typedef SwitchSliderPropsType
- * @property {(toggleSlide: () => void) => JSX.Element} left
- * @property {(toggleSlide: () => void) => JSX.Element} right
+ * @property {(toggleSlide: () => void, toSlide: (to: string) => void) => JSX.Element} left
+ * @property {(toggleSlide: () => void, toSlide: (to: string) => void) => JSX.Element} right
  */
 
 /**
@@ -26,26 +29,32 @@ export default function SwitchSlider(props) {
           changeState("currentSlide", function(data) {
             return data === "left" ? "right" : "left";
           })
+        },
+
+        toSlide: function(to) {
+          changeState("currentSlide", function() {
+            return to;
+          })
         }
       }
     }
   );
 
   return (
-    <div className="w-full">
+    <div className="w-full overflow-x-hidden">
       {
         ssState.currentSlide === "left"
         ? (
-          <div>
+          <div className="w-full slide left p-2">
             {
-              props.left(ssStateFns.toggleSlide)
+              props.left(ssStateFns.toggleSlide, ssStateFns.toSlide)
             }
           </div>
         )
         : (
-          <div>
+          <div className="w-full slide right p-2">
             {
-              props.right(ssStateFns.toggleSlide)
+              props.right(ssStateFns.toggleSlide, ssStateFns.toSlide)
             }
           </div>
         )

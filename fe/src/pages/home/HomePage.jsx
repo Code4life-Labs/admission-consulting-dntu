@@ -17,8 +17,8 @@ export default function HomePage() {
       <div className="p-4">
         <div className="w-full max-w-screen-xl mx-auto">
           <SwitchSlider
-            right={() => <ChatSection />}
-            left={(toggleSlide) => (
+            right={(_, toSlide) => <ChatSection toSlide={toSlide} />}
+            left={(_, toSlide) => (
               <div>
                 {/* Text */}
                 <div>
@@ -30,7 +30,7 @@ export default function HomePage() {
 
                 {/* Button container */}
                 <div>
-                  <Button extendClassName="text-white mt-3 me-3" onClick={() => toggleSlide()}>Bắt đầu ngay</Button>
+                  <Button extendClassName="text-white mt-3 me-3" onClick={() => toSlide("right")}>Bắt đầu ngay</Button>
                   <Button
                     extendClassName="mt-3"
                     color="gray"
