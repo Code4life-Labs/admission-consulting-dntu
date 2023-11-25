@@ -5,7 +5,7 @@
  */
 
 /**
- * This function allow performing a switch-case statement, but more flexible.
+ * This function allow to perform a "switch-case-like" statement.
  * @param {Array<CasesType>} cases 
  * @returns 
  */
