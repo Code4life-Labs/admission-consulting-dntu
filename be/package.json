@@ -1,28 +1,31 @@
 {
-  "name": "nodejs-expressjs-mongodb-base-project",
+  "name": "be",
   "private": true,
   "version": "1.0.0",
-  "author": "TrungQuanDev - Một Lập Trình Viên",
-  "description": "https://youtube.com/@trungquandev",
+  "author": "FSN",
+  "description": "This is the back-end of AdmissionConsultingDNTU",
   "engines": {
     "node": "18.16.0"
   },
   "scripts": {
     "lint": "eslint src --ext js --report-unused-disable-directives --max-warnings 0",
-    "clean": "rm -rf build && mkdir build",
+    "clean": "rimraf build",
     "build-babel": "babel ./src -d ./build/src",
     "build": "npm run clean && npm run build-babel",
-    "production": "npm run build && node ./build/src/server.js",
-    "dev": "nodemon --exec babel-node ./src/server.js"
+    "production": "npm run build && cross-env BUILD_MODE=production node ./build/src/server.js",
+    "dev": "cross-env BUILD_MODE=dev nodemon --exec ./node_modules/.bin/babel-node ./src/server.js",
+    "start": "node ./build/src/server.js"
   },
   "dependencies": {
     "@babel/runtime": "^7.22.10",
     "@google-cloud/dialogflow": "^6.2.0",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "joi": "^17.11.0",
-    "openai": "^4.19.0"
+    "openai": "^4.19.0",
+    "rimraf": "^5.0.5"
   },
   "devDependencies": {
     "@babel/cli": "^7.22.10",

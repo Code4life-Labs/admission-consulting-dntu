@@ -3,7 +3,9 @@ import { HttpStatusCode } from '../utilities/constants'
 
 const getTextConsulting = async (req, res, next) => {
   const condition = Joi.object({
-    text: Joi.string().required()
+    question: Joi.string().required(),
+    currentUserId: Joi.string().required(),
+    languageCode: Joi.string().required()
   })
   try {
     await condition.validateAsync(req.body, { abortEarly: false })

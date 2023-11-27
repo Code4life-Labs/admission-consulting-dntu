@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: true }))
 
 app.use('/v1', cors(corsOptions), apiV1)
 
-app.listen(process.env.PORT || env.APP_PORT, process.env.APP_HOST || env.APP_HOST, () => {
+app.listen(process.env.PORT || env.APP_PORT, () => {
   // eslint-disable-next-line no-console
-  console.log(`Hello FSN, I am running at ${ process.env.APP_HOST || env.APP_HOST }:${ process.env.PORT || env.APP_PORT}/`)
+  console.log(`Hello FSN, I'm running at port: ${process.env.PORT || env.APP_PORT}`)
 })
