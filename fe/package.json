@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host",
+    "prebuild": "npx tailwindcss -i ./src/index.css -o ./dist/output.css",
     "build": "vite build",
     "build:css": "npx tailwindcss -i ./src/index.css -o ./dist/output.css --watch",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
@@ -12,7 +13,8 @@
   },
   "dependencies": {
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "tunangn-react-modal": "^1.0.6"
   },
   "devDependencies": {
     "@types/react": "^18.2.37",
