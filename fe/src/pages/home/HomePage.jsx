@@ -1,4 +1,4 @@
-// import React from 'react'
+import React from 'react'
 
 // Import from layouts
 import PageLayout from "src/layouts/page_layout/PageLayout"
@@ -7,6 +7,7 @@ import PageLayout from "src/layouts/page_layout/PageLayout"
 import Button from "src/components/button/Button";
 import SwitchSlider from "src/components/switch_slider/SwitchSlider";
 import ChatSection from "src/components/chat_section/ChatSection";
+import { openMyDialog } from 'src/components/dialog/Dialog';
 
 // Import from assets
 import homeJSON from 'src/assets/data/home.json';
@@ -22,16 +23,18 @@ export default function HomePage() {
               <div>
                 {/* Text */}
                 <div>
-                  <p className="text-xl text-base">{homeJSON.texts.greeting}</p>
-                  <h1 className="text-4xl font-bold">{homeJSON.texts.title}</h1>
-                  <h1 className="text-5xl font-bold">DNTU</h1>
-                  <p className="text-xl w-full max-w-xl pt-4 text-base">{homeJSON.texts.introduction}</p>
+                  {
+                    homeJSON.texts.map(text => (
+                      React.createElement(text.element, { className: text.className, key: text.name }, text.text)
+                    ))
+                  }
                 </div>
 
                 {/* Button container */}
                 <div>
                   <Button extendClassName="text-white mt-3 me-3" onClick={() => toSlide("right")}>Bắt đầu ngay</Button>
                   <Button
+                    onClick={() => openMyDialog()}
                     extendClassName="mt-3"
                     color="gray"
                     colorIntensity={200}
@@ -48,3 +51,8 @@ export default function HomePage() {
     </PageLayout>
   )
 }
+
+// For scanning
+// text-xl
+// text-4xl font-bold
+// w-full max-w-xl pt-4 text-lg

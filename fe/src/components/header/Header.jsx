@@ -25,7 +25,7 @@ export default function Header(props) {
               ? props.title()
               : props.title
         }
-        <div className="flex-box ait-center">
+        <div className="flex items-center">
           <Button
             isTransparent
             hasPadding={false}

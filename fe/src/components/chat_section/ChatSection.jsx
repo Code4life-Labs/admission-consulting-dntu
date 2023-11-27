@@ -33,7 +33,11 @@ export default function ChatSection(props) {
     },
     function(changeState) {
       return {
-
+        appendMessage: function() {
+          changeState("messages", function(data) {
+            return data
+          })
+        }
       }
     }
   );
