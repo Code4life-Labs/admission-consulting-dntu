@@ -1,0 +1,228 @@
+{
+  "texts": [
+    {
+      "name": "greeting",
+      "text": "Chào mừng các bạn sinh viên đến với trang tuyển sinh của Trường Đại học Công nghệ Đồng Nai",
+      "attrs": {
+        "className": "text-2xl font-bold"
+      },
+      "element": "p"
+    },
+    {
+      "name": "greeting-subtitle",
+      "text": "Một số thông tin về tác giả, về cuộc thi và về thông tin của ứng dụng.",
+      "attrs": {
+
+      },
+      "className": "text-base mb-2",
+      "element": "p"
+    },
+    {
+      "name": "line01",
+      "text": "",
+      "attrs": {
+        "className": "my-2"
+      },
+      "element": "hr"
+    },
+    {
+      "name": "about-authors",
+      "text": "1. Về nhóm tác giả",
+      "attrs": {
+        "className": "text-xl font-bold"
+      },
+      "element": "p"
+    },
+    {
+      "name": "about-authors-list01",
+      "text": [
+        {
+          "name": "about-authors-listitem01",
+          "text": [
+            {
+              "name": "about-authors-listitem01-cnt01",
+              "text": "Thái Anh Đức (20DTH5) (Trưởng nhóm): chuyên xây dựng ứng dụng khách với React, Javascript. Github: ",
+              "attrs": {},
+              "element": "span"
+            },
+            {
+              "name": "about-authors-listitem01-cnt02",
+              "text": "https://github.com/AnhDuc8702",
+              "attrs": {
+                "className": "text-blue-500",
+                "href": "https://github.com/AnhDuc8702"
+              },
+              "element": "a"
+            }
+          ],
+          "attrs": {},
+          "element": "li"
+        },
+        {
+          "name": "about-authors-listitem02",
+          "text": [
+            {
+              "name": "about-authors-listitem02-cnt01",
+              "text": "Lương Văn Pháp (20DTH2): chuyên xây dựng các ứng dụng WEB3, các ứng dụng với Rust. Github: ",
+              "attrs": {},
+              "element": "span"
+            },
+            {
+              "name": "about-authors-listitem02-cnt02",
+              "text": "https://github.com/phapdev",
+              "attrs": {
+                "className": "text-blue-500",
+                "href": "https://github.com/phapdev"
+              },
+              "element": "a"
+            }
+          ],
+          "attrs": {},
+          "element": "li"
+        },
+        {
+          "name": "about-authors-listitem03",
+          "text": [
+            {
+              "name": "about-authors-listitem03-cnt01",
+              "text": "Từ Nhật Phương (20DTH5): chuyên xây dựng các ứng dụng khách và máy chủ, với React, NodeJS, Javascript / Typescript. Github: ",
+              "attrs": {},
+              "element": "span"
+            },
+            {
+              "name": "about-authors-listitem03-cnt02",
+              "text": "https://github.com/FromSunNews",
+              "attrs": {
+                "className": "text-blue-500",
+                "href": "https://github.com/FromSunNews"
+              },
+              "element": "a"
+            }
+          ],
+          "attrs": {},
+          "element": "li"
+        },
+        {
+          "name": "about-authors-listitem04",
+          "text": [
+            {
+              "name": "about-authors-listitem04-cnt01",
+              "text": "Nguyễn Anh Tuấn (20DTH5): chuyên xây dựng các ứng dụng khách và bán chuyên với máy chủ, làm thiết kết giao diện chính. Github: ",
+              "attrs": {},
+              "element": "span"
+            },
+            {
+              "name": "about-authors-listitem04-cnt02",
+              "text": "https://github.com/NguyenAnhTuan1912",
+              "attrs": {
+                "className": "text-blue-500",
+                "href": "https://github.com/NguyenAnhTuan1912"
+              },
+              "element": "a"
+            }
+          ],
+          "attrs": {},
+          "element": "li"
+        }
+      ],
+      "attrs": {
+        "className": "ms-2 mb-2 list-disc list-inside"
+      },
+      "element": "ul"
+    },
+    {
+      "name": "about-fair",
+      "text": "2. Về cuộc thi",
+      "attrs": {
+        "className": "text-xl font-bold"
+      },
+      "element": "p"
+    },
+    {
+      "name": "about-fair-content01",
+      "text": "CUỘC THI SÁNG TẠO SẢN PHẨM CÔNG NGHỆ 2023 là một cuộc thi được tổ chức bởi Khoa Kĩ thuật của Trường Đại học Công nghệ Đồng Nai. Cuộc thi được tổ chức để tìm ra các sản phẩm công nghệ có thể áp dụng được trong thực tiễn.",
+      "attrs": {},
+      "element": "p"
+    },
+    {
+      "name": "about-fair-list01",
+      "text": [
+        {
+          "name": "about-fair-listitem01",
+          "text": "Thời gian nhận bài thi: 6/11 - 30/11/2023",
+          "attrs": {},
+          "element": "li"
+        },
+        {
+          "name": "about-fair-listitem02",
+          "text": "Thời gian vòng sơ khảo: 1/12 - 5/12/2023",
+          "attrs": {},
+          "element": "li"
+        },
+        {
+          "name": "about-fair-listitem03",
+          "text": "Thời gian vòng chung két: 11/12/2023",
+          "attrs": {},
+          "element": "li"
+        }
+      ],
+      "attrs": {
+        "className": "ms-2 mb-2 list-disc list-inside"
+      },
+      "element": "p"
+    },
+    {
+      "name": "about-project",
+      "text": "3. Về dự án",
+      "attrs": {
+        "className": "text-xl font-bold"
+      },
+      "element": "p"
+    },
+    {
+      "name": "about-project-content01",
+      "text": "Ứng dụng có tên là \"Trang tư vấn tuyển sinh DNTU\", và có tên đề tài là \"Ứng dụng công nghệ AI vào công tác giới thiệu và tư vấn tuyển sinh tại Trường Đại học Công nghệ Đồng Nai\". Các công nghệ được sử dựng trong ứng dụng là:",
+      "attrs": {},
+      "element": "p"
+    },
+    {
+      "name": "about-project-list01",
+      "text": [
+        {
+          "name": "about-project-listitem01",
+          "text": "React, Vite",
+          "attrs": {},
+          "element": "li"
+        },
+        {
+          "name": "about-project-listitem02",
+          "text": "FPT AI",
+          "attrs": {},
+          "element": "li"
+        },
+        {
+          "name": "about-project-listitem03",
+          "text": "ChatGPT",
+          "attrs": {},
+          "element": "li"
+        }
+      ],
+      "attrs": {
+        "className": "ms-2 mb-2 list-disc list-inside"
+      },
+      "element": "p"
+    },
+    {
+      "name": "about-project-content02",
+      "text": "Chỉ là trang tư vấn tuyển sinh vậy thì có gì đặc biệt? Trang tư vấn tuyển sinh này tích hợp BOT, gọi là ChatBot, được dùng để hỗ trợ các bạn tân sinh viên mới, trả lời hầu như mọi câu hỏi cơ bản nên sẽ làm giảm khối lượng lớn công việc cho nhân viên Phòng tuyển sinh. Hơn thế nữa, ChatBot còn có thể được tích hợp vào trong phần chat của trang tuyển sinh của trường trên facebook, mở rộng phạm vi cho các bạn sinh viên tiếp cận.",
+      "attrs": {},
+      "element": "p"
+    },
+    {
+      "name": "about-project-content03",
+      "text": "Ứng dụng có chức năng Chat với sinh viên, và hỗ trợ giọng đọc cho các bạn. Ngoài ra thì nhóm còn hướng tới tích hợp tính năng giọng đọc vào cho trang tính năng 360 (tính năng tham quan trường bằng công nghệ 360) của trường.",
+      "attrs": {},
+      "element": "p"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import React from 'react'
+// import React from 'react'
 
 // Import from layouts
 import PageLayout from "src/layouts/page_layout/PageLayout"
@@ -8,6 +8,9 @@ import Button from "src/components/button/Button";
 import SwitchSlider from "src/components/switch_slider/SwitchSlider";
 import ChatSection from "src/components/chat_section/ChatSection";
 import { openMyDialog } from 'src/components/dialog/Dialog';
+
+// Import from utils
+import { OtherUtils } from 'src/utils/other';
 
 // Import from assets
 import homeJSON from 'src/assets/data/home.json';
@@ -24,9 +27,7 @@ export default function HomePage() {
                 {/* Text */}
                 <div>
                   {
-                    homeJSON.texts.map(text => (
-                      React.createElement(text.element, { className: text.className, key: text.name }, text.text)
-                    ))
+                    OtherUtils.fromContentToJSXElement(homeJSON.texts)
                   }
                 </div>
 
