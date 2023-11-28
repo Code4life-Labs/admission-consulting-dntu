@@ -1,11 +1,17 @@
-import React from 'react';
+// import React from 'react';
 import { openTMI } from 'tunangn-react-modal';
 
-// Import components
+// Import from layout
+import DialogLayout from 'src/layouts/modal_items/dialog_layout/DialogLayout';
+
+// Import from components
 // import Button from '../button/Button';
 
-// Import layout
-import DialogLayout from 'src/layouts/modal_items/dialog_layout/DialogLayout'
+// Import from utils
+import { OtherUtils } from 'src/utils/other';
+
+// Import from assets
+import aboutData from 'src/assets/data/about.json';
 
 export const name = "myDialog";
 
@@ -29,15 +35,8 @@ export function openMyDialog() {
   return openTMI(
     name,
     {
-      title: <h1 className="font-bold text-lg">Các thông tin khác</h1>,
-      content: [
-        {
-          "name": "greeting",
-          "text": "Chào mừng các bạn sinh viên đến với",
-          "className": "text-base",
-          "element": "p"
-        },
-      ]
+      title: <h1 className="font-bold text-lg"></h1>,
+      content: aboutData.texts
     }
   );
 }
@@ -62,15 +61,15 @@ export default function Dialog(props) {
       className="bg-white p-3"
       style={props.utils.getContainerStyle({
         width: "100%",
-        maxWidth: "540px",
-        minHeight: "360px"
+        maxWidth: "1280px",
+        maxHeight: "100vh",
+        minHeight: "360px",
+        overflow: "auto"
       })}
     >
       <div className="px-4 mt-4">
         {
-          content.map(text => (
-            React.createElement(text.element, { className: text.className, key: text.name }, text.text)
-          ))
+          OtherUtils.fromContentToJSXElement(content)
         }
       </div>
     </DialogLayout>

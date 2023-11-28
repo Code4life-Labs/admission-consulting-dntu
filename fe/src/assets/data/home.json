@@ -3,31 +3,41 @@
     {
       "name": "greeting",
       "text": "Chào mừng các bạn sinh viên đến với",
-      "className": "text-xl",
+      "attrs": {
+        "className": "text-xl"
+      },
       "element": "p"
     },
     {
       "name": "title01",
       "text": "Trang tư vấn truyển sinh",
-      "className": "text-4xl font-bold",
+      "attrs": {
+        "className": "text-4xl font-bold"
+      },
       "element": "h1"
     },
     {
       "name": "title02",
       "text": "Trường Đại học Công nghệ Đồng Nai",
-      "className": "text-4xl font-bold",
+      "attrs": {
+        "className": "text-4xl font-bold"
+      },
       "element": "h1"
     },
     {
       "name": "introduction01",
       "text": "Tra cứu các thông tin về ngành học, về Trường Đại học Công nghệ Đồng Nai tại đây. Các bạn sẽ được Chatbot hỗ trợ sơ qua hoặc sẽ được các cán bộ của Phòng Đào tạo hỗ trợ kĩ hơn.",
-      "className": "w-full max-w-xl pt-4 text-lg",
+      "attrs": {
+        "className": "w-full max-w-xl pt-4 text-lg"
+      },
       "element": "p"
     },
     {
       "name": "introduction02",
       "text": "Các bạn có thể nhắn tin trực tiếp với Bot hoặc Nhân viên phòng Tuyển sinh ở dưới góc phải màn hình của bạn (biểu tưởng Messenger) để nhận được hỗ trợ tốt nhất.",
-      "className": "w-full max-w-xl pt-4 text-lg",
+      "attrs": {
+        "className": "w-full max-w-xl pt-4 text-lg"
+      },
       "element": "p"
     }
   ]

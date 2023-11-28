@@ -1,0 +1,7 @@
+.hidden-chat-list {
+  transform: translateX(0);
+}
+
+.hidden-chat-list.hide {
+  transform: translateX(-100%);
+}
