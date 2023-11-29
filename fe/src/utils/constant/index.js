@@ -1,1 +1,4 @@
-export const API_ROOT = "http://192.168.0.29:5000";
+export const API_ROOT = {
+  "DEV": "http://localhost:7500/v1",
+  "PROD": ""
+}
