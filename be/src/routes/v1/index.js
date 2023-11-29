@@ -1,13 +1,27 @@
 import express from 'express'
 
-import { chatbotRoutes } from './chatbot.route'
+// Import from utils
 import { HttpStatusCode } from '~/utilities/constants'
+
+// Import from routes
+import { chatbotRoutes } from './chatbot.route'
+import { webhookRoutes } from './webhook.route'
+import { fptbotRoutes } from './fptbot.route'
+import { speechRoutes } from './speech.route'
 
 const router = express.Router()
 
 router.get('/status', (req, res) => res.status(HttpStatusCode.OK).json({ status: 'OK!' }))
 
-/** Chat APIs */
+// Chat bot
 router.use('/chatbot', chatbotRoutes)
+
+// Fpt bot
+router.use('/fpt', fptbotRoutes)
+
+// Speech
+router.use('/speech', speechRoutes)
+
+router.use(webhookRoutes)
 
 export const apiV1 = router

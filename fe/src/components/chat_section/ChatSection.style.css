@@ -5,3 +5,10 @@
 .hidden-chat-list.hide {
   transform: translateX(-100%);
 }
+
+.message.right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  align-self: self-end;
+}

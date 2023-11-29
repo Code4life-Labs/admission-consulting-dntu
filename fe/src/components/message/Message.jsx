@@ -1,6 +1,6 @@
 // import React from 'react'
 
-const defaultTextContainerClassName = "w-fit text-base bg-gray-200 rounded-xl p-4 mb-2";
+const defaultTextClassName = "w-fit text-base bg-gray-200 rounded-xl p-4 mb-2";
 
 /**
  * @typedef MessagePropsType
@@ -9,6 +9,7 @@ const defaultTextContainerClassName = "w-fit text-base bg-gray-200 rounded-xl p-
  * @property {boolean} hasTime
  * @property {(content: string) => void} onClick
  * @property {string} extendedClassName 
+ * @property {string} extendedContainerClassName 
  */
 
 /**
@@ -21,16 +22,23 @@ export default function Message({
   time = Date.now(),
   hasTime = false,
   extendedClassName,
+  extendedContainerClassName,
   onClick
 }) {
   let containerClassName = "message w-full max-w-[45%]";
-  let textContainerClassName = defaultTextContainerClassName;
+  let textClassName = defaultTextClassName;
   let isClickable = Boolean(onClick);
 
-  if(extendedClassName) textContainerClassName += " " + extendedClassName;
+  if(extendedClassName) textClassName += " " + extendedClassName;
+
+  if(extendedContainerClassName === "right") {
+    containerClassName += " " + "right";
+    textClassName += " " + "bg-red-600 text-white";
+  }
+
   if(isClickable) {
     containerClassName += " " + "cursor-pointer italic";
-    textContainerClassName += " " + "border-2 border-blue-600 bg-white"
+    textClassName += " " + "border-2 border-red-600 bg-white";
   }
 
   return (
@@ -38,7 +46,7 @@ export default function Message({
       className={containerClassName}
       onClick={isClickable ? () => onClick(content) : undefined}
     >
-      <p className={textContainerClassName}>{content}</p>
+      <p className={textClassName}>{content}</p>
       { hasTime && <p className="text-xs">{(new Date(time)).toLocaleString()}</p> }
     </div>
   )

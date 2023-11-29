@@ -1,30 +1,20 @@
 {
-  "initialMessages": [
+  "messages": [
     {
       "isClickableText": false,
-      "text": "Xin chào, tôi là DNTU Consultant! Tôi sẽ cung cấp cho bạn biết mọi thông tin ở Trường Đại học Công nghệ Đồng Nai dưới dạng hộp thoại."
+      "text": "Xin chào, tôi là tiếng nói của DNTU Consultant! Tôi sẽ cố gắng cung cấp cho bạn biết mọi thông tin ở Trường Đại học Công nghệ Đồng Nai dưới dạng hộp thoại. (bởi vì hiện tại tôi vẫn đang được hoàn thiện)"
     },
     {
       "isClickableText": false,
       "text": "Cụ thể bạn cần hỗ trợ như thế nào?"
-    }
-  ],
-  "optionMessages": [
-    {
-      "isClickableText": true,
-      "text": "Giới thiệu về trường Đại học Công nghệ Đồng Nai."
     },
     {
       "isClickableText": true,
-      "text": "Địa chỉ của trường?"
+      "text": "Các tiện ích mà nhà trường cung cấp là gì?"
     },
     {
       "isClickableText": true,
-      "text": "Thời gian của các tiết học trong ngày?"
-    },
-    {
-      "isClickableText": true,
-      "text": "Thông tin về học phí?"
+      "text": "Giới thiệu về khu G"
     }
   ]
 }
