@@ -1,5 +1,7 @@
 // Import from utils
-import { API_ROOT } from "src/utils/constant"
+const API_ROOT = import.meta.env.VITE_API_ROOT;
+
+console.log("API ROOT: ", API_ROOT)
 
 /**
  * Use this function to get speech by `text`.
@@ -7,7 +9,7 @@ import { API_ROOT } from "src/utils/constant"
  * @returns 
  */
 export async function getSpeechAsync(text) {
-  let url = API_ROOT.DEV + "/speech" + "?text=" + text;
+  let url = API_ROOT + "/speech" + "?text=" + text;
   return fetch(url);
 }
 
