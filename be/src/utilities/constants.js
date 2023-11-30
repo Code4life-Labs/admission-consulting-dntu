@@ -13,7 +13,8 @@ export const WHITELIST_DOMAINS = [
   'http://localhost:3000',
   'http://localhost:3001',
   'https://dong-nai-travel-admin.vercel.app',
-  'http://localhost:5173'
+  'http://localhost:5173',
+  env.CLIENT
 ]
 
 let websiteDomain = 'http://localhost:3000'
