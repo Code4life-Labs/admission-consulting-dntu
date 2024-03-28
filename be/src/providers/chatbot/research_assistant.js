@@ -4,6 +4,8 @@ import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
 import { MemoryVectorStore } from 'langchain/vectorstores/memory'
 import { BraveSearch } from '@langchain/community/tools/brave_search'
 import cheerio from 'cheerio'
+import { getChatHistoryConvertString } from './utils/upstash_chat_history'
+import { promptRole } from './utils/prompt'
 
 // 2. Initialize OpenAI client with Groq API
 const openai = new OpenAI({
@@ -304,7 +306,7 @@ const followUpQuestions = async (sources) => {
 // 10. Main action function that orchestrates the entire process
 export async function getAnswerResearchAssistant(datas) {
   // Phân tích datas
-  const { message, returnSources = true, returnFollowUpQuestions = true, embedSourcesInLLMResponse = false, textChunkSize = 800, textChunkOverlap = 200, numberOfSimilarityResults = 2, numberOfPagesToScan = 4 } = datas
+  const { sessionId, originMessage, user_name, message, returnSources = true, returnFollowUpQuestions = true, embedSourcesInLLMResponse = false, textChunkSize = 800, textChunkOverlap = 200, numberOfSimilarityResults = 2, numberOfPagesToScan = 4 } = datas
   console.log('message', message)
   const [sources] = await Promise.all([
     // getImages(message),
@@ -319,17 +321,33 @@ export async function getAnswerResearchAssistant(datas) {
   console.log(
     '===============vectorResults took ' + (b - a) + ' ms.==================='
   )
+
+  let chat_history = await getChatHistoryConvertString(sessionId)
+  chat_history += '\nHuman: ' + originMessage
+
   const chatCompletion = await openai.chat.completions.create({
     messages: [
       {
         role: 'system',
-        content: `
-        - MUST answer in VIETNAMESE. DON'T ENGLISH!
-        - Here is my query "${message}", respond back with an answer that is as long as possible. If you can't find any relevant results, respond with "No relevant results found." `
+        content: `${promptRole}
+        - Here is query: ${originMessage}, respond back with an answer for user is as long as possible. You can based on history chat that human provided below
+        - Don't try to make up an answer. If you really don't know the answer, say "I'm sorry, I don't know the answer to that." then direct the questioner to email tuyensinh@dntu.edu.vn to assist. 
+        - Always speak as if you were chatting to a friend. 
+        - Please mention the user's name when chatting. The user's name is ${user_name}
+        - Please answer in VIETNAMESE
+      `
+      },
+      {
+        role: 'user',
+        content:  `History chat: ${chat_history}`
       },
       {
         role: 'user',
         content: ` - Here are the top results from a similarity search: ${JSON.stringify(vectorResults)}. `
+      },
+      {
+        role: 'assistant',
+        content:  '(Vietnamese answer)'
       }
     ],
     stream: true,

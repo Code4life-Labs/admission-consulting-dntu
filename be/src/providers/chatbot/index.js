@@ -21,6 +21,9 @@ export const getAnswerChatBot = async (sessionId, question, user_name) => {
     console.log('🤖 Agent: Created standalone question => ', standaloneQuestion)
     if (classification === 'SEARCH_INTERNET') {
       const datas = {
+        'sessionId': sessionId,
+        'originMessage': question,
+        'user_name': user_name,
         'message': standaloneQuestion,
         'returnSources': true,
         'returnFollowUpQuestions': true,

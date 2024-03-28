@@ -1,53 +1,83 @@
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { getModelOpenAI } from './utils/get_llm'
-import { StringOutputParser } from '@langchain/core/output_parsers'
+import { StringOutputParser } from 'langchain/schema/output_parser'
 import { RunnableSequence } from '@langchain/core/runnables'
 import { promptRole } from './utils/prompt'
 import { getChatHistoryConvertString } from './utils/upstash_chat_history'
+import { env } from '../../config/environment'
+import OpenAI from 'openai'
 
-// const promptTemplate = ChatPromptTemplate.fromTemplate(`${promptRole}
-//       Please just use the conversation history to see if you can reply from there. If possible, please answer in Tiếng Việt (IMPORTANT).
-//       Avoid fabricating an answer. Always speak as if you're chatting with a friend. Remember to mention the user's name when chatting. The user's name is {user_name}.
-//       If you are really unsure about the correctness of your answer, return "SEARCH INTERNET" for search engine use.
-//       Note that if the user asks a question about the KNOWLEDGE, "SEARCH_INTERNET" is returned immediately.
-//       Note that if the user asks a question about the SEEKING JOB, "SEARCH_DATABASE" is returned immediately.
-
-//       <chat_history>
-//       {chat_history}
-//       </chat_history>
-
-//       <question>
-//       {question}
-//       </question>
-
-//       Answer:`);
 
 export const getAnswerNormalAssistant = async (sessionId, question, user_name) => {
-  const promptTemplate = ChatPromptTemplate.fromMessages([
-    ['system', `${promptRole}
-      - Here is query: {question}, respond back with an answer for user is as long as possible. You can based on history chat that human provided below
-      - Don't try to make up an answer. If you really don't know the answer, say "I'm sorry, I don't know the answer to that." then direct the questioner to email softseekservice@gmail.com to assist. 
-      - Always speak as if you were chatting to a friend. 
-      - Please mention the user's name when chatting. The user's name is {user_name}
-      - Please answer in VIETNAMESE
-    `],
-    ['system', 'History chat: {chat_history}'],
-    ['system', 'Answer: ']
-  ])
+  // const promptTemplate = ChatPromptTemplate.fromMessages([
+  //   ['system', `${promptRole}
+  //     - Here is query: {question}, respond back with an answer for user is as long as possible. You can based on history chat that human provided below
+  //     - Don't try to make up an answer. If you really don't know the answer, say "I'm sorry, I don't know the answer to that." then direct the questioner to email tuyensinh@dntu.edu.vn to assist.
+  //     - Always speak as if you were chatting to a friend.
+  //     - Please mention the user's name when chatting. The user's name is {user_name}
+  //     - Please answer in VIETNAMESE
+  //   `],
+  //   ['system', 'History chat: {chat_history}'],
+  //   ['system', 'Answer: ']
+  // ])
 
-  const chain = RunnableSequence.from([
-    promptTemplate,
-    getModelOpenAI(),
-    new StringOutputParser()
-  ])
+  // const chain = RunnableSequence.from([
+  //   promptTemplate,
+  //   getModelOpenAI(),
+  //   new StringOutputParser()
+  // ])
+
+  // let chat_history = await getChatHistoryConvertString(sessionId)
+  // chat_history += 'Human: ' + question
+
+  // const respone = await chain.invoke({
+  //   user_name,
+  //   chat_history,
+  //   question
+  // })
+  // return respone
+  const openai = new OpenAI({
+    baseURL: 'https://api.groq.com/openai/v1',
+    apiKey: env.GROQ_API_KEY
+  })
 
   let chat_history = await getChatHistoryConvertString(sessionId)
-  chat_history += 'Human: ' + question
+  chat_history += '\nHuman: ' + question
 
-  const respone = await chain.invoke({
-    user_name,
-    chat_history,
-    question
+  const chatCompletion = await openai.chat.completions.create({
+    messages: [
+      {
+        role: 'system',
+        content: `${promptRole}
+            - Here is query: {question}, respond back with an answer for user is as long as possible. You can based on history chat that human provided below
+            - Don't try to make up an answer. If you really don't know the answer, say "I'm sorry, I don't know the answer to that." then direct the questioner to email tuyensinh@dntu.edu.vn to assist. 
+            - Please mention the user's name when chatting. The user's name is ${user_name}
+            - Don't answer in letter form, don't be too formal, try to answer normal chat text type as if you were chatting to a friend.
+            - Please answer in VIETNAMESE!
+          `
+      },
+      {
+        role: 'user',
+        content:  `History chat: ${chat_history}`
+      },
+      {
+        role: 'assistant',
+        content:  '(vietnamese answer)'
+      }
+    ],
+    stream: true,
+    model: 'mixtral-8x7b-32768'
   })
-  return respone
+  console.log('11. Sent content to Groq for chat completion.')
+  let responseTotal = ''
+  console.log('12. Streaming response from Groq... \n')
+  for await (const chunk of chatCompletion) {
+    if (chunk.choices[0].delta && chunk.choices[0].finish_reason !== 'stop') {
+      // process.stdout.write(chunk.choices[0].delta.content);
+      responseTotal += chunk.choices[0].delta.content
+    } else {
+      console.log('🚀 ~ forawait ~ responseTotal:', responseTotal)
+      return responseTotal
+    }
+  }
 }

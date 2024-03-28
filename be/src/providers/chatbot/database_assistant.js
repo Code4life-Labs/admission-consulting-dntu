@@ -52,7 +52,7 @@ export const getAnswerDatabaseAssistant = async (sessionId, question, user_name)
     new MessagesPlaceholder('chat_history'),
     HumanMessagePromptTemplate.fromTemplate('Please answer the following question in vietnamese: {question}'),
     HumanMessagePromptTemplate.fromTemplate(`
-      Don't try to make up an answer. If you really don't know the answer, say "I'm sorry, I don't know the answer to that." then direct the questioner to email softseekservice@gmail.com to assist. 
+      Don't try to make up an answer. If you really don't know the answer, say "I'm sorry, I don't know the answer to that." then direct the questioner to email tuyensinh@dntu.edu.vn to assist. 
       Always speak as if you were chatting to a friend. 
       Please mention the user's name when chatting. The user's name is {user_name}
     `),

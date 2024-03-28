@@ -5,21 +5,23 @@ import { CheerioWebBaseLoader } from 'langchain/document_loaders/web/cheerio'
 import { OpenAIEmbeddings } from '@langchain/openai'
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
 import { SupabaseVectorStore } from 'langchain/vectorstores/supabase'
+import { TextLoader } from 'langchain/document_loaders/fs/text'
 
 export const uploadDocumentsToSupabaseCloud = async () => {
   try {
     const directoryLoader = new DirectoryLoader(
       'src/documents/',
       {
-        '.pdf': (path) => new PDFLoader(path)
+        '.pdf': (path) => new PDFLoader(path),
+        '.txt': (path) => new TextLoader(path)
       }
     )
 
     const docs = await directoryLoader.load()
 
     const textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 500,
-      // separators: ['\n\n', '\n', ' ', ''], // default setting
+      chunkSize: 400,
+      // separators: ['\n\n', '\n', ], // default setting
       chunkOverlap: 100
     })
 
@@ -93,10 +95,8 @@ export const getWebsitesPromise = (websiteUrl) => {
   })
 }
 
-export const uploadMultiWebsitesToSupabaseCloud = async () => {
+export const uploadMultiWebsitesToSupabaseCloud = async (websiteUrls) => {
   try {
-    const websiteUrls = ['https://itviec.com/blog/javascript-developer/', 'https://itviec.com/blog/front-end-developer-la-gi/']
-
     const promiseArr = []
 
     let docsArr = []

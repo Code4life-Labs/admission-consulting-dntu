@@ -5,6 +5,17 @@ import { env } from '../../../config/environment'
 
 
 export const getRetrieverSupabase = () => {
+
+  const vectorStore = getVectorStoreSupabase()
+
+  const retriever = vectorStore.asRetriever({
+    k: 3 //lấy số docs = 10
+  })
+
+  return retriever
+}
+
+export const getVectorStoreSupabase = () => {
   const embeddings = new OpenAIEmbeddings()
   const sbApiKey = env.SUPABASE_API_KEY || ''
   const sbUrl = env.SUPABASE_URL_LC_CHATBOT || ''
@@ -15,10 +26,5 @@ export const getRetrieverSupabase = () => {
     tableName: 'documents',
     queryName: 'match_documents'
   })
-
-  const retriever = vectorStore.asRetriever({
-    k: 3 //lấy số docs = 10
-  })
-
-  return retriever
+  return vectorStore
 }

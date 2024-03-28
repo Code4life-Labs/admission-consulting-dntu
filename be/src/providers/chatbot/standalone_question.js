@@ -36,12 +36,12 @@ export const getStandaloneQuestion = async (sessionId, question) => {
         role: 'system',
         content: `
         - You are a rephraser and always respond with a rephrased VIETNAMESE version of the input and the chat history that is given to a search engine API. 
-        - Always keep full of meaning for search engine API.
+        - From user text and chat history, convert it into search engine optimized language. Always keep the full gist of the search engine API.
         - Conversation history: ${chat_history}
         - Based on the previous conversation history and the current question, synthesize it into a meaningful complete question. Please create an meaningful string question using JSON in Vietnamese.
-         The JSON schema should include {
+        The JSON schema should include {
           "question": "Meaningful Question in Vietnamese"
-         }
+        }
         `
       },
       {
