@@ -335,7 +335,7 @@ export async function getAnswerResearchAssistant(datas) {
         - Always speak as if you were chatting to a friend. 
         - Please mention the user's name when chatting. The user's name is ${user_name}
         - Please answer in VIETNAMESE
-      `
+        - ${embedSourcesInLLMResponse ? 'Return the sources used in the response with iterable numbered markdown style annotations.' : ''}`
       },
       {
         role: 'user',

@@ -32,7 +32,7 @@ export const getAnswerChatBot = async (sessionId, question, user_name) => {
         'message': standaloneQuestion,
         'returnSources': true,
         'returnFollowUpQuestions': true,
-        'embedSourcesInLLMResponse': false,
+        'embedSourcesInLLMResponse': true,
         'textChunkSize': 1000,
         'textChunkOverlap': 400,
         'numberOfSimilarityResults': 4,
