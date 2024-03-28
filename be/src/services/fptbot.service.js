@@ -1,6 +1,7 @@
 // Import from config
 import { env } from '~/config/environment'
 import { getAnswerChatBot } from '~/providers/chatbot'
+import { addChatHistory } from '~/providers/chatbot/utils/upstash_chat_history'
 
 const _botBaseURL_ = 'https://bot.fpt.ai'
 const _v3APIBaseURL_ = 'https://v3-api.fpt.ai'
@@ -82,9 +83,9 @@ async function getSpeech(text) {
   })
 }
 
-const getFallBackAnswer = async (data) => {
+const getAnswerAI = async (data) => {
   try {
-    console.log('🚀 ~ getFallBackAnswer ~ data:', data)
+    console.log('🚀 ~ getAnswerAI ~ data:', data)
     const { sender_id, sender_input, sender_name } = data
 
     const result = await getAnswerChatBot(sender_id, sender_input, sender_name)
@@ -107,9 +108,23 @@ const getFallBackAnswer = async (data) => {
   }
 }
 
+const saveChatHistory = async (data) => {
+  try {
+    console.log('🚀 ~ getAnswerAI ~ data:', data)
+    const { sender_id, sender_input, answer_memory } = data
+
+    const result = await addChatHistory(sender_id, sender_input, answer_memory)
+
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const FPTBotServices = {
   getAnswer,
   getPredict,
   getSpeech,
-  getFallBackAnswer
+  getAnswerAI,
+  saveChatHistory
 }

@@ -56,7 +56,11 @@ router
   )
 
 router
-  .route('/fallback-answer')
-  .post(FPTController.getFallBackAnswer)
+  .route('/get-answer-ai')
+  .post(FPTController.getAnswerAI)
+
+router
+  .route('/save-chat-history')
+  .post(FPTController.saveChatHistory)
 
 export const fptbotRoutes = router

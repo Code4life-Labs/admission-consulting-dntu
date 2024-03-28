@@ -11,7 +11,6 @@ export const getClassificationResult = async (sessionId, question) => {
   Regarding the user question below, please classify it as about \`ANSWER_NORMAL\`,\`SEARCH_INTERNET\`,\`SEARCH_JOB\`.
   Based on question and chat history:
   if question is related to CHAT HISTORY return "ANSWER_NORMAL",
-  if else question is related to FINDING JOBS FOR USER return "SEARCH_JOB" (When Only user queries about current opening jobs that the system has at the moment . Example: Are there any React web developer intern jobs?. Move on to the next condition if this condition is not met!), 
   if else question is related to KNOWLEDGE return "SEARCH_INTERNET"
   Do not respond with more than one word.
 

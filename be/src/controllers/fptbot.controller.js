@@ -27,9 +27,9 @@ async function getAnswer(req, res) {
  * @param {*} res
  * @param {*} req
  */
-const getFallBackAnswer = async (req, res) => {
+const getAnswerAI = async (req, res) => {
   try {
-    const result = await FPTBotServices.getFallBackAnswer(req.body)
+    const result = await FPTBotServices.getAnswerAI(req.body)
     res.status(HttpStatusCode.OK).json(result)
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({
@@ -38,7 +38,23 @@ const getFallBackAnswer = async (req, res) => {
   }
 }
 
+/**
+ * Use this function to get answer from bot.
+ * @param {*} res
+ * @param {*} req
+ */
+const saveChatHistory = async (req, res) => {
+  try {
+    const result = await FPTBotServices.saveChatHistory(req.body)
+    res.status(HttpStatusCode.OK).json(result)
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      errors: error.message
+    })
+  }
+}
 export const FPTController = {
-  getFallBackAnswer,
-  getAnswer
+  getAnswerAI,
+  getAnswer,
+  saveChatHistory
 }
