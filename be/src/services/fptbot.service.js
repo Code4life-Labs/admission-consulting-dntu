@@ -85,9 +85,9 @@ async function getSpeech(text) {
 const getFallBackAnswer = async (data) => {
   try {
     console.log('🚀 ~ getFallBackAnswer ~ data:', data)
-    const { sessionId, question, user_name } = data
+    const { sender_id, sender_input, sender_name } = data
 
-    const result = await getAnswerChatBot(sessionId, question, user_name)
+    const result = await getAnswerChatBot(sender_id, sender_input, sender_name)
 
     let response = {
       'set_attributes': {
