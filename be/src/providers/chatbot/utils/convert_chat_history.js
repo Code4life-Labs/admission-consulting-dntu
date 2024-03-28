@@ -1,4 +1,4 @@
-import { HumanMessage } from '@langchain/core'
+import { HumanMessage } from '@langchain/core/messages'
 
 export function getConvertChatHistory(messages) {
   const fullChatHistory = messages.map((message) => {

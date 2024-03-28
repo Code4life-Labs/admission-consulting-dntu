@@ -1,7 +1,7 @@
 import { env } from '../../../config/environment'
 import { UpstashRedisChatMessageHistory } from '@langchain/community/stores/message/upstash_redis'
 import { getConvertChatHistory } from './convert_chat_history'
-import { AIMessage, HumanMessage } from '@langchain/core'
+import { AIMessage, HumanMessage } from '@langchain/core/messages'
 
 
 export const getChatHistoryBasic = async (sessionId) => {

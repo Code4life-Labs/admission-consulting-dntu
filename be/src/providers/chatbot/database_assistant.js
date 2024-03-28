@@ -6,10 +6,11 @@ import {
 import { ChatOpenAI } from '@langchain/openai'
 import { createOpenAIToolsAgent, AgentExecutor } from 'langchain/agents'
 import { SqlToolkit } from 'langchain/agents/toolkits/sql'
-import { AIMessage } from '@langchain/core'
+
 import { SqlDatabase } from 'langchain/sql_db'
 import { DataSource } from 'typeorm'
 import { getChatHistoryBasic } from './utils/upstash_chat_history'
+import { AIMessage } from '@langchain/core/messages'
 
 export const getAnswerDatabaseAssistant = async (sessionId, question, user_name) => {
   const datasource = new DataSource({
