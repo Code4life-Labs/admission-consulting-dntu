@@ -22,6 +22,23 @@ async function getAnswer(req, res) {
   }
 }
 
+/**
+ * Use this function to get answer from bot.
+ * @param {*} res
+ * @param {*} req
+ */
+const getFallBackAnswer = async (req, res) => {
+  try {
+    const result = await FPTBotServices.getFallBackAnswer(req.body)
+    res.status(HttpStatusCode.OK).json(result)
+  } catch (error) {
+    res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      errors: error.message
+    })
+  }
+}
+
 export const FPTController = {
+  getFallBackAnswer,
   getAnswer
 }

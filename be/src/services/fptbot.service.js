@@ -81,8 +81,30 @@ async function getSpeech(text) {
   })
 }
 
+const getFallBackAnswer = async (data) => {
+  console.log('🚀 ~ getFallBackAnswer ~ data:', data)
+  try {
+    let result = {
+      'set_attributes': {
+      },
+      'messages': [
+        {
+          'type': 'text',
+          'content': {
+            'text': 'Your voucher code is: rpy3AdmumJGQSC6K'
+          }
+        }
+      ]
+    }
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const FPTBotServices = {
   getAnswer,
   getPredict,
-  getSpeech
+  getSpeech,
+  getFallBackAnswer
 }

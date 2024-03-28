@@ -55,4 +55,8 @@ router
     FPTController.getAnswer
   )
 
+router
+  .route('/fallback-answer')
+  .post(FPTController.getFallBackAnswer)
+
 export const fptbotRoutes = router
