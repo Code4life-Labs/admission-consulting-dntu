@@ -4,6 +4,7 @@ import { addChatHistory } from './utils/upstash_chat_history'
 import { getAnswerNormalAssistant } from './answer_assistant'
 import { getAnswerResearchAssistant } from './research_assistant'
 import { getStandaloneQuestion } from './standalone_question'
+import { getAnswerDocumentAssistant } from './document_assistant'
 
 
 export const getAnswerChatBot = async (sessionId, question, user_name) => {
@@ -19,7 +20,11 @@ export const getAnswerChatBot = async (sessionId, question, user_name) => {
     // create a standaone question based on chat history and question
     const standaloneQuestion = await getStandaloneQuestion(sessionId, question)
     console.log('🤖 Agent: Created standalone question => ', standaloneQuestion)
-    if (classification === 'SEARCH_INTERNET') {
+
+    // if (classification === 'SEARCH_INTERNET') {
+    console.log('🤖 Agent: ', 'I\'m looking to DOCUMENTS DNTU....')
+    const answerDocumentAssistant = await getAnswerDocumentAssistant(sessionId, standaloneQuestion, question, user_name)
+    if (answerDocumentAssistant === 'NO_ANSWER') {
       const datas = {
         'sessionId': sessionId,
         'originMessage': question,
@@ -34,9 +39,10 @@ export const getAnswerChatBot = async (sessionId, question, user_name) => {
         'numberOfPagesToScan': 3
       }
       console.log('🤖 Agent: ', 'I\'m looking to INTERNET....')
-      const answerDocAssistant = await getAnswerResearchAssistant(datas)
-      response = answerDocAssistant.answer
-    }
+      const answerResearchAssistant = await getAnswerResearchAssistant(datas)
+      response = answerResearchAssistant.answer
+    } else response = answerDocumentAssistant
+    // }
     // else if (classification === 'SEARCH_JOB') {
     //   // using database tool
     //   console.log('🤖 Agent: ', 'I\'m looking to in DATABASE....')
