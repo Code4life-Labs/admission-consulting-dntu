@@ -1,11 +1,9 @@
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
+import { OpenAIEmbeddings } from '@langchain/openai'
 import OpenAI from 'openai'
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
 import { MemoryVectorStore } from 'langchain/vectorstores/memory'
 import { BraveSearch } from '@langchain/community/tools/brave_search'
 import cheerio from 'cheerio'
-import { Document as DocumentInterface } from 'langchain/document'
-import { ConfigOptions } from '../../common/interfaces/ConfigOptions.interface'
 
 // 2. Initialize OpenAI client with Groq API
 const openai = new OpenAI({

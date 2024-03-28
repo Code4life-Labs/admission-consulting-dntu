@@ -1,9 +1,8 @@
 import { createClient } from '@supabase/supabase-js'
-import { Document } from 'langchain/document'
 import { DirectoryLoader } from 'langchain/document_loaders/fs/directory'
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf'
 import { CheerioWebBaseLoader } from 'langchain/document_loaders/web/cheerio'
-import { OpenAIEmbeddings } from 'langchain/embeddings/openai'
+import { OpenAIEmbeddings } from '@langchain/openai'
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
 import { SupabaseVectorStore } from 'langchain/vectorstores/supabase'
 

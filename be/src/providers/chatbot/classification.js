@@ -1,6 +1,6 @@
-import { PromptTemplate } from 'langchain/prompts'
+import { PromptTemplate } from '@langchain/core/prompts'
 import { getModelOpenAI } from './utils/get_llm'
-import { StringOutputParser } from 'langchain/schema/output_parser'
+import { StringOutputParser } from '@langchain/core/output_parsers'
 import { RunnableSequence } from '@langchain/core/runnables'
 import { getChatHistoryConvertString } from './utils/upstash_chat_history'
 

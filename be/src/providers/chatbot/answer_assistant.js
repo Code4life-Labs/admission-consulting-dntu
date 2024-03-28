@@ -1,10 +1,9 @@
-import { ChatPromptTemplate, MessagesPlaceholder } from 'langchain/prompts'
-import { getModelLlm, getModelOpenAI } from './utils/get_llm'
-import { StringOutputParser } from 'langchain/schema/output_parser'
-import { RunnablePassthrough, RunnableSequence, RunnableBranch } from '@langchain/core/runnables'
-import { ParamsFromFString } from '@langchain/core/prompts'
+import { ChatPromptTemplate } from '@langchain/core/prompts'
+import { getModelOpenAI } from './utils/get_llm'
+import { StringOutputParser } from '@langchain/core/output_parsers'
+import { RunnableSequence } from '@langchain/core/runnables'
 import { promptRole } from './utils/prompt'
-import { addChatHistory, getChatHistoryConvertString } from './utils/upstash_chat_history'
+import { getChatHistoryConvertString } from './utils/upstash_chat_history'
 
 // const promptTemplate = ChatPromptTemplate.fromTemplate(`${promptRole}
 //       Please just use the conversation history to see if you can reply from there. If possible, please answer in Tiếng Việt (IMPORTANT).
