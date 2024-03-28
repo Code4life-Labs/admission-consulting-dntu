@@ -14,7 +14,7 @@ const app = express()
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.use('/v1', cors(corsOptions), apiV1)
+app.use('/v1', apiV1)
 
 connectDB().then(function() {
   console.log('Database is connected')
