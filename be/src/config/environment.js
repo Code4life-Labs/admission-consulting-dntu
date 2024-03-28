@@ -14,5 +14,6 @@ export const env = {
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY,
   CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET,
   MONGODB_URI: process.env.MONGODB_URI,
-  DATABASE_NAME: process.env.DATABASE_NAME
+  DATABASE_NAME: process.env.DATABASE_NAME,
+  CLIENT: process.env.CLIENT
 }
