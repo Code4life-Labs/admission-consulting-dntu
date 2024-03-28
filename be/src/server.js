@@ -21,9 +21,8 @@ app.use('/v1', apiV1)
 
 connectDB().then(function() {
   app.listen(process.env.PORT || env.APP_PORT, () => {
-    // eslint-disable-next-line no-console
     console.log(`Hello FSN, I'm running at port: ${process.env.PORT || env.APP_PORT}`)
-    getAnswerNormalAssistant('àkn', 'Bạn có biết giữa dev và coder khác nhau gì không', 'Nhật Phương')
+    // getAnswerNormalAssistant('àkn', 'Bạn có biết giữa dev và coder khác nhau gì không', 'Nhật Phương')
     // getAnswerDocumentAssistant('dasd', 'trường có ngành It không', 'phương')
     // uploadDocumentsToSupabaseCloud()
     //
