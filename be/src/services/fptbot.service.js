@@ -1,5 +1,6 @@
 // Import from config
 import { env } from '~/config/environment'
+import { getAnswerChatBot } from '~/providers/chatbot'
 
 const _botBaseURL_ = 'https://bot.fpt.ai'
 const _v3APIBaseURL_ = 'https://v3-api.fpt.ai'
@@ -82,21 +83,25 @@ async function getSpeech(text) {
 }
 
 const getFallBackAnswer = async (data) => {
-  console.log('🚀 ~ getFallBackAnswer ~ data:', data)
   try {
-    let result = {
+    console.log('🚀 ~ getFallBackAnswer ~ data:', data)
+    const { sessionId, question, user_name } = data
+
+    const result = await getAnswerChatBot(sessionId, question, user_name)
+
+    let response = {
       'set_attributes': {
       },
       'messages': [
         {
           'type': 'text',
           'content': {
-            'text': 'Your voucher code is: rpy3AdmumJGQSC6K'
+            'text': result
           }
         }
       ]
     }
-    return result
+    return response
   } catch (error) {
     throw new Error(error)
   }

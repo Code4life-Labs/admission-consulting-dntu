@@ -2,7 +2,7 @@
 
 import dialogflow from '@google-cloud/dialogflow'
 import { dfConfig } from '~/config/dfConfig'
-import { ChatGptProvider } from '~/providers/ChatGptProvider'
+import { ChatGptProvider } from '~/providers/gpt/ChatGptProvider'
 
 const getTextConsulting = async (data) => {
   // data = {
