@@ -52,8 +52,9 @@ export const getAnswerNormalAssistant = async (sessionId, question, user_name) =
             - Here is query: {question}, respond back with an answer for user is as long as possible. You can based on history chat that human provided below
             - Don't try to make up an answer. If you really don't know the answer, say "I'm sorry, I don't know the answer to that." then direct the questioner to email tuyensinh@dntu.edu.vn to assist. 
             - Please mention the user's name when chatting. The user's name is ${user_name}
-            - Don't answer in letter form, don't be too formal, try to answer normal chat text type as if you were chatting to a friend.
-            - Please answer in VIETNAMESE!
+            - Please answer directly to the point of the question, avoid rambling
+            - Don't answer in letter form, don't be too formal, try to answer normal chat text type as if you were chatting to a friend. You can use icons to show the friendliness
+            - Please answer in VIETNAMESE. Double check the spelling to see if it is correct
           `
       },
       {

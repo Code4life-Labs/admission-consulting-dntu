@@ -88,7 +88,10 @@ const getAnswerAI = async (data) => {
     console.log('🚀 ~ getAnswerAI ~ data:', data)
     const { sender_id, sender_input, sender_name } = data
 
-    const result = await getAnswerChatBot(sender_id, sender_input, sender_name)
+    const senderNameArr = sender_name.split(' ')
+    const senderFirstNameOnly = senderNameArr[senderNameArr.length - 1]
+
+    const result = await getAnswerChatBot(sender_id, sender_input, senderFirstNameOnly)
 
     let response = {
       'set_attributes': {
