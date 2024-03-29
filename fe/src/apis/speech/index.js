@@ -1,8 +1,6 @@
 // Import from utils
 const API_ROOT = import.meta.env.VITE_API_ROOT;
 
-console.log("API ROOT: ", API_ROOT)
-
 /**
  * Use this function to get speech by `text`.
  * @param {string} text 

@@ -2,7 +2,8 @@
   "messages": [
     {
       "isClickableText": false,
-      "text": "Xin chào, tôi là tiếng nói của DNTU Consultant! Tôi sẽ cố gắng cung cấp cho bạn biết mọi thông tin ở Trường Đại học Công nghệ Đồng Nai dưới dạng hộp thoại. (bởi vì hiện tại tôi vẫn đang được hoàn thiện)"
+      "canSpeak": true,
+      "text": "Xin chào, tôi là DNTU Consultant! Tôi sẽ cố gắng cung cấp cho bạn biết mọi thông tin ở Trường Đại học Công nghệ Đồng Nai mà bạn muốn biết như là ngành học, tiện ích,... Bạn có thể nhập câu hỏi ở bên dưới hoặc là chọn một câu hỏi ngợi ý."
     },
     {
       "isClickableText": false,

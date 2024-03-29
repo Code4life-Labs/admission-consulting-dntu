@@ -1,5 +1,6 @@
 // Import from components
 import Header from 'src/components/header/Header';
+import Navbar from 'src/components/navbar/Navbar';
 
 /**
  * @typedef PageLayoutProps
@@ -7,6 +8,7 @@ import Header from 'src/components/header/Header';
  * @property {string | JSX.Element | (() => string | JSX.Element) | undefined} footerTitle
  * @property {boolean | undefined} shownFooter
  * @property {boolean | undefined} shownHeader
+ * @property {boolean | undefined} shownNavbar
  */
 
 /**
@@ -22,6 +24,13 @@ export default function PageLayout(props) {
         && (
           <Header
             title={props.headerTitle}
+          />
+        )
+      }
+      {
+        (props.shownNavbar === true || props.shownNavbar === undefined)
+        && (
+          <Navbar
           />
         )
       }

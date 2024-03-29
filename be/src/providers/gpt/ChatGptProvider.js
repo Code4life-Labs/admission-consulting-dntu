@@ -91,7 +91,22 @@ const translateText = async (queryText) => {
   }
 }
 
+const generateSpeech = async (text) => {
+  const model = 'tts-1'
+  const voice = 'alloy'
+  const format = 'aac'
+  const mp3 = await openai.audio.speech.create({
+    'model': model,
+    'input': text,
+    'voice': voice,
+    'response_format': format
+  })
+  const buf = await mp3.arrayBuffer()
+  return buf
+}
+
 export const ChatGptProvider = {
   textGeneration,
-  translateText
+  translateText,
+  generateSpeech
 }

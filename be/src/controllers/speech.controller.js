@@ -1,3 +1,5 @@
+import { Request, Response } from 'express'
+
 // Import from models
 import { SpeechModel } from '~/models/speech'
 
@@ -10,8 +12,8 @@ import { HttpStatusCode } from '~/utilities/constants'
 
 /**
  * Use this function to insert a speech to database.
- * @param {*} req
- * @param {*} res
+ * @param {Request} req
+ * @param {Response} res
  */
 async function createSpeech(req, res) {
   try {
@@ -33,8 +35,8 @@ async function createSpeech(req, res) {
 
 /**
  * Use this function to get speech from query string (text).
- * @param {*} req
- * @param {*} res
+ * @param {Request} req
+ * @param {Response} res
  * @returns
  */
 async function getSpeechByText(req, res) {
