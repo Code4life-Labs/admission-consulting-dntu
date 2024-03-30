@@ -7,7 +7,7 @@ import PageLayout from "src/layouts/page_layout/PageLayout"
 import Button from "src/components/button/Button";
 // import SwitchSlider from "src/components/switch_slider/SwitchSlider";
 // import ChatSection from "src/components/chat_section/ChatSection";
-// import { openMyDialog } from 'src/components/dialog/Dialog';
+import { openMyDialog } from "src/components/dialog/dialog_entries";
 
 // Import from utils
 // import { OtherUtils } from 'src/utils/other';
@@ -61,7 +61,12 @@ export default function HomePage() {
                 >
                   DNTU SỰ KẾT HỢP HOÀN HẢO NHÀ TRƯỜNG - DOANH NGHIỆP - CÔNG NGHỆ
                 </p>
-                <Button extendClassName="bg-white font-bold mt-5" color="slate" colorIntensity={50}>TÌM HIỂU THÊM</Button>
+                <Button extendClassName="font-bold mt-5 mr-5">TÌM HIỂU THÊM</Button>
+                <Button
+                  extendClassName="font-bold mt-5 text-white"
+                  color="rose-800" hoverColor="rose-700" activeColor="rose-950"
+                  onClick={() => openMyDialog()}
+                >VỀ NHÓM TÁC GIẢ</Button>
               </div>
             </div>
           </div>

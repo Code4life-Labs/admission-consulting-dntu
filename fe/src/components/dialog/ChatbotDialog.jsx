@@ -5,11 +5,7 @@ import DialogLayout from 'src/layouts/modal_items/dialog_layout/DialogLayout';
 
 // Import from components
 // import Button from '../button/Button';
-
-// Import from utils
-import { OtherUtils } from 'src/utils/other';
-
-export const name = "myDialog";
+import QnASection from '../qna_section/QnASection';
 
 /**
  * @typedef DialogContentType
@@ -29,9 +25,9 @@ export const name = "myDialog";
  * @param {CustomizedModalItemProps} props 
  * @returns 
  */
-export default function Dialog(props) {
+export default function ChatbotDialog(props) {
   const data = props.item.getData();
-  const content = data.content;
+  // const content = data.content;
 
   return (
     <DialogLayout
@@ -45,16 +41,11 @@ export default function Dialog(props) {
       style={props.utils.getContainerStyle({
         width: "100%",
         maxWidth: "1280px",
-        maxHeight: "100vh",
-        minHeight: "360px",
-        overflow: "auto"
+        maxHeight: "720px",
+        minHeight: "520px"
       })}
     >
-      <div className="px-4 mt-4">
-        {
-          OtherUtils.fromContentToJSXElement(content)
-        }
-      </div>
+      <QnASection />
     </DialogLayout>
   )
 }

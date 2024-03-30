@@ -141,7 +141,7 @@ export default function ChatSection(props) {
   }, [chatState.messages]);
 
   return (
-    <div className="h-[calc(100vh-121px)]">
+    <section className="h-[calc(100vh-121px)]">
       {/* Header of chat section */}
       <div className="flex flex-row items-center w-full">
         {/* "Change slide" button */}
@@ -249,6 +249,6 @@ export default function ChatSection(props) {
 
       {/* Audio */}
       <audio id="botAudio" src={chatState.audioURL}></audio>
-    </div>
+    </section>
   )
 }

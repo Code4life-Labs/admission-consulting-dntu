@@ -31,7 +31,6 @@ const DialogLayout = React.forwardRef(
         <div className="flex items-center justify-between">
           {props.title}
           <Button
-            isTransparent
             hasPadding={false}
             onClick={() => { props.close() }}
             extendClassName="p-2"
