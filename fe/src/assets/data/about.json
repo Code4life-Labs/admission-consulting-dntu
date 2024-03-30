@@ -41,7 +41,7 @@
           "text": [
             {
               "name": "about-authors-listitem01-cnt01",
-              "text": "Thái Anh Đức (20DTH5) (Trưởng nhóm): chuyên xây dựng ứng dụng khách với React, Javascript. Github: ",
+              "text": "Thái Anh Đức (20DTH5) (Trưởng nhóm): có kinh nghiệm xây dựng ứng dụng khách với React, Javascript. Github: ",
               "attrs": {},
               "element": "span"
             },
@@ -63,7 +63,7 @@
           "text": [
             {
               "name": "about-authors-listitem02-cnt01",
-              "text": "Lương Văn Pháp (20DTH2): chuyên xây dựng các ứng dụng WEB3, các ứng dụng với Rust. Github: ",
+              "text": "Lương Văn Pháp (20DTH2): có kinh nghiệm xây dựng các ứng dụng WEB3, các ứng dụng với Rust. Github: ",
               "attrs": {},
               "element": "span"
             },
@@ -85,7 +85,7 @@
           "text": [
             {
               "name": "about-authors-listitem03-cnt01",
-              "text": "Từ Nhật Phương (20DTH5): chuyên xây dựng các ứng dụng khách và máy chủ, với React, NodeJS, Javascript / Typescript. Github: ",
+              "text": "Từ Nhật Phương (20DTH5): có kinh nghiệm xây dựng các ứng dụng khách và máy chủ, với React, NodeJS, Javascript / Typescript. Github: ",
               "attrs": {},
               "element": "span"
             },
@@ -107,7 +107,7 @@
           "text": [
             {
               "name": "about-authors-listitem04-cnt01",
-              "text": "Nguyễn Anh Tuấn (20DTH5): chuyên xây dựng các ứng dụng khách và bán chuyên với máy chủ, làm thiết kết giao diện chính. Github: ",
+              "text": "Nguyễn Anh Tuấn (20DTH5): có kinh nghiệm xây dựng các ứng dụng khách và bán chuyên với máy chủ, làm thiết kết giao diện chính. Github: ",
               "attrs": {},
               "element": "span"
             },

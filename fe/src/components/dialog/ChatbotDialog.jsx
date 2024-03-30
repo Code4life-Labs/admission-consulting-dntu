@@ -31,13 +31,7 @@ export default function ChatbotDialog(props) {
 
   return (
     <DialogLayout
-      className="bg-white w-screen h-screen bg-transparent flex overflow-auto p-6"
-      // style={props.utils.getContainerStyle({
-      //   width: "100%",
-      //   maxWidth: "1280px",
-      //   maxHeight: "720px",
-      //   minHeight: "520px"
-      // })}
+      className="w-screen h-screen bg-transparent flex overflow-auto p-6"
     >
       <div className="w-full bg-white rounded-xl max-w-[1280px] m-auto p-3">
         <header className="w-full flex justify-between">

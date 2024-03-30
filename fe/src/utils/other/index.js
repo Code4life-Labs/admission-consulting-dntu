@@ -79,8 +79,21 @@ function fromContentToJSXElement(content) {
   })
 }
 
+/**
+ * Use this function to simulate a request with `timeout`.
+ * @param {() => any} fn 
+ * @param {number} timeout 
+ * @returns 
+ */
+function wait(fn, timeout = 1000) {
+  return new Promise(function(res) {
+    setTimeout(function() { res(fn()) }, timeout);
+  });
+}
+
 export const OtherUtils = {
   fromCase,
   togglePropertyState,
-  fromContentToJSXElement
+  fromContentToJSXElement,
+  wait
 };

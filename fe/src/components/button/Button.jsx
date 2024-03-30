@@ -1,6 +1,5 @@
 /**
  * @typedef ButtonPropsType
- * @property {boolean | undefined} isTransparent
  * @property {boolean | undefined} hasPadding
  * @property {string | undefined} extendClassName
  * @property {string} color
