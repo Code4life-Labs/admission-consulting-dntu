@@ -51,7 +51,7 @@ export default function HomePage() {
           <div className="relative mx-auto w-fit">
             <img
               src="https://dntu.edu.vn/storage/slider/gEfqHjTk29r8OO0YldEFhFevBXvznk-metadGh1LXZpZW4tcmVzaXplLnBuZw==-.webp"
-              className="w-full min-h-[600px] block object-cover"
+              className="w-full min-h-[685px] block object-cover"
             />
             <div className="absolute top-[40%] w-full">
               <div className="px-[9%]">

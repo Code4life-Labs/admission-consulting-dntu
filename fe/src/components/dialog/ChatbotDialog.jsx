@@ -4,7 +4,7 @@
 import DialogLayout from 'src/layouts/modal_items/dialog_layout/DialogLayout';
 
 // Import from components
-// import Button from '../button/Button';
+import Button from '../button/Button';
 import QnASection from '../qna_section/QnASection';
 
 /**
@@ -26,26 +26,32 @@ import QnASection from '../qna_section/QnASection';
  * @returns 
  */
 export default function ChatbotDialog(props) {
-  const data = props.item.getData();
+  // const data = props.item.getData();
   // const content = data.content;
 
   return (
     <DialogLayout
-      title={
-        typeof data.title === "function"
-          ? data.title()
-          : data.title
-      }
-      close={props.close}
-      className="bg-white p-3"
-      style={props.utils.getContainerStyle({
-        width: "100%",
-        maxWidth: "1280px",
-        maxHeight: "720px",
-        minHeight: "520px"
-      })}
+      className="bg-white w-screen h-screen bg-transparent flex overflow-auto p-6"
+      // style={props.utils.getContainerStyle({
+      //   width: "100%",
+      //   maxWidth: "1280px",
+      //   maxHeight: "720px",
+      //   minHeight: "520px"
+      // })}
     >
-      <QnASection />
+      <div className="w-full bg-white rounded-xl max-w-[1280px] m-auto p-3">
+        <header className="w-full flex justify-between">
+          <h1 className="font-bold text-2xl text-rose-800">DNTU AI</h1>
+          <Button
+            hasPadding={false}
+            onClick={() => { props.close() }}
+            extendClassName="p-2"
+          >
+            <span className="material-symbols-outlined block">close</span>
+          </Button>
+        </header>
+        <QnASection />
+      </div>
     </DialogLayout>
   )
 }

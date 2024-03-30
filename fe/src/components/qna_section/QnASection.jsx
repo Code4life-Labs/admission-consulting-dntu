@@ -12,6 +12,23 @@ import Button from "../button/Button";
 // Import data from assets
 import chatsectionData from "src/assets/data/chatsection.json";
 
+function Introduction() {
+  return (
+    <div className="w-3/4 mx-auto mb-6">
+      <p className="text-justify">
+        <img src="/Logo_DNTU.png" className="w-16 xl:w-24 sm:w-20 mb-4 mx-auto" />
+        DNTU AI là trợ lý ảo của trường Đại học Công nghệ Đồng Nai (DNTU),
+        được thiết kế đặc biệt để hỗ trợ sinh viên trong quá trình tuyển sinh
+        và các vấn đề khác liên quan đến học tập và cuộc sống sinh viên.
+        Với khả năng hiểu và phản hồi tự nhiên, DNTU AI luôn sẵn lòng giúp đỡ
+        sinh viên với mọi thắc mắc và nhu cầu của họ. Từ việc cung cấp thông tin
+        về chương trình học đến hướng dẫn thủ tục đăng ký, DNTU AI đồng hành cùng
+        sinh viên trên hành trình học tập và phát triển cá nhân.
+      </p>
+    </div>
+  )
+}
+
 /**
  * Use this function to render a Question and Answer section with Chatbot.
  * @returns 
@@ -126,10 +143,12 @@ export default function QnASection() {
   }, [chatState.messages]);
 
   return (
-    <section className="flex flex-col flex-1 px-4 mt-4">
+    <section className="flex flex-col mt-4">
       {/* Q and A will appear here */}
-      <div className="relative flex flex-1 flex-col h-3/4 w-full max-md:w-full overflow-hidden">
-        <div className="h-full"></div>
+      <div className="relative px-11 flex flex-1 flex-col h-3/4 w-full max-md:w-full">
+        <div className="h-full">
+          <Introduction />
+        </div>
       </div>
 
       {/* Input container */}
@@ -145,13 +164,14 @@ export default function QnASection() {
           hasPadding={false}
           // onClick={() => { openTMI("mySideMenu") }}
           extendClassName="p-2"
+          color="rose-800" hoverColor="rose-700" activeColor="rose-950"
           onClick={() => {
             let text = elementRefs.current.chatInput.value;
             chatStateFns.appendMessage(text, true);
                 elementRefs.current.chatInput.value = "";
               }}
             >
-              <span className="material-symbols-outlined block">send</span>
+              <span className="material-symbols-outlined block text-white">send</span>
             </Button>
           </div>
 
