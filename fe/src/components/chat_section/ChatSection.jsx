@@ -16,7 +16,7 @@ import AudioMessage from '../message/AudioMessage';
 import chatsectionData from "src/assets/data/chatsection.json";
 
 // Import from features
-import { createMessageRenderer } from "./features/renderMessage.jsx";
+import { createMessageRenderer } from "./features/createMessageRenderer.jsx";
 
 // Import style
 import "./ChatSection.style.css";
