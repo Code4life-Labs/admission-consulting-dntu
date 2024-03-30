@@ -65,7 +65,7 @@ connectDB().then(function() {
     // uploadWebsiteToSupabaseCloud('https://dntu.edu.vn/dao-tao/khoa-cong-nghe-thong-tin/cong-nghe-thong-tin')
     // getAnswerNormalAssistant()
     // getAnswerDocumentAssistant('dasd', 'trường có ngành It không', 'phương')
-    uploadDocumentsToSupabaseCloud()
+    // uploadDocumentsToSupabaseCloud()
     //
     // const websiteUrls = [
     //   'https://dntu.edu.vn/dao-tao/khoa-cong-nghe-thong-tin',
