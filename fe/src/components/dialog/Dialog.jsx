@@ -1,5 +1,4 @@
 // import React from 'react';
-import { openTMI } from 'tunangn-react-modal';
 
 // Import from layout
 import DialogLayout from 'src/layouts/modal_items/dialog_layout/DialogLayout';
@@ -9,9 +8,6 @@ import DialogLayout from 'src/layouts/modal_items/dialog_layout/DialogLayout';
 
 // Import from utils
 import { OtherUtils } from 'src/utils/other';
-
-// Import from assets
-import aboutData from 'src/assets/data/about.json';
 
 export const name = "myDialog";
 
@@ -27,19 +23,6 @@ export const name = "myDialog";
  * @typedef MyDialogTransferedDataType
  * @property {Array<DialogContentType>} content
  */
-
-/**
- * Use this function to open a dialog when you want to get data for game finding.
- */
-export function openMyDialog() {
-  return openTMI(
-    name,
-    {
-      title: <h1 className="font-bold text-lg"></h1>,
-      content: aboutData.texts
-    }
-  );
-}
 
 /**
  * A component will pop a dialog up.

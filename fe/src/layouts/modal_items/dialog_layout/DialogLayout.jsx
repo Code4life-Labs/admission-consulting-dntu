@@ -30,14 +30,17 @@ const DialogLayout = React.forwardRef(
       >
         <div className="flex items-center justify-between">
           {props.title}
-          <Button
-            isTransparent
-            hasPadding={false}
-            onClick={() => { props.close() }}
-            extendClassName="p-2"
-          >
-            <span className="material-symbols-outlined block">close</span>
-          </Button>
+          {
+            props.close && (
+              <Button
+                hasPadding={false}
+                onClick={() => { props.close() }}
+                extendClassName="p-2"
+              >
+                <span className="material-symbols-outlined block">close</span>
+              </Button>
+            )
+          }
         </div>
         {props.children}
       </div>

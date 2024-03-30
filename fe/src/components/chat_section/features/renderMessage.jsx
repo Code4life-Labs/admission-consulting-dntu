@@ -1,12 +1,13 @@
 /**
- * Dùng hàm này dể tạo ra một message renderer. Nhận JSX.Element là một tham số.
+ * This is a higher-order function to create a Component that processes message.
+ * It receives 2 agrs: append (a function) and components (an object contains 2 components)
  * @param {(text: string, isOwned: boolean) => void} append 
  * @param {{ Message: () => JSX.Element, AudioMessage: () => JSX.Element }} components
  * @returns 
  */
 export function createMessageRenderer(append, components) {
   const { Message, AudioMessage } = components;
-  return function renderMessage(message, index, messages) {
+  return function RenderMessage(message, index, messages) {
     let hasTime = false;
     let onClickMessage;
 
@@ -46,6 +47,7 @@ export function createMessageRenderer(append, components) {
         key={index}
         content={message.text}
         hasTime={hasTime}
+        canSpeak={message.canSpeak}
         onClick={onClickMessage}
         extendedContainerClassName={message.isOwned ? "right" : ""}
       />

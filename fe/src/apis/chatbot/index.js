@@ -1,0 +1,30 @@
+// Import from utils
+const API_ROOT = import.meta.env.VITE_API_ROOT;
+
+const base = "/fpt";
+
+/**
+ * Use this function to get answer from AI.
+ * @param {string} text 
+ * @returns 
+ */
+export async function getAnswerAsync(text, senderName) {
+  let url = API_ROOT + base + "/get-answer-ai";
+  let response = await fetch(url, {
+    method: "POST",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      sender_id: "",
+      sender_name: senderName,
+      sender_input: text
+    })
+  });
+  return response.json();
+}
+
+export const ChatBotAPI = {
+  getAnswerAsync
+}

@@ -4,7 +4,8 @@ import React from 'react'
 import { useStateWESSFns } from "src/hooks/useStateWESSFns";
 
 // Import from apis
-import { SpeechAPI } from 'src/apis/speech';
+// import { SpeechAPI } from 'src/apis/speech';
+import { ChatBotAPI } from 'src/apis/chatbot';
 
 // Import from components
 import Button from "../button/Button";
@@ -33,7 +34,8 @@ import "./ChatSection.style.css";
 export default function ChatSection(props) {
   const [chatState, chatStateFns] = useStateWESSFns(
     {
-      messages: [...chatsectionData.messages]
+      messages: [...chatsectionData.messages],
+      audioURL: ""
     },
     function(changeState) {
       return {
@@ -77,6 +79,18 @@ export default function ChatSection(props) {
             data.pop();
             return [...data, { audio }]
           })
+        },
+
+        /**
+         * Use this function to update last message to message (last message typically is suspended message)
+         * @param {string} text 
+         */
+        updateLastToMessage: function(text) {
+          changeState("messages", function(data) {
+            // Remove last message.
+            data.pop();
+            return [...data, { text, canSpeak: true }]
+          })
         }
       }
     }
@@ -85,7 +99,8 @@ export default function ChatSection(props) {
   const elementRefs = React.useRef({
     hiddenChatList: null,
     messagesContainerWrapper: null,
-    chatInput: null
+    chatInput: null,
+    botAudio: null
   });
 
   const toggleHiddenChatList = React.useCallback(function() {
@@ -103,23 +118,30 @@ export default function ChatSection(props) {
     // If the last message is user (message.isOwned = true), then call api.
     // Because of this is a voice-response chat, so api always response url of audio.
     let N = chatState.messages.length;
+    // Temporarily close this feature
     let lastMessage = chatState.messages[N - 1];
 
+    // if(lastMessage.isOwned) {
+    //   chatStateFns.appendLoadingMessage()
+    //   SpeechAPI
+    //     .getSpeechAsync(lastMessage.text)
+    //     .then((res) => res.json())
+    //     .then(data => {
+    //       let { audio } = data;
+    //       chatStateFns.updateLastToAudioMessage(audio)
+    //     })
+    // }
+
+    // Get answer as text instead
     if(lastMessage.isOwned) {
       chatStateFns.appendLoadingMessage()
-      SpeechAPI
-        .getSpeechAsync(lastMessage.text)
-        .then((res) => res.json())
-        .then(data => {
-          let { audio } = data;
-          chatStateFns.updateLastToAudioMessage(audio)
-        })
+      ChatBotAPI.getAnswerAsync()
     }
 
   }, [chatState.messages]);
 
   return (
-    <div className="h-[calc(100vh-121px)]">
+    <section className="h-[calc(100vh-121px)]">
       {/* Header of chat section */}
       <div className="flex flex-row items-center w-full">
         {/* "Change slide" button */}
@@ -178,7 +200,7 @@ export default function ChatSection(props) {
               </Button>
             </div>
             <div>
-              <p className="text-xl font-bold text-base">Voice of DNTU Consultant</p>
+              <p className="text-xl font-bold text-base">DNTU Consultant</p>
               <div className="flex items-center">
                 <div className="w-3 h-3 bg-green-500 rounded-3xl"></div>
                 <span className="ms-2">Trực tuyến</span>
@@ -224,6 +246,9 @@ export default function ChatSection(props) {
           </div>
         </div>
       </div>
-    </div>
+
+      {/* Audio */}
+      <audio id="botAudio" src={chatState.audioURL}></audio>
+    </section>
   )
 }

@@ -5,7 +5,9 @@ import { TunangnModal } from 'tunangn-react-modal';
 import HomePage from 'src/pages/home/HomePage';
 
 // Import from components
-import Dialog, { name as MY_DIALOG_NAME } from 'src/components/dialog/Dialog';
+import Dialog from 'src/components/dialog/Dialog';
+import ChatbotDialog from './components/dialog/ChatbotDialog';
+import { DialogNames } from './components/dialog/dialog_entries';
 
 // Import styles
 import "./App.css";
@@ -18,10 +20,14 @@ function App() {
       <TunangnModal
         className="fixed hidden w-full h-screen top-0 left-0 bg-black-200 z-50"
         items={{
-          [MY_DIALOG_NAME]: {
+          [DialogNames.normal]: {
             type: "dialog",
             element: Dialog
-          }
+          },
+          [DialogNames.chatbot]: {
+            type: "dialog",
+            element: ChatbotDialog
+          },
         }}
       />
     </>
