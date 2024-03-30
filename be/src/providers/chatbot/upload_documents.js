@@ -10,7 +10,7 @@ import { TextLoader } from 'langchain/document_loaders/fs/text'
 export const uploadDocumentsToSupabaseCloud = async () => {
   try {
     const directoryLoader = new DirectoryLoader(
-      'src/documents/',
+      'src/documents/upload',
       {
         '.pdf': (path) => new PDFLoader(path),
         '.txt': (path) => new TextLoader(path)
@@ -20,9 +20,9 @@ export const uploadDocumentsToSupabaseCloud = async () => {
     const docs = await directoryLoader.load()
 
     const textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 400,
+      chunkSize: 1000,
       // separators: ['\n\n', '\n', ], // default setting
-      chunkOverlap: 100
+      chunkOverlap: 500
     })
 
     const splitDocs = await textSplitter.splitDocuments(docs)
@@ -47,12 +47,13 @@ export const uploadDocumentsToSupabaseCloud = async () => {
   }
 }
 
-export const uploadWebsiteToSupabaseCloud = async () => {
+export const uploadWebsiteToSupabaseCloud = async (url) => {
   try {
-    const loader = new CheerioWebBaseLoader('https://itviec.com/blog/mau-cv-chuan-trinh-bay-du-an-it/', {
+    const loader = new CheerioWebBaseLoader(url, {
       selector: 'section' // tổng hợp bài viết trên IT viec
     })
     const docs = await loader.load()
+    console.log('🚀 ~ uploadWebsiteToSupabaseCloud ~ docs:', docs)
 
     const textSplitter = new RecursiveCharacterTextSplitter({
       chunkSize: 500,

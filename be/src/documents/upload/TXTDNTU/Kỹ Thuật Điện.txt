@@ -1,0 +1,34 @@
+Công nghệ kỹ thuật điện, điện tử
+Mã ngành: 7510301
+Thời gian đào tạo: 4 năm
+Tổ hợp xét: A00; A01; A04; A10
+Cơ sở học tập: Trụ sở chính của DNTU
+
+Tổng quan
+Ngành Công nghệ kỹ thuật điện, điện tử là sự nghiên cứu và ứng dụng các vấn đề về điện và điện tử, bao gồm cả tự động hoá. Chương trình đào tạo tập trung vào phát triển toàn diện, hiểu biết về nguyên lý, kỹ thuật, thiết bị, hệ thống kỹ thuật điện, điện tử. Sinh viên được trang bị kiến thức cốt lõi và kỹ năng chuyên sâu về kỹ thuật điện, điện tử để áp dụng trong môi trường công việc.
+
+Cấu trúc chương trình
+Năm 1: Học kỳ 1, Key English 1, Key English 2, Key English 3, English Speaking Community, Kỹ năng nói trước công chúng, Nhập môn chuyên ngành, Vật liệu điện-điện tử
+Học kỳ 2:  Triết học Mác - Lênin, Toán Cao cấp, Hàm phức và phép biến đổi Laplace, Phương pháp tính, Intensive English 1, Tin học 1, Kỹ năng quản lý cảm xúc, Giáo dục thể chất 1 – Bơi lội, Giải tích mạch điện, Linh kiện điện tử
+
+Năm 2
+Học kỳ 1  Giáo dục thể chất 2 – Bóng đá, Giáo dục thể chất 2 – Bóng chuyền, Giáo dục thể chất 2 – Cầu lông, Kinh tế chính trị Mác - Lênin, Vật lý, Môi trường và phát triển bền vững, Tâm lý học hành vi, Tâm lý học Y đức, Intensive English 2, Tin học 2, Kỹ năng giao tiếp và tạo dựng quan hệ, Phương pháp nghiên cứu khoa học, Máy điện, Khí cụ điện, Cấu trúc máy tính ngành điện tử, Lý thuyết tín hiệu, Quang điện tử
+Học kỳ 2  Giáo dục thể chất 3 – Fitness, Giáo dục thể chất 3 – Dancesport, Giáo dục thể chất 3 – Bóng rổ, Giáo dục thể chất 3 – Võ thuật, Giáo dục Quốc phòng - An ninh 1, Giáo dục Quốc phòng - An ninh 2, Giáo dục Quốc phòng - An ninh 3, Giáo dục Quốc phòng - An ninh 4, Chủ nghĩa xã hội khoa học, Kinh tế xanh và phát triển bền vững, Văn hóa và Âm nhạc dân tộc Việt Nam, Lịch sử văn minh thế giới, Intensive English 3, Kỹ năng phòng tránh tai nạn trong công nghiệp, Kỹ thuật đo, Tin học ứng dụng chuyên ngành, Kỹ thuật xung, Autocad, Cung cấp điện, Mạch điện tử 1
+
+Năm 3
+Học kỳ 1  Tư tưởng Hồ Chí Minh, Lịch sử Đảng Cộng sản Việt Nam, Intensive English 4, Kỹ thuật cảm biến và đo lường, Lý thuyết điều khiển tự động, Kỹ thuật số, Kỹ thuật lập trình C, Điều khiển máy điện, Mạch điện tử 2
+Học kỳ 2  Pháp luật đại cương, PLC, Đồ án học phần 1, Điện khí nén, Điện tử công suất, Vi điều khiển, Thực hành điều khiển máy điện, Hệ thống điện, Kỹ thuật chiếu sáng, Nhà máy điện và trạm biến áp, Thiết kế mạch điện tử, Điều khiển thông minh, Hệ thống viễn thông, Xử lý số tín hiệu (DSP)
+
+Năm 4
+Học kỳ 1 Đồ án học phần 2, PLC nâng cao, Tự động hóa quá trình công nghệ, Bảo vệ hệ thống điện, Mạng truyền thông công nghiệp, Năng lượng tái tạo, Thiết kế cung cấp điện, Điện khí nén, Truyền động điện, Công nghệ FPGA, Đo lường công nghiệp, Đo lường và điều khiển bằng máy tính, Hệ thống nhúng, Mạng và truyền dữ liệu, Vi điều khiển nâng cao, Thiết bị và hệ thống điều khiển tự động, IOT
+Học kỳ 2 Thực tập tốt nghiệp, Khóa luận tốt nghiệp
+
+Cơ hội nghề nghiệp
+Sau khi tốt nghiệp, kỹ sư ngành Công nghệ Kỹ thuật Điện, Điện tử có thể tham gia vào nhiều lĩnh vực công việc khác nhau như:
+
+Tham gia công tác tại các cơ sở đào tạo, viện nghiên cứu và chuyển giao công nghệ trong lĩnh vực kỹ thuật điện, điện tử.
+Trở thành chuyên viên kỹ thuật trong các công ty tư vấn, thiết kế và xây lắp điện, công ty điện lực, công ty sản xuất điện tử.
+Đảm nhận các công việc vận hành, bảo trì hệ thống điện, điện tử, hệ thống tự động hóa tại các công ty, xí nghiệp công nghiệp, nhà máy điện.
+Làm việc tại các công ty quản lý, điều hành các dự án trong lĩnh vực kỹ thuật điện, điện tử.
+Thực hiện các công việc về kỹ thuật, quản lý chất lượng, quản lý vận hành dây chuyền tự động hóa, hệ thống điện tại các đơn vị sản xuất trong các nhà máy, xí nghiệp, cơ quan, khu công nghiệp.
+Khởi nghiệp bằng việc tự thành lập và điều hành công ty riêng.

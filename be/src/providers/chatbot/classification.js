@@ -7,7 +7,6 @@ import { getChatHistoryConvertString } from './utils/upstash_chat_history'
 
 export const getClassificationResult = async (sessionId, question) => {
   const promptTemplate = PromptTemplate.fromTemplate(`
-
   Regarding the user question below, please classify it as about \`ANSWER_NORMAL\`,\`SEARCH_INTERNET\`,\`SEARCH_JOB\`.
   Based on question and chat history:
   if question is related to CHAT HISTORY return "ANSWER_NORMAL",

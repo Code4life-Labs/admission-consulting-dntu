@@ -87,11 +87,20 @@ const getAnswerAI = async (data) => {
   try {
     console.log('🚀 ~ getAnswerAI ~ data:', data)
     const { sender_id, sender_input, sender_name } = data
+    let senderFirstNameOnly
+    if (sender_name) {
+      const senderNameArr = sender_name.split(' ')
+      senderFirstNameOnly = senderNameArr[senderNameArr.length - 1]
+    } else senderFirstNameOnly = sender_name
 
-    const senderNameArr = sender_name.split(' ')
-    const senderFirstNameOnly = senderNameArr[senderNameArr.length - 1]
+    const dataGetAnswer = {
+      sessionId: sender_id,
+      question: sender_input,
+      user_name: senderFirstNameOnly,
+      type: 'NORMAL'
+    }
 
-    const result = await getAnswerChatBot(sender_id, sender_input, senderFirstNameOnly)
+    const result = await getAnswerChatBot(dataGetAnswer)
 
     let response = {
       'set_attributes': {

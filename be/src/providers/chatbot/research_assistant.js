@@ -14,9 +14,9 @@ const openai = new OpenAI({
 })
 
 // 4. Fetch search results from Brave Search API
-async function getSources(message) {
-  console.log('🚀 ~ getSources ~ message:', message)
-  const encodedMessage = encodeURI(message)
+async function getSources(standaloneQuestion) {
+  console.log('🚀 ~ getSources ~ standaloneQuestion:', standaloneQuestion)
+  const encodedMessage = encodeURI(standaloneQuestion)
   try {
     const response = await fetch(
       `https://api.search.brave.com/res/v1/web/search?q=${encodedMessage}&count=10&search_lang=vi`,
@@ -109,7 +109,6 @@ async function get10BlueLinksContents(sources) {
   }
 }
 
-
 // 6. Process and vectorize content using LangChain
 async function processAndVectorizeContent(
   contents,
@@ -149,128 +148,124 @@ async function processAndVectorizeContent(
   }
 }
 // 7. Fetch image search results from Brave Search API
-// async function getImages(
-//   message: string
-// ): Promise<{ title: string; link: string }[]> {
-//   try {
-//     const response = await fetch(
-//       `https://api.search.brave.com/res/v1/images/search?q=${message}&spellcheck=1`,
-//       {
-//         method: "GET",
-//         headers: {
-//           Accept: "application/json",
-//           "Accept-Encoding": "gzip",
-//           "X-Subscription-Token": process.env.BRAVE_SEARCH_API_KEY as string,
-//         },
-//       }
-//     );
-//     if (!response.ok) {
-//       throw new Error(
-//         `Network response was not ok. Status: ${response.status}`
-//       );
-//     }
-//     const data = await response.json();
-//     const validLinks = await Promise.all(
-//       data.results.map(async (result: any) => {
-//         const link = result.properties.url;
-//         if (typeof link === "string") {
-//           try {
-//             const imageResponse = await fetch(link, { method: "HEAD" });
-//             if (imageResponse.ok) {
-//               const contentType = imageResponse.headers.get("content-type");
-//               if (contentType && contentType.startsWith("image/")) {
-//                 return {
-//                   title: result.properties.title,
-//                   link: link,
-//                 };
-//               }
-//             }
-//           } catch (error) {
-//             console.error(`Error fetching image link ${link}:`, error);
-//           }
-//         }
-//         return null;
-//       })
-//     );
-//     const filteredLinks = validLinks.filter(
-//       (link): link is { title: string; link: string } => link !== null
-//     );
-//     return filteredLinks.slice(0, 9);
-//   } catch (error) {
-//     console.error("There was a problem with your fetch operation:", error);
-//     throw error;
-//   }
-// }
+async function getImages(standaloneQuestion) {
+  try {
+    const response = await fetch(
+      `https://api.search.brave.com/res/v1/images/search?q=${standaloneQuestion}&spellcheck=1`,
+      {
+        method: 'GET',
+        headers: {
+          Accept: 'application/json',
+          'Accept-Encoding': 'gzip',
+          'X-Subscription-Token': process.env.BRAVE_SEARCH_API_KEY
+        }
+      }
+    )
+    if (!response.ok) {
+      throw new Error(
+        `Network response was not ok. Status: ${response.status}`
+      )
+    }
+    const data = await response.json()
+    const validLinks = await Promise.all(
+      data.results.map(async (result) => {
+        const link = result.properties.url
+        if (typeof link === 'string') {
+          try {
+            const imageResponse = await fetch(link, { method: 'HEAD' })
+            if (imageResponse.ok) {
+              const contentType = imageResponse.headers.get('content-type')
+              if (contentType && contentType.startsWith('image/')) {
+                return {
+                  title: result.properties.title,
+                  link: link
+                }
+              }
+            }
+          } catch (error) {
+            console.error(`Error fetching image link ${link}:`, error)
+          }
+        }
+        return null
+      })
+    )
+    const filteredLinks = validLinks.filter(
+      (link) => link !== null
+    )
+    return filteredLinks.slice(0, 9)
+  } catch (error) {
+    console.error('There was a problem with your fetch operation:', error)
+    throw error
+  }
+}
 // 8. Fetch video search results from Google Serper API
-// async function getVideos(
-//   message: string
-// ): Promise<{ imageUrl: string; link: string }[] | null> {
-//   const url = "https://google.serper.dev/videos";
-//   const data = JSON.stringify({
-//     q: message,
-//   });
-//   const requestOptions: RequestInit = {
-//     method: "POST",
-//     headers: {
-//       "X-API-KEY": process.env.SERPER_API as string,
-//       "Content-Type": "application/json",
-//     },
-//     body: data,
-//   };
-//   try {
-//     const response = await fetch(url, requestOptions);
-//     if (!response.ok) {
-//       throw new Error(
-//         `Network response was not ok. Status: ${response.status}`
-//       );
-//     }
-//     const responseData = await response.json();
-//     const validLinks = await Promise.all(
-//       responseData.videos.map(async (video: any) => {
-//         const imageUrl = video.imageUrl;
-//         if (typeof imageUrl === "string") {
-//           try {
-//             const imageResponse = await fetch(imageUrl, { method: "HEAD" });
-//             if (imageResponse.ok) {
-//               const contentType = imageResponse.headers.get("content-type");
-//               if (contentType && contentType.startsWith("image/")) {
-//                 return { imageUrl, link: video.link };
-//               }
-//             }
-//           } catch (error) {
-//             console.error(`Error fetching image link ${imageUrl}:`, error);
-//           }
-//         }
-//         return null;
-//       })
-//     );
-//     const filteredLinks = validLinks.filter(
-//       (link): link is { imageUrl: string; link: string } => link !== null
-//     );
-//     return filteredLinks.slice(0, 9);
-//   } catch (error) {
-//     console.error("Error fetching videos:", error);
-//     throw error;
-//   }
-// }
+async function getVideos(standaloneQuestion) {
+  const url = 'https://google.serper.dev/videos'
+  const data = JSON.stringify({
+    q: standaloneQuestion
+  })
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'X-API-KEY': process.env.SERPER_API,
+      'Content-Type': 'application/json'
+    },
+    body: data
+  }
+  try {
+    const response = await fetch(url, requestOptions)
+    if (!response.ok) {
+      throw new Error(
+        `Network response was not ok. Status: ${response.status}`
+      )
+    }
+    const responseData = await response.json()
+    const validLinks = await Promise.all(
+      responseData.videos.map(async (video) => {
+        const imageUrl = video.imageUrl
+        if (typeof imageUrl === 'string') {
+          try {
+            const imageResponse = await fetch(imageUrl, { method: 'HEAD' })
+            if (imageResponse.ok) {
+              const contentType = imageResponse.headers.get('content-type')
+              if (contentType && contentType.startsWith('image/')) {
+                return { imageUrl, link: video.link }
+              }
+            }
+          } catch (error) {
+            console.error(`Error fetching image link ${imageUrl}:`, error)
+          }
+        }
+        return null
+      })
+    )
+    const filteredLinks = validLinks.filter(
+      (link) => link !== null
+    )
+    return filteredLinks.slice(0, 9)
+  } catch (error) {
+    console.error('Error fetching videos:', error)
+    throw error
+  }
+}
 // 9. Generate follow-up questions using OpenAI API
-// const relevantQuestions = async (responseText: string): Promise<any> => {
-//   console.log("🚀 ~ relevantQuestions ~ responseText:", responseText)
-//   const groqResponse = await openai.chat.completions.create({
-//     messages: [
-//       { role: "system", content: "You are a question generator. Generate 3 follow-up questions based on the provided text. Return the questions in an array format." },
-//       { role: "user", content: "You must create questions in Vietnamese." },
-//       {
-//         role: "user",
-//         content: `Generate 3 follow-up Vietnamese questions based on the following text:\n\n${responseText}\n\nReturn the Vietnamese questions in the following format: ["Vietnamese Question 1", "Vietnamese Question 2", "Vietnamese Question 3"]`
-//       }
-//     ],
-//     model: "mixtral-8x7b-32768"
-//   });
-//   const groqResponseParse = JSON.parse(groqResponse.choices[0].message.content ?? "");
-//   console.log("🚀 ~ relevantQuestions ~ groqResponse:", groqResponseParse)
-//   return groqResponseParse
-// };
+const relevantQuestions = async (responseText) => {
+  console.log('🚀 ~ relevantQuestions ~ responseText:', responseText)
+  const groqResponse = await openai.chat.completions.create({
+    messages: [
+      { role: 'system', content: 'You are a question generator. Generate 3 follow-up questions based on the provided text. Return the questions in an array format.' },
+      { role: 'user', content: 'You must create questions in Vietnamese.' },
+      {
+        role: 'user',
+        content: `Generate 3 follow-up Vietnamese questions based on the following text:\n\n${responseText}\n\nReturn the Vietnamese questions in the following format: ["Vietnamese Question 1", "Vietnamese Question 2", "Vietnamese Question 3"]`
+      }
+    ],
+    model: 'mixtral-8x7b-32768'
+  })
+  const groqResponseParse = JSON.parse(groqResponse.choices[0].message.content ?? '')
+  console.log('🚀 ~ relevantQuestions ~ groqResponse:', groqResponseParse)
+  return groqResponseParse
+}
 
 const followUpQuestions = async (sources) => {
   const groqResponse = await openai.chat.completions.create({
@@ -304,18 +299,32 @@ const followUpQuestions = async (sources) => {
 }
 
 // 10. Main action function that orchestrates the entire process
-export async function getAnswerResearchAssistant(datas) {
-  // Phân tích datas
-  const { sessionId, originMessage, user_name, message, returnSources = true, returnFollowUpQuestions = true, embedSourcesInLLMResponse = false, textChunkSize = 800, textChunkOverlap = 200, numberOfSimilarityResults = 2, numberOfPagesToScan = 4 } = datas
-  console.log('message', message)
-  const [sources] = await Promise.all([
-    // getImages(message),
-    getSources(message)
-    // getVideos(message),
-  ])
+export async function getAnswerResearchAssistant(dataGetAnswer) {
+  const { sessionId, standaloneQuestion, question, user_name, io, socketIdMap, type } = dataGetAnswer
+  const embedSourcesInLLMResponse = type === 'STREAMING' ? false : true
+
+  console.log('standaloneQuestion', standaloneQuestion)
+  let sources
+  if (type === 'STREAMING') {
+    const [imagesResult, sourcesResult, videosResult] = await Promise.all([
+      getImages(standaloneQuestion),
+      getSources(standaloneQuestion),
+      getVideos(standaloneQuestion)
+    ])
+    // trả về client
+    io.to(socketIdMap[sessionId]).emit('s_create_relevant_info', {
+      imagesResult,
+      sourcesResult,
+      videosResult
+    })
+
+    sources = sourcesResult
+  } else {
+    sources = await getSources(standaloneQuestion)
+  }
   const html = await get10BlueLinksContents(sources)
   const a = Date.now()
-  const vectorResults = await processAndVectorizeContent(html, message)
+  const vectorResults = await processAndVectorizeContent(html, standaloneQuestion)
   console.log('🚀 ~ getAnswerResearchAssistant ~ vectorResults:', vectorResults)
   const b = Date.now()
   console.log(
@@ -323,20 +332,20 @@ export async function getAnswerResearchAssistant(datas) {
   )
 
   let chat_history = await getChatHistoryConvertString(sessionId)
-  chat_history += '\nHuman: ' + originMessage
+  chat_history += '\nHuman: ' + question
 
-  const chatCompletion = await openai.chat.completions.create({
+  const dataChatchatCompletion = {
     messages: [
       {
         role: 'system',
         content: `${promptRole}
-        - Here is query: ${originMessage}, respond back with an answer for user is as long as possible. You can based on history chat that human provided below
+        - Here is query: ${question}, respond back with an answer for user is as long as possible. You can based on history chat that human provided below
         - Don't try to make up an answer. If you really don't know the answer, say "I'm sorry, I don't know the answer to that." then direct the questioner to email tuyensinh@dntu.edu.vn to assist. 
-        - Please mention the user's name when chatting. The user's name is ${user_name}
+        ${user_name ? '- Please mention the user\'s name when chatting. The user\'s name is' + user_name : ''}
         - Please answer directly to the point of the question, avoid rambling
         - Don't answer in letter form, don't be too formal, try to answer normal chat text type as if you were chatting to a friend. You can use icons to show the friendliness
         - Please answer in VIETNAMESE. Double check the spelling to see if it is correct
-        - ${embedSourcesInLLMResponse ? 'Return the sources used in the response with iterable numbered markdown style annotations.' : ''}`
+        - ${embedSourcesInLLMResponse ? 'Return the sources used in the response with iterable numbered style.' : ''}`
       },
       {
         role: 'user',
@@ -351,23 +360,45 @@ export async function getAnswerResearchAssistant(datas) {
         content:  '(Vietnamese answer)'
       }
     ],
-    stream: true,
     model: 'mixtral-8x7b-32768'
-  })
+  }
+
+  if (type === 'STREAMING') dataChatchatCompletion.stream = true
+  const chatCompletion = await openai.chat.completions.create(dataChatchatCompletion)
+
   console.log('11. Sent content to Groq for chat completion.')
-  let responseTotal = ''
-  console.log('12. Streaming response from Groq... \n')
-  for await (const chunk of chatCompletion) {
-    if (chunk.choices[0].delta && chunk.choices[0].finish_reason !== 'stop') {
-      // process.stdout.write(chunk.choices[0].delta.content);
-      responseTotal += chunk.choices[0].delta.content
-    } else {
-      let responseObj = {}
-      returnSources ? responseObj.sources = sources : null
-      responseObj.answer = responseTotal
-      returnFollowUpQuestions ? responseObj.followUpQuestions = await followUpQuestions(sources) : null
-      console.log(`\n\n13. Generated follow-up questions:  ${JSON.stringify(responseObj.followUpQuestions)}`)
-      return responseObj
+  let messageReturn = ''
+  console.log('12. Streaming (or Not Streaming) response from Groq... \n')
+
+  if (type === 'STREAMING') {
+    // mỗi 100 mili giây nó trả về một lần đến khi kết thúc
+    const intervalId = setInterval(() => {
+      console.log('🚀 ~ file: ChatGptProvider.js:65 ~ io.to ~ messageReturn:', messageReturn)
+      io.to(socketIdMap[sessionId]).emit('s_create_answer', {
+        messageReturn: messageReturn
+      })
+    }, 100)
+    for await (const chunk of chatCompletion) {
+      if (chunk.choices[0].delta && chunk.choices[0].finish_reason !== 'stop') {
+        process.stdout.write(chunk.choices[0].delta.content)
+        messageReturn += chunk.choices[0].delta.content
+      } else {
+        let responseObj = {}
+        console.log(`\n\n13. Generated follow-up questions:  ${JSON.stringify(responseObj.followUpQuestions)}`)
+        responseObj.followUpQuestions = await followUpQuestions(sources)
+        responseObj.messageReturn = messageReturn
+        io.to(socketIdMap[sessionId]).emit('s_create_answer', {
+          isOver: 'DONE',
+          responseObj: responseObj
+        })
+        clearInterval(intervalId)
+        // console.log('🚀 ~ forawait ~ messageReturn:', messageReturn)
+
+        return messageReturn
+      }
     }
+  } else {
+    console.log('🚀 ~ getAnswerNormalAssistant ~ chatCompletion:', chatCompletion.choices[0]?.message?.content)
+    return chatCompletion.choices[0]?.message?.content
   }
 }
