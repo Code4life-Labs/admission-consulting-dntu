@@ -25,7 +25,6 @@
     "@langchain/openai": "^0.0.24",
     "@supabase/supabase-js": "^2.40.0",
     "@upstash/redis": "^1.29.0",
-    "axios": "^1.6.8",
     "cheerio": "^1.0.0-rc.12",
     "cloudinary": "^1.41.0",
     "cors": "^2.8.5",
@@ -42,6 +41,7 @@
     "pdf-lib": "^1.17.1",
     "pdf-parse": "^1.1.1",
     "rimraf": "^5.0.5",
+    "socket.io": "^4.7.5",
     "sqlite3": "^5.1.7",
     "typeorm": "^0.3.20",
     "zod": "^3.22.4"

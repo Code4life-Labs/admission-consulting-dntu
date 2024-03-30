@@ -7,40 +7,30 @@ import { getStandaloneQuestion } from './standalone_question'
 import { getAnswerDocumentAssistant } from './document_assistant'
 
 
-export const getAnswerChatBot = async (sessionId, question, user_name) => {
+export const getAnswerChatBot = async (dataGetAnswer) => {
   // simplify question output
-  const classification = await getClassificationResult(sessionId, question)
-  console.log('🚀 ~ getAnswerChatBot ~ classification:', classification)
+  const classification = await getClassificationResult(dataGetAnswer.sessionId, dataGetAnswer.question)
   let response = ''
   if (classification === 'ANSWER_NORMAL') {
     console.log('🤖 Agent: ', 'I\'m looking to in ANSWER NORMAL....')
-    const answerNormalAssistant = await getAnswerNormalAssistant(sessionId, question, user_name)
+    const answerNormalAssistant = await getAnswerNormalAssistant(dataGetAnswer)
     response = answerNormalAssistant
   } else {
     // create a standaone question based on chat history and question
-    const standaloneQuestion = await getStandaloneQuestion(sessionId, question)
+    const standaloneQuestion = await getStandaloneQuestion(dataGetAnswer.sessionId, dataGetAnswer.question)
     console.log('🤖 Agent: Created standalone question => ', standaloneQuestion)
 
     // if (classification === 'SEARCH_INTERNET') {
     console.log('🤖 Agent: ', 'I\'m looking to DOCUMENTS DNTU....')
-    const answerDocumentAssistant = await getAnswerDocumentAssistant(sessionId, standaloneQuestion, question, user_name)
+
+    dataGetAnswer.standaloneQuestion = standaloneQuestion
+
+    const answerDocumentAssistant = await getAnswerDocumentAssistant(dataGetAnswer)
     if (answerDocumentAssistant === 'NO_ANSWER') {
-      const datas = {
-        'sessionId': sessionId,
-        'originMessage': question,
-        'user_name': user_name,
-        'message': standaloneQuestion,
-        'returnSources': true,
-        'returnFollowUpQuestions': true,
-        'embedSourcesInLLMResponse': true,
-        'textChunkSize': 1000,
-        'textChunkOverlap': 400,
-        'numberOfSimilarityResults': 4,
-        'numberOfPagesToScan': 3
-      }
+
       console.log('🤖 Agent: ', 'I\'m looking to INTERNET....')
-      const answerResearchAssistant = await getAnswerResearchAssistant(datas)
-      response = answerResearchAssistant.answer
+      const answerResearchAssistant = await getAnswerResearchAssistant(dataGetAnswer)
+      response = answerResearchAssistant
     } else response = answerDocumentAssistant
     // }
     // else if (classification === 'SEARCH_JOB') {
@@ -52,7 +42,7 @@ export const getAnswerChatBot = async (sessionId, question, user_name) => {
   }
   console.log('🤖 Agent: ', response)
   // Save question and response answers
-  await addChatHistory(sessionId, question, response)
+  await addChatHistory(dataGetAnswer.sessionId, dataGetAnswer.question, response)
 
   return response
 }
