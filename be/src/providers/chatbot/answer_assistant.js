@@ -86,7 +86,7 @@ export const getAnswerNormalAssistant = async (dataGetAnswer) => {
       io.to(socketIdMap[sessionId]).emit('s_create_answer', {
         responseObj: {
           content: messageReturn,
-          type: 'anwser'
+          type: 'answer'
         }
       })
     }, 100)
@@ -99,7 +99,7 @@ export const getAnswerNormalAssistant = async (dataGetAnswer) => {
           isOver: 'DONE',
           responseObj: {
             content: messageReturn,
-            type: 'anwser'
+            type: 'answer'
           }
         })
         clearInterval(intervalId)

@@ -68,7 +68,7 @@ export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
       io.to(socketIdMap[sessionId]).emit('s_create_answer', {
         responseObj: {
           content: messageReturn,
-          type: 'anwser'
+          type: 'answer'
         }
       })
     }, 100)
@@ -80,7 +80,7 @@ export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
         io.to(socketIdMap[sessionId]).emit('s_create_answer', {
           responseObj: {
             content: messageReturn,
-            type: 'anwser'
+            type: 'answer'
           }
         })
         clearInterval(intervalId)

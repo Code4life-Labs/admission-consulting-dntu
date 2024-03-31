@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
-import { API_ROOT } from "src/utils/constant";
+import { getSocketRoot } from "src/utils/constant";
 
 /**
  * Event sẽ có hai loại:
@@ -33,7 +33,7 @@ let socket;
  * @returns {Socket}
  */
 export function getSocket() {
-  if(!socket) socket = io(API_ROOT.DEV);
+  if(!socket) socket = io(getSocketRoot());
   return socket;
 }
 
