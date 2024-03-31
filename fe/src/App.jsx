@@ -11,8 +11,24 @@ import { DialogNames } from './components/dialog/dialog_entries';
 
 // Import styles
 import "./App.css";
+import { getSocket } from './socket';
+import React from 'react';
+import { StringUtils } from './utils/string';
+import { LocalStorageUtils } from './utils/localstorage';
+
+export const socketIoInstance = getSocket()
 
 function App() {
+
+  React.useEffect(() => {
+    // tạo ngẫu nhiên ID
+		let userId =  StringUtils.getRandomID();
+    console.log("🚀 ~ React.useEffect ~ userId:", userId)
+    // có thể lưu vào localStored để include case user bấm nhầm nút close trong TunangnModal
+    LocalStorageUtils.setItem("SESSION_USER_ID", userId)
+
+		socketIoInstance.emit('c_user_login', userId)
+	}, [])
   return (
     <>
       <HomePage />

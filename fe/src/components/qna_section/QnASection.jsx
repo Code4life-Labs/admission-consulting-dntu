@@ -10,13 +10,15 @@ import { useStateWESSFns } from "src/hooks/useStateWESSFns";
 import Button from "../button/Button";
 
 // Import from utils
-import { OtherUtils } from 'src/utils/other';
+// import { OtherUtils } from 'src/utils/other';
 
 // Import data from assets
 import qnaSectionData from "src/assets/data/qnasection.json"
 
 // Import from features
 import createQnARenderer from './features/createQnARenderer';
+import { socketIoInstance } from 'src/App';
+import { LocalStorageUtils } from 'src/utils/localstorage';
 
 /**
  * Use this function to render introduction text of DNTU AI
@@ -24,8 +26,8 @@ import createQnARenderer from './features/createQnARenderer';
  */
 function Introduction() {
   return (
-    <div className="w-3/4 mx-auto mb-6">
-      <img src="/Logo_DNTU.png" className="w-16 xl:w-24 sm:w-20 mb-4 mx-auto" />
+    <div className="w-3/5 mx-auto mb-6">
+      <img src="/Logo_DNTU.png" className="w-16 xl:w-20 sm:w-20 mb-4 mx-auto" />
       <p className="text-justify">
         {
           qnaSectionData.introduction.text
@@ -40,6 +42,7 @@ function Introduction() {
  * @returns 
  */
 export default function QnASection() {
+
   const [qnaState, qnaStateFns] = useStateWESSFns(
     {
       qna: [],
@@ -110,11 +113,20 @@ export default function QnASection() {
     botAudio: null
   });
 
-  const renderQnA = React.useMemo(() => createQnARenderer({
-    updateAudioURL: qnaStateFns.updateAudioURL,
-    playAudio: elementRefs.current.botAudio.play,
-    pauseAudio: elementRefs.current.botAudio.pause
-  }), [elementRefs.current.botAudio, qnaStateFns.updateAudioURL]);
+  const renderQnA = React.useMemo(() => createQnARenderer(
+    // {
+    //   updateAudioURL: qnaStateFns.updateAudioURL,
+    //   playAudio: elementRefs.current.botAudio.play,
+    //   pauseAudio: elementRefs.current.botAudio.pause
+    // }
+  ), [elementRefs.current.botAudio, qnaStateFns.updateAudioURL]);
+
+  // Khởi động
+  // React.useEffect(() => {
+  //   socketIoInstance.on('s_create_answer', (dataReturn) => {
+  //     // handleListenCreateAnswer(dataReturn)
+  //   })
+  // }, [])
 
   // Tracking length of qna
   React.useEffect(function() {
@@ -122,21 +134,31 @@ export default function QnASection() {
 
     let N = qnaState.qna.length;
     let lastMessage = qnaState.qna[N - 1];
+    console.log("🚀 ~ React.useEffect ~ lastMessage:", lastMessage)
 
     if(lastMessage.type === "question") {
       qnaStateFns.appendLoadingAnswer();
       qnaStateFns.updateIsResponding(true);
+      
+      const requestEmit = {
+        sessionId: LocalStorageUtils.getItem("SESSION_USER_ID"),
+        question: lastMessage.content, 
+        user_name: ""
+      } 
+      console.log("🚀 ~ React.useEffect ~ requestEmit:", requestEmit)
 
-      // Request a fake answer
-      OtherUtils.wait(function() {
-        return qnaSectionData.responses;
-      }, 1000).then(answer => {
-        // Update suspend message
-        qnaStateFns.updateResponse(answer);
-        qnaStateFns.updateIsResponding(false);
-      })
+      socketIoInstance.emit('c_create_answer', requestEmit)
+      // // Request a fake answer
+      // OtherUtils.wait(function() {
+      //   return qnaSectionData.responses;
+      // }, 1000).then(answer => {
+      //   console.log("🚀 ~ OtherUtils.wait ~ answer:", answer)
+      //   // Update suspend message
+      //   qnaStateFns.updateResponse(answer);
+      //   qnaStateFns.updateIsResponding(false);
+      // })
     }
-  }, [qnaState.qna.length]);
+  }, [qnaState.qna, qnaState.qna.length, qnaStateFns]);
 
   React.useEffect(function() {
     // Play audio
@@ -175,6 +197,7 @@ export default function QnASection() {
           hasPadding={false}
           extendClassName="p-2"
           color="rose-800" hoverColor="rose-700" activeColor="rose-950"
+          disabled={qnaState.isResponsding}
           onClick={() => {
             let text = elementRefs.current.questionInput.value;
             qnaStateFns.appendMessage(text, "question");

@@ -1,3 +1,5 @@
+import { NumberUtils } from "../number";
+
 /**
  * Use to concatenate string. Pass a string to first parameter and pass other strings,
  * functions or just a string to second parameter.
@@ -35,7 +37,29 @@ function convertToJSX(content) {
   return content;
 }
 
+/**
+ * Dùng để tạo random id
+ */
+const getRandomID = (function() {
+  let alphabet = "abcdefghijklmnopqrstuvw0123456789xyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let alphabetN = alphabet.length;
+  return function(prefix = "dntrvel", numParts = 3, numCharsInPart = 7) {
+    let id = prefix + "-";
+    for(let i = 0; i < numParts; i++) {
+      for(let j = 0; j < numCharsInPart; j++) {
+        let r = NumberUtils.getRandom(alphabetN - 1, 0);
+        let letter = alphabet[r];
+        id += letter;
+      }
+      id += "-";
+    }
+
+    return id.substring(0, id.length - 1);
+  }
+})();
+
 export const StringUtils = {
   concate,
-  convertToJSX
+  convertToJSX,
+  getRandomID
 };

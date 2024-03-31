@@ -56,7 +56,7 @@ function togglePropertyState(o, propName, fn) {
 function fromContentToJSXElement(content) {
   return content.map(text => {
     if(!text.text)
-      return React.createElement(
+      return React.creatteElement(
         text.element,
         {
           ...text.attrs,

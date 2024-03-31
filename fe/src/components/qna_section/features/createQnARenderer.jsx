@@ -10,7 +10,9 @@ import Ref from '../Ref'
  * Use this function to render a message or response to answer, question, ref, ...
  * @returns 
  */
-export default function createQnARenderer({ updateAudioURL, play, pause }) {
+export default function createQnARenderer(
+  // { updateAudioURL, play, pause }
+) {
   return function renderQnA(response, index) {
     if(response.isLoading) {
       return (
@@ -34,9 +36,9 @@ export default function createQnARenderer({ updateAudioURL, play, pause }) {
       return (
         <Anwser
           content={response.content} key={index}
-          updateAudioURL={updateAudioURL}
-          play={play}
-          pause={pause}
+          // updateAudioURL={updateAudioURL}
+          // play={play}
+          // pause={pause}
         />
       )
     }
