@@ -313,6 +313,7 @@ export async function getAnswerResearchAssistant(dataGetAnswer) {
     ])
     // trả về client
     io.to(socketIdMap[sessionId]).emit('s_create_relevant_info', {
+      type: 'related_content',
       imagesResult,
       sourcesResult,
       videosResult

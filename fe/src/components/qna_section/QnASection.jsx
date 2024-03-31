@@ -75,12 +75,19 @@ export default function QnASection() {
          */
         updateResponse: function(response) {
           changeState("qna", function(data) {
-              if (data.length !== 0) data.pop();
+              // if (data?.length && data[data?.length - 1] && data[data?.length - 1].type !== 'related_content') data.pop();
+              data.pop();
               const newState = [...data, ...response]
               return newState
           })
         },
-
+        updateResponseRelevantSrc: function(response) {
+          changeState("qna", function(data) {
+            // data.pop();
+              const newState = [...data, ...response]
+              return newState
+          })
+        },
         /**
          * Use this function to update `isResponding` state.
          * @param {bool} state 
@@ -127,11 +134,19 @@ export default function QnASection() {
     let X = 0
     socketIoInstance.on('s_create_answer', (dataReturn) => {
       if (dataReturn.responseObj.content.trim() !== "" && X === 0) {
-        qnaStateFns.updateIsResponding(false);
+        // qnaStateFns.updateIsResponding(false);
         X++;
       }
       handleListenCreateAnswer(dataReturn)
     })
+
+    socketIoInstance.on('s_create_relevant_info', (dataReturn) => {
+      console.log("🚀 ~ socketIoInstance.on ~ s_create_relevant_info:", dataReturn)
+      socketIoInstance.removeAllListeners('s_create_relevant_info')
+      qnaStateFns.updateIsResponding(false);
+      qnaStateFns.updateResponseRelevantSrc([dataReturn]);
+    })
+
 
     let N = qnaState.qna.length;
     let lastMessage = qnaState.qna[N - 1];

@@ -2,7 +2,7 @@ import { ChatOpenAI } from '@langchain/openai'
 import { ChatGroq } from '@langchain/groq'
 
 export const getModelOpenAI = () => {
-  return new ChatOpenAI({ modelName: 'gpt-3.5-turbo-1106', temperature: 0 })
+  return new ChatOpenAI({ modelName: 'gpt-3.5-turbo-0125', temperature: 0 })
 }
 
 
