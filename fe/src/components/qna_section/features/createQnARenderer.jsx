@@ -4,15 +4,15 @@
 import Anwser from '../Anwser'
 import Question from '../Question'
 import QnAMessage from '../QnAMessage'
+import ImagesRef from '../ImagesRef'
+import VideosRef from '../VideosRef'
 import Ref from '../Ref'
 
 /**
  * Use this function to render a message or response to answer, question, ref, ...
  * @returns 
  */
-export default function createQnARenderer(
-  // { updateAudioURL, play, pause }
-) {
+export default function createQnARenderer({ updateAudioURL, playAudio, pauseAudio, audioElement }) {
   return function renderQnA(response, index) {
     if(response.isLoading) {
       return (
@@ -32,19 +32,26 @@ export default function createQnARenderer(
       )
     }
 
-    if(response.type === "anwser") {
+    if(response.type === "answer") {
       return (
         <Anwser
+          // t={index}
           content={response.content} key={index}
-          // updateAudioURL={updateAudioURL}
-          // play={play}
-          // pause={pause}
+          updateAudioURL={updateAudioURL}
+          playAudio={playAudio}
+          pauseAudio={pauseAudio}
+          audioElement={audioElement}
         />
       )
     }
 
     // type == "related_content"
-    let result = [<Ref key={index} sources={response.sourcesResult} />];
+    if(!response.type == "related_content") return;
+    let result = [];
+
+    if(response.sourcesResult) result.push(<Ref key={"ref" + index} sources={response.sourcesResult} />);
+    if(response.imagesResult) result.push(<ImagesRef key={"images" + index} images={response.imagesResult} />);
+    if(response.videosResult) result.push(<VideosRef key={"videos" + index} videos={response.videosResult} />);
 
     return result;
   }

@@ -1,5 +1,5 @@
 // Import from utils
-const API_ROOT = import.meta.env.VITE_API_ROOT;
+import { getAPIRoot } from "src/utils/constant";
 
 const base = "/fpt";
 
@@ -9,7 +9,7 @@ const base = "/fpt";
  * @returns 
  */
 export async function getAnswerAsync(text, senderName) {
-  let url = API_ROOT + base + "/get-answer-ai";
+  let url = getAPIRoot() + base + "/get-answer-ai";
   let response = await fetch(url, {
     method: "POST",
     headers: {

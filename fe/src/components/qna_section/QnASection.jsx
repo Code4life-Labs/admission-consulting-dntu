@@ -3,9 +3,6 @@ import React from 'react'
 // Import from hooks
 import { useStateWESSFns } from "src/hooks/useStateWESSFns";
 
-// Import from apis
-// import { ChatBotAPI } from 'src/apis/chatbot';
-
 // Import from components
 import Button from "../button/Button";
 
@@ -112,14 +109,15 @@ export default function QnASection() {
     botAudio: null
   });
 
-  const renderQnA = React.useMemo(() => createQnARenderer(
-    // {
-    //   updateAudioURL: qnaStateFns.updateAudioURL,
-    //   playAudio: elementRefs.current.botAudio.play,
-    //   pauseAudio: elementRefs.current.botAudio.pause
-    // }
-  ), [elementRefs.current.botAudio, qnaStateFns.updateAudioURL]);
-
+  const renderQnA = React.useMemo(function() {
+    if(!elementRefs.current.botAudio) return undefined;
+    return createQnARenderer({
+      updateAudioURL: qnaStateFns.updateAudioURL,
+      playAudio: elementRefs.current.botAudio.play.bind(elementRefs.current.botAudio),
+      pauseAudio: elementRefs.current.botAudio.pause.bind(elementRefs.current.botAudio),
+      audioElement: elementRefs.current.botAudio
+    });
+  }, [elementRefs.current.botAudio, qnaStateFns.updateAudioURL]);
 
   // Tracking length of qna
   React.useEffect(function() {
@@ -203,7 +201,7 @@ export default function QnASection() {
       <div className="relative px-2 flex flex-1 flex-col h-3/4 w-full xl:px-11">
         <div className="h-full">
           {
-            qnaState.qna.length === 0
+            qnaState.qna.length === 0 || !renderQnA
               ? (
                 <Introduction />
               ) : (

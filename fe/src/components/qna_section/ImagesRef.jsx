@@ -1,11 +1,14 @@
-// import React from 'react'
+import React from 'react'
+
+// Import from components
+import Button from '../button/Button';
 
 // Import local components
 import QnAMessage from "./QnAMessage"
 
 /**
  * @typedef ImagesRefPropsType
- * @property {Array<{content: string, url: string, type: string}>} images
+ * @property {Array<{link: string}>} images
  */
 
 /**
@@ -14,14 +17,38 @@ import QnAMessage from "./QnAMessage"
  * @returns 
  */
 export default function ImagesRef(props) {
+  const [isLoadedMore, setIsLoadedMore] = React.useState(false);
+
+  const N = isLoadedMore ? props.images.length : 4;
+  const images = React.useMemo(() => {
+    let r = [];
+    for(let i = 0; i < N; i++) {
+      r.push(<img className="w-[200px] h-[200px] m-3 object-cover rounded-xl" key={i} src={props.images[i].link} />)
+    }
+    return r;
+  }, [N]);
+
   return (
     <QnAMessage avatar="/Logo_DNTU.png">
-      <div className="rounded-xl ml-3 p-1 xl:ml-6 xl:p-3 rounded border-2">
-        <p className="mb-4 font-bold">Nguồn tham khảo:</p>
+      <div className="w-full rounded-xl ml-3 p-1 xl:ml-6 xl:p-3 rounded border-2">
+        <p className="mb-4 font-bold">Những hình ảnh liên quan:</p>
+        <div className="flex flex-wrap justify-center">
+          {
+            images
+          }
+        </div>
         {
-          props.images.map((image, index) => (
-            <img key={index} src={image.url} />
-          ))
+          !isLoadedMore && (
+            <div className="w-full">
+              <Button
+                onClick={() => setIsLoadedMore(true)}
+                extendClassName="block font-bold text-white mx-auto"
+                color="rose-800" hoverColor="rose-700" activeColor="rose-950"
+              >
+                Xem thêm
+              </Button>
+            </div>
+          )
         }
       </div>
     </QnAMessage>

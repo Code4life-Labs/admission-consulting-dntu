@@ -1,5 +1,5 @@
 // Import from utils
-const API_ROOT = import.meta.env.VITE_API_ROOT;
+import { getAPIRoot } from "src/utils/constant";
 
 /**
  * Use this function to get speech by `text`.
@@ -7,10 +7,23 @@ const API_ROOT = import.meta.env.VITE_API_ROOT;
  * @returns 
  */
 export async function getSpeechAsync(text) {
-  let url = API_ROOT + "/speech" + "?text=" + text;
-  return fetch(url);
+  let url = getAPIRoot() + "/speech/openai";
+  let response = await fetch(url, {
+    method: "POST",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      text: text
+    })
+  });
+  if(!response.ok) throw new Error(response.json());
+  return response.arrayBuffer();
 }
 
 export const SpeechAPI = {
-  getSpeechAsync
+  OpenAI: {
+    getSpeechAsync
+  }
 }

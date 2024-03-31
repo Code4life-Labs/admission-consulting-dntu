@@ -5,7 +5,7 @@ import QnAMessage from "./QnAMessage"
 
 /**
  * @typedef RefPropsType
- * @property {Array<{content: string, url: string, type: string}>} sources
+ * @property {Array<{title: string, link: string, favicon: string}>} sources
  */
 
 /**
@@ -19,10 +19,10 @@ export default function Ref(props) {
       <div className="rounded-xl ml-3 p-1 xl:ml-6 xl:p-3 rounded border-2">
         <p className="mb-4 font-bold">Nguồn tham khảo:</p>
         {
-          props.sources.map((src, index) => (
-            <p key={index}>
-              {`[${index + 1}]: `}
-              <a className="ml-2 underline decoration-1 text-cyan-600 hover:text-cyan-800" href={src.url}>{src.content}</a>
+          props.sources.map((source, index) => (
+            <p className="flex items-center mb-2" key={index}>
+              <img className="w-4 h-4 xl:w-6 xl:h-6" src={source.favicon} />
+              <a className="ml-5 underline decoration-1 text-cyan-600 hover:text-cyan-800" href={source.link}>{source.title}</a>
             </p>
           ))
         }

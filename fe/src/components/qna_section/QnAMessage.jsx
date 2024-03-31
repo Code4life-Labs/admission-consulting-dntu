@@ -16,7 +16,7 @@ export default function QnAMessage(props) {
       {
         props.avatar
           ? (
-            <img src={props.avatar} className="shrink-0 w-12 h-12 object-contain" />
+            <img src={props.avatar} className="shrink-0 w-6 h-6 xl:w-12 xl:h-12 object-contain" />
           ) :
           (
             <span className="material-symbols-outlined text-2xl xl:text-5xl text-rose-800">account_circle</span>
