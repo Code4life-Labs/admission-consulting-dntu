@@ -1,5 +1,4 @@
 import { getClassificationResult } from './classification'
-import { getAnswerDatabaseAssistant } from './database_assistant'
 import { addChatHistory } from './utils/upstash_chat_history'
 import { getAnswerNormalAssistant } from './answer_assistant'
 import { getAnswerResearchAssistant } from './research_assistant'
