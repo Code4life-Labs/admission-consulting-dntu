@@ -31,7 +31,9 @@ const bootServer = () => {
   // Phuong: sử dụng express
   const app = express()
 
-  // Phuong: cấu hình cho api cho client app user
+  app.use(express.json())
+  app.use(express.urlencoded({ extended: true }))
+
   app.use('/v1', apiV1)
 
   let socketIdMap = {}
