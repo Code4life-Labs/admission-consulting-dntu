@@ -18,7 +18,6 @@ import qnaSectionData from "src/assets/data/qnasection.json"
 // Import from features
 import createQnARenderer from './features/createQnARenderer';
 import { socketIoInstance } from 'src/App';
-import { LocalStorageUtils } from 'src/utils/localstorage';
 
 /**
  * Use this function to render introduction text of DNTU AI
@@ -79,9 +78,9 @@ export default function QnASection() {
          */
         updateResponse: function(response) {
           changeState("qna", function(data) {
-            // Remove last message.
-            data.pop();
-            return [...data, ...response]
+              if (data.length !== 0) data.pop();
+              const newState = [...data, ...response]
+              return newState
           })
         },
 
@@ -121,16 +120,20 @@ export default function QnASection() {
     // }
   ), [elementRefs.current.botAudio, qnaStateFns.updateAudioURL]);
 
-  // Khởi động
-  // React.useEffect(() => {
-  //   socketIoInstance.on('s_create_answer', (dataReturn) => {
-  //     // handleListenCreateAnswer(dataReturn)
-  //   })
-  // }, [])
 
   // Tracking length of qna
   React.useEffect(function() {
     if(qnaState.qna.length === 0) return;
+
+    // lắng nghe sự kiện mỗi lần có câu hỏi mới
+    let X = 0
+    socketIoInstance.on('s_create_answer', (dataReturn) => {
+      if (dataReturn.responseObj.content.trim() !== "" && X === 0) {
+        qnaStateFns.updateIsResponding(false);
+        X++;
+      }
+      handleListenCreateAnswer(dataReturn)
+    })
 
     let N = qnaState.qna.length;
     let lastMessage = qnaState.qna[N - 1];
@@ -141,12 +144,14 @@ export default function QnASection() {
       qnaStateFns.updateIsResponding(true);
       
       const requestEmit = {
-        sessionId: LocalStorageUtils.getItem("SESSION_USER_ID"),
+        sessionId: localStorage.getItem("SESSION_USER_ID"),
         question: lastMessage.content, 
-        user_name: ""
+        user_name: "" // username có thể lấy khi nhập dùng mở ô chatbot lên đầu tiên và mình sẽ hỏi tên sau đó lưu vào local stored lần sau thì không hỏi nữa
       } 
       console.log("🚀 ~ React.useEffect ~ requestEmit:", requestEmit)
+      console.log("🚀 ~ React.useEffect ~qnaState.qna:", qnaState.qna)
 
+      // emit sự kiện
       socketIoInstance.emit('c_create_answer', requestEmit)
       // // Request a fake answer
       // OtherUtils.wait(function() {
@@ -154,7 +159,19 @@ export default function QnASection() {
       // }, 1000).then(answer => {
       //   console.log("🚀 ~ OtherUtils.wait ~ answer:", answer)
       //   // Update suspend message
-      //   qnaStateFns.updateResponse(answer);
+      //   qnaStateFns.updateResponse([
+      //     {
+      //       type: "anwser",
+      //       content: "ừ"
+      //     }
+      //   ]);
+
+      //   qnaStateFns.updateResponse([
+      //     {
+      //       type: "anwser",
+      //       content: "ừ nha"
+      //     }
+      //   ]);
       //   qnaStateFns.updateIsResponding(false);
       // })
     }
@@ -167,6 +184,19 @@ export default function QnASection() {
     }
   }, [qnaState.audioURL]);
 
+
+  const handleListenCreateAnswer = (dataReturn) => {
+    // đầu tiên sẽ update state response
+      if (dataReturn.isOver && dataReturn.isOver === 'DONE' && dataReturn.responseObj) {
+        console.log("🚀 ~ handleListenCreateAnswer ~ dataReturn.allText:", [dataReturn.responseObj])
+        qnaStateFns.updateResponse([dataReturn.responseObj]);
+        // cuối cùng sẽ ngắt kết nối
+        socketIoInstance.removeAllListeners('s_create_answer')
+      } else {
+        // console.log("🚀 ~ handleListenCreateAnswer ~ dataReturn.messageReturn:", [dataReturn.responseObj])
+        qnaStateFns.updateResponse([dataReturn.responseObj]);
+      }
+  }
   return (
     <section className="flex flex-col mt-4">
       {/* Q and A will appear here */}
@@ -192,6 +222,14 @@ export default function QnASection() {
           className="w-full bg-gray-100 focus:ring-rose-800 focus:outline-none focus:ring rounded-lg border-2 p-2 px-4 me-3"
           disabled={qnaState.isResponsding}
           placeholder="Bạn có thể nhập câu hỏi ở đây..."
+          onKeyDown={(e) => {
+            if (e.key === "Enter"){
+              let text = elementRefs.current.questionInput.value;
+              qnaStateFns.appendMessage(text, "question");
+              elementRefs.current.questionInput.value = "";
+            }
+          }
+        }
         />
         <Button
           hasPadding={false}

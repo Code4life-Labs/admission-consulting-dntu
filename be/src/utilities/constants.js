@@ -17,7 +17,7 @@ export const WHITELIST_DOMAINS = [
   env.CLIENT
 ]
 
-let websiteDomain = 'http://localhost:3000'
+let websiteDomain = 'http://localhost:5173'
 if (env.BUILD_MODE === 'production') {
   websiteDomain = 'https://dong-nai-travel-admin.vercel.app'
 }

@@ -8,6 +8,7 @@ import { OtherUtils } from 'src/utils/other';
 
 // Import local components
 import QnAMessage from './QnAMessage'
+import React from 'react';
 
 /**
  * @typedef AnswerPropsType
@@ -137,9 +138,14 @@ export default function Anwser(props) {
   return (
     <QnAMessage avatar="/Logo_DNTU.png">
       <>
-        <div className="rounded-xl ml-3 p-1 xl:ml-6 xl:p-3 rounded border-2">
-          {props.content}
-        </div>
+      <div className="rounded-xl ml-3 p-1 xl:ml-6 xl:p-3 rounded border-2">
+        {props.content.split('\n').map((line, index) => (
+          <React.Fragment key={index}>
+            {line}
+            <br />
+          </React.Fragment>
+        ))}
+      </div>
         <div className="flex items-center ml-3 p-1 xl:ml-6 xl:p-3">
           <SpeechControlBtn
             speechRequestStatus={answerState.speechRequestStatus}

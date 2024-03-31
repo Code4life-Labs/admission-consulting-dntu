@@ -4,6 +4,7 @@ export const createSocketIdMap = (socket, socketIdMap) => {
 
     // lưu socket ID vào biến socketIdMap
     socketIdMap[sessionId] = socket.id
+    console.log('🚀 ~ socket.on ~ socketIdMap:', socketIdMap)
     return socketIdMap
   })
 }

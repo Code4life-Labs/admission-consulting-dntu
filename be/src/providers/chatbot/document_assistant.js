@@ -64,9 +64,12 @@ export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
   if (type === 'STREAMING') {
     // mỗi 100 mili giây nó trả về một lần đến khi kết thúc
     const intervalId = setInterval(() => {
-      console.log('🚀 ~ file: ChatGptProvider.js:65 ~ io.to ~ messageReturn:', messageReturn)
+
       io.to(socketIdMap[sessionId]).emit('s_create_answer', {
-        messageReturn: messageReturn
+        responseObj: {
+          content: messageReturn,
+          type: 'anwser'
+        }
       })
     }, 100)
     for await (const chunk of chatCompletion) {
@@ -75,8 +78,10 @@ export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
         messageReturn += chunk.choices[0].delta.content
       } else {
         io.to(socketIdMap[sessionId]).emit('s_create_answer', {
-          isOver: 'DONE',
-          allText: messageReturn
+          responseObj: {
+            content: messageReturn,
+            type: 'anwser'
+          }
         })
         clearInterval(intervalId)
         // console.log('🚀 ~ forawait ~ messageReturn:', messageReturn)
