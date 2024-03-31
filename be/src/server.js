@@ -48,7 +48,7 @@ const bootServer = () => {
   const server = http.createServer(app)
   const io = socketIo(server, {
     cors: {
-      origin: 'http://localhost:5173',
+      origin: env.BUILD_MODE === 'dev' ? 'http://localhost:5173' : 'https://admission-consulting-dntu-drab.vercel.app',
       methods: ['GET', 'POST']
     }
   })
