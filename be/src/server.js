@@ -5,7 +5,7 @@ import cors from 'cors'
 import { corsOptions } from './config/cors'
 import { env } from './config/environment'
 import { connectDB } from './config/mongodb'
-
+import cookieParser from 'cookie-parser'
 // Import from routes
 import { apiV1 } from './routes/v1'
 import { uploadDocumentsToSupabaseCloud, uploadMultiWebsitesToSupabaseCloud, uploadWebsiteToSupabaseCloud } from './providers/chatbot/upload_documents'
@@ -30,23 +30,41 @@ connectDB()
 const bootServer = () => {
   // Phuong: sử dụng express
   const app = express()
+  app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store')
+    next()
+  })
 
+  app.use(cookieParser())
+
+  app.use(cors({ origin: '*' }))
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
 
-  app.use('/v1', cors(corsOptions), apiV1)
+  app.use('/v1', apiV1)
 
   let socketIdMap = {}
 
   const server = http.createServer(app)
-  const io = socketIo(server)
+  const io = socketIo(server, {
+    cors: {
+      origin: 'http://localhost:5173',
+      methods: ['GET', 'POST']
+    }
+  })
   io.on('connection', (socket) => {
     // cho id tham gia vào mạng
     socket.join(socket.id)
 
     // lắng nghe sự kiện khi người dùng nhấp vào mở ô chot góc trên bên phải màn hình
     // id sẽ được tạo ngẫu nhiên để nhận biết giữa các lần hoặc các user đang thực hiện
-    socketIdMap = createSocketIdMap(socket, socketIdMap)
+    socket.on('c_user_login', (accountId) => {
+      console.log('Client Connected', accountId)
+
+      // lưu socket ID của tài khoản đăng nhập vào biến socketIdMap
+      socketIdMap[accountId] = socket.id
+      console.log('🚀 ~ file: server.js:69 ~ socket.on ~ socketIdMap:', socketIdMap)
+    })
 
     // Hàm xử lý tạo câu trả cho user
     createAnswerFromAI(io, socket, socketIdMap)
