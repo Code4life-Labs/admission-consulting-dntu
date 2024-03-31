@@ -18,15 +18,22 @@ import { createSocketIdMap } from './sockets/userSocket'
 import { createAnswerFromAI } from './sockets/answerSocket'
 
 
-const app = express()
+connectDB()
+  .then(() => console.log('Connected successfully to database server!'))
+  .then(() => bootServer())
+  .catch(error => {
+    console.error(error)
+    process.exit(1)
+  })
 
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
 
-app.use('/v1', apiV1)
+const bootServer = () => {
+  // Phuong: sử dụng express
+  const app = express()
 
-connectDB().then(function() {
-  // for real-time
+  // Phuong: cấu hình cho api cho client app user
+  app.use('/v1', apiV1)
+
   let socketIdMap = {}
 
   const server = http.createServer(app)
@@ -54,7 +61,7 @@ connectDB().then(function() {
   })
 
   server.listen(process.env.PORT || env.APP_PORT, () => {
-    console.log(`Hello 
+    console.log(`Hello
     FSN, I'm running at port: ${process.env.PORT || env.APP_PORT}`)
     // getAnswerNormalAssistant({
     //   sessionId: 'dasd',
@@ -81,4 +88,4 @@ connectDB().then(function() {
     // uploadMultiWebsitesToSupabaseCloud(websiteUrls)
 
   })
-})
+}
