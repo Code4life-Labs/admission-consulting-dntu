@@ -12,8 +12,8 @@ export const HttpStatusCode = {
 export const WHITELIST_DOMAINS = [
   'http://localhost:3000',
   'http://localhost:3001',
-  'https://dong-nai-travel-admin.vercel.app',
-  'http://localhost:5173',
+  'http://localhost:5173', // từ FE call về BE
+  'https://v3-api.fpt.ai', // từ fptai call về BE
   env.CLIENT
 ]
 

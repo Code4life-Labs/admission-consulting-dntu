@@ -5405,7 +5405,7 @@ typed-array-length@^1.0.4:
     for-each "^0.3.3"
     is-typed-array "^1.1.9"
 
-typeorm@^0.3.12, typeorm@^0.3.20:
+typeorm@^0.3.12:
   version "0.3.20"
   resolved "https://registry.npmjs.org/typeorm/-/typeorm-0.3.20.tgz"
   integrity sha512-sJ0T08dV5eoZroaq9uPKBoNcGslHBR4E4y+EBHs//SiGbblGe7IeduP/IH4ddCcj0qp3PHwDwGnuvqEAnKlq/Q==

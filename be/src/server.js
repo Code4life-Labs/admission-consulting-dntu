@@ -34,7 +34,7 @@ const bootServer = () => {
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
 
-  app.use('/v1', apiV1)
+  app.use('/v1', cors(corsOptions), apiV1)
 
   let socketIdMap = {}
 

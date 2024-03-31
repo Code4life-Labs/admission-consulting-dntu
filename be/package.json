@@ -43,7 +43,6 @@
     "rimraf": "^5.0.5",
     "socket.io": "^4.7.5",
     "sqlite3": "^5.1.7",
-    "typeorm": "^0.3.20",
     "zod": "^3.22.4"
   },
   "devDependencies": {
