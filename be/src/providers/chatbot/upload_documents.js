@@ -7,22 +7,24 @@ import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
 import { SupabaseVectorStore } from 'langchain/vectorstores/supabase'
 import { TextLoader } from 'langchain/document_loaders/fs/text'
 
-export const uploadDocumentsToSupabaseCloud = async () => {
+export const uploadDocumentsToSupabaseCloud = async (directory = 'src/documents/upload', type_file = '.pdf .txt', chunkSize = 1000, chunkOverlap = 500) => {
+  const typeFileArr = type_file.split(' ')
+  const configDirectory = {}
+  typeFileArr.forEach(type => {
+    if (type === '.pdf') {
+      configDirectory['.pdf'] = (path) => new PDFLoader(path)
+    } else if (type === '.txt') {
+      configDirectory['.txt'] = (path) => new TextLoader(path)
+    }
+  })
   try {
-    const directoryLoader = new DirectoryLoader(
-      'src/documents/upload',
-      {
-        '.pdf': (path) => new PDFLoader(path),
-        '.txt': (path) => new TextLoader(path)
-      }
-    )
+    const directoryLoader = new DirectoryLoader(directory, configDirectory)
 
     const docs = await directoryLoader.load()
 
     const textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 1000,
-      // separators: ['\n\n', '\n', ], // default setting
-      chunkOverlap: 500
+      chunkSize,
+      chunkOverlap
     })
 
     const splitDocs = await textSplitter.splitDocuments(docs)
@@ -42,52 +44,29 @@ export const uploadDocumentsToSupabaseCloud = async () => {
       }
     )
     console.log('🚀 ~ uploadDocumentsToSupabaseCloud ~ result:', result)
+    return 'OK'
   } catch (err) {
     console.log(err)
   }
 }
 
-export const uploadWebsiteToSupabaseCloud = async (url) => {
+export const uploadWebsiteToSupabaseCloud = async (website, selector = 'body') => {
   try {
-    const loader = new CheerioWebBaseLoader(url, {
-      selector: 'section' // tổng hợp bài viết trên IT viec
+    const loader = new CheerioWebBaseLoader(website, {
+      selector
     })
     const docs = await loader.load()
-    console.log('🚀 ~ uploadWebsiteToSupabaseCloud ~ docs:', docs)
-
-    const textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 500,
-      // separators: ['\n\n', '\n', ' ', ''], // default setting
-      chunkOverlap: 100
-    })
-
-    const splitDocs = await textSplitter.splitDocuments(docs)
-
-    const sbApiKey = process.env.SUPABASE_API_KEY
-    const sbUrl = process.env.SUPABASE_URL_LC_CHATBOT
-    const openAIApiKey = process.env.OPENAI_API_KEY
-
-    const client = createClient(sbUrl || '', sbApiKey || '')
-
-    const result = await SupabaseVectorStore.fromDocuments(
-      splitDocs,
-      new OpenAIEmbeddings({ openAIApiKey }),
-      {
-        client,
-        tableName: 'documents'
-      }
-    )
-    console.log('🚀 ~ uploadDocumentsToSupabaseCloud ~ result:', result)
+    return docs
   } catch (err) {
     console.log(err)
   }
 }
 
-export const getWebsitesPromise = (websiteUrl) => {
+export const getWebsitesPromise = (websiteUrl, selector) => {
   return new Promise((resolve, reject) => {
     try {
       const loader = new CheerioWebBaseLoader(websiteUrl, {
-        selector: 'section' // tổng hợp bài viết trên IT viec
+        selector // tổng hợp html
       })
       resolve(loader.load())
     } catch (error) {
@@ -96,14 +75,14 @@ export const getWebsitesPromise = (websiteUrl) => {
   })
 }
 
-export const uploadMultiWebsitesToSupabaseCloud = async (websiteUrls) => {
+export const uploadMultiWebsitesToSupabaseCloud = async (websiteUrls, selector = 'body', chunkSize = 500, chunkOverlap = 100) => {
   try {
     const promiseArr = []
 
     let docsArr = []
 
     websiteUrls.forEach((url) => {
-      promiseArr.push(getWebsitesPromise(url))
+      promiseArr.push(getWebsitesPromise(url, selector))
     })
     await Promise.all(promiseArr)
       .then((results) => {
@@ -114,9 +93,8 @@ export const uploadMultiWebsitesToSupabaseCloud = async (websiteUrls) => {
       })
 
     const textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 500,
-      // separators: ['\n\n', '\n', ' ', ''], // default setting
-      chunkOverlap: 100
+      chunkSize,
+      chunkOverlap
     })
 
     const splitDocs = await textSplitter.splitDocuments(docsArr)
@@ -137,6 +115,8 @@ export const uploadMultiWebsitesToSupabaseCloud = async (websiteUrls) => {
       }
     )
     console.log('🚀 ~ uploadDocumentsToSupabaseCloud ~ result:', result)
+
+    return 'Ok'
   } catch (err) {
     console.log(err)
   }

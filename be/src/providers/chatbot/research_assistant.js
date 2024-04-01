@@ -345,7 +345,7 @@ export async function getAnswerResearchAssistant(dataGetAnswer) {
         ${user_name ? '- Please mention the user\'s name when chatting. The user\'s name is' + user_name : ''}
         - Please answer directly to the point of the question, avoid rambling
         - Don't answer in letter form, don't be too formal, try to answer normal chat text type as if you were chatting to a friend. You can use icons to show the friendliness
-        - Please answer in VIETNAMESE. Double check the spelling to see if it is correct
+        - Please answer in VIETNAMESE. Double check the spelling to see if it is correct whether you returned the answer in Vietnamese
         - ${embedSourcesInLLMResponse ? 'Return the sources used in the response with iterable numbered style.' : ''}`
       },
       {
@@ -358,7 +358,7 @@ export async function getAnswerResearchAssistant(dataGetAnswer) {
       },
       {
         role: 'assistant',
-        content:  '(Vietnamese answer)'
+        content: '(Vietnamese answer)'
       }
     ],
     model: 'mixtral-8x7b-32768'
@@ -373,19 +373,25 @@ export async function getAnswerResearchAssistant(dataGetAnswer) {
 
   if (type === 'STREAMING') {
     // mỗi 100 mili giây nó trả về một lần đến khi kết thúc
-    const intervalId = setInterval(() => {
+    // const intervalId = setInterval(() => {
 
-      io.to(socketIdMap[sessionId]).emit('s_create_answer', {
-        responseObj: {
-          content: messageReturn,
-          type: 'answer'
-        }
-      })
-    }, 100)
+    //   io.to(socketIdMap[sessionId]).emit('s_create_answer', {
+    //     responseObj: {
+    //       content: messageReturn,
+    //       type: 'answer'
+    //     }
+    //   })
+    // }, 100)
     for await (const chunk of chatCompletion) {
       if (chunk.choices[0].delta && chunk.choices[0].finish_reason !== 'stop') {
         process.stdout.write(chunk.choices[0].delta.content)
         messageReturn += chunk.choices[0].delta.content
+        io.to(socketIdMap[sessionId]).emit('s_create_answer', {
+          responseObj: {
+            content: messageReturn,
+            type: 'answer'
+          }
+        })
       } else {
         let responseObj = {}
         console.log(`\n\n13. Generated follow-up questions:  ${JSON.stringify(responseObj.followUpQuestions)}`)
@@ -398,7 +404,7 @@ export async function getAnswerResearchAssistant(dataGetAnswer) {
             type: 'answer'
           }
         })
-        clearInterval(intervalId)
+        // clearInterval(intervalId)
         // console.log('🚀 ~ forawait ~ messageReturn:', messageReturn)
 
         return messageReturn

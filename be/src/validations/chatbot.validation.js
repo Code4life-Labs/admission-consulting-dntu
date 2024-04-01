@@ -1,11 +1,12 @@
 import Joi from 'joi'
 import { HttpStatusCode } from '../utilities/constants'
 
-const getTextConsulting = async (req, res, next) => {
+const uploadMultiDocsWebsite = async (req, res, next) => {
   const condition = Joi.object({
-    question: Joi.string().required(),
-    currentUserId: Joi.string().required(),
-    languageCode: Joi.string().required()
+    websites: Joi.array(Joi.string).required(),
+    selector: Joi.string().required(),
+    chunkSize: Joi.number,
+    chunkOverlap: Joi.number
   })
   try {
     await condition.validateAsync(req.body, { abortEarly: false })
@@ -17,10 +18,12 @@ const getTextConsulting = async (req, res, next) => {
   }
 }
 
-const generateTextGPT = async (req, res, next) => {
+const uploadMultiDocs = async (req, res, next) => {
   const condition = Joi.object({
-    textInitial: Joi.string().required(),
-    textTranslated: Joi.string().required()
+    directory: Joi.string().required(),
+    type_file: Joi.string().required(),
+    chunkSize: Joi.string().required(),
+    chunkOverlap: Joi.string().required()
   })
   try {
     await condition.validateAsync(req.body, { abortEarly: false })
@@ -32,10 +35,10 @@ const generateTextGPT = async (req, res, next) => {
   }
 }
 
-const translateTextGPT = async (req, res, next) => {
+const testScratchWebsite = async (req, res, next) => {
   const condition = Joi.object({
-    text: Joi.string().required(),
-    languageConvert: Joi.string().required()
+    website: Joi.string().required(),
+    selector: Joi.string().required()
   })
   try {
     await condition.validateAsync(req.body, { abortEarly: false })
@@ -48,7 +51,7 @@ const translateTextGPT = async (req, res, next) => {
 }
 
 export const ChatbotValidation = {
-  getTextConsulting,
-  generateTextGPT,
-  translateTextGPT
+  uploadMultiDocsWebsite,
+  uploadMultiDocs,
+  testScratchWebsite
 }

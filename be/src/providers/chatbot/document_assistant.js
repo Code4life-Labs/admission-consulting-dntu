@@ -35,7 +35,7 @@ export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
         ${user_name ? '- Please mention the user\'s name when chatting. The user\'s name is' + user_name : ''}
         - Please answer directly to the point of the question, avoid rambling
         - Don't answer in letter form, don't be too formal, try to answer normal chat text type as if you were chatting to a friend. You can use icons to show the friendliness
-        - Please answer in VIETNAMESE. Double check the spelling to see if it is correct
+        - Please answer in VIETNAMESE. Double check the spelling to see if it is correct whether you returned the answer in Vietnamese
       `
       },
       {
@@ -63,19 +63,25 @@ export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
 
   if (type === 'STREAMING') {
     // mỗi 100 mili giây nó trả về một lần đến khi kết thúc
-    const intervalId = setInterval(() => {
+    // const intervalId = setInterval(() => {
 
-      io.to(socketIdMap[sessionId]).emit('s_create_answer', {
-        responseObj: {
-          content: messageReturn,
-          type: 'answer'
-        }
-      })
-    }, 100)
+    //   io.to(socketIdMap[sessionId]).emit('s_create_answer', {
+    //     responseObj: {
+    //       content: messageReturn,
+    //       type: 'answer'
+    //     }
+    //   })
+    // }, 100)
     for await (const chunk of chatCompletion) {
       if (chunk.choices[0].delta && chunk.choices[0].finish_reason !== 'stop') {
         process.stdout.write(chunk.choices[0].delta.content)
         messageReturn += chunk.choices[0].delta.content
+        io.to(socketIdMap[sessionId]).emit('s_create_answer', {
+          responseObj: {
+            content: messageReturn,
+            type: 'answer'
+          }
+        })
       } else {
         io.to(socketIdMap[sessionId]).emit('s_create_answer', {
           responseObj: {
@@ -83,7 +89,7 @@ export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
             type: 'answer'
           }
         })
-        clearInterval(intervalId)
+        // clearInterval(intervalId)
         // console.log('🚀 ~ forawait ~ messageReturn:', messageReturn)
 
         return messageReturn

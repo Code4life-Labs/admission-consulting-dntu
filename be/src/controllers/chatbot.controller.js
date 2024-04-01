@@ -1,10 +1,10 @@
 import { HttpStatusCode } from '../utilities/constants'
 import { ChatbotService } from '../services/chatbot.service'
 
-const getTextConsulting = async (req, res) => {
-  console.log('🚀 ~ file: chatbot.controller.js:5 ~ getTextConsulting ~ req:', req.body)
+const uploadMultiDocsWebsite = async (req, res) => {
+  console.log('🚀 ~ file: chatbot.controller.js:5 ~ uploadMultiDocsWebsite ~ req:', req.body)
   try {
-    const result = await ChatbotService.getTextConsulting(req.body)
+    const result = await ChatbotService.uploadMultiDocsWebsite(req.body)
     res.status(HttpStatusCode.OK).json(result)
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({
@@ -13,9 +13,9 @@ const getTextConsulting = async (req, res) => {
   }
 }
 
-const generateTextGPT = async (req, res) => {
+const uploadMultiDocs = async (req, res) => {
   try {
-    const result = await ChatbotService.generateTextGPT(req.body)
+    const result = await ChatbotService.uploadMultiDocs(req.body)
     res.status(HttpStatusCode.OK).json(result)
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({
@@ -24,9 +24,9 @@ const generateTextGPT = async (req, res) => {
   }
 }
 
-const translateTextGPT = async (req, res) => {
+const testScratchWebsite = async (req, res) => {
   try {
-    const result = await ChatbotService.translateTextGPT(req.body)
+    const result = await ChatbotService.testScratchWebsite(req.body)
     res.status(HttpStatusCode.OK).json(result)
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER).json({
@@ -36,7 +36,7 @@ const translateTextGPT = async (req, res) => {
 }
 
 export const ChatbotController = {
-  getTextConsulting,
-  generateTextGPT,
-  translateTextGPT
+  uploadMultiDocsWebsite,
+  uploadMultiDocs,
+  testScratchWebsite
 }

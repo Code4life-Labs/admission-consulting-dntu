@@ -15,11 +15,13 @@ import { HttpStatusCode } from '~/utilities/constants'
 
 const router = express.Router()
 
-router.route('/consult')
-  .post(ChatbotValidation.getTextConsulting, ChatbotController.getTextConsulting)
+router.route('/upload_multi_docs_website')
+  .post(ChatbotValidation.uploadMultiDocsWebsite, ChatbotController.uploadMultiDocsWebsite)
 
-// Được sử dụng để cho dự án cô Thi
-router.route('/generate-text-gpt')
-  .post(ChatbotValidation.generateTextGPT, ChatbotController.generateTextGPT)
+router.route('/upload_multi_docs_local')
+  .post(ChatbotValidation.uploadMultiDocs, ChatbotController.uploadMultiDocs)
+
+router.route('/test_scratch_website')
+  .post(ChatbotValidation.testScratchWebsite, ChatbotController.testScratchWebsite)
 
 export const chatbotRoutes = router

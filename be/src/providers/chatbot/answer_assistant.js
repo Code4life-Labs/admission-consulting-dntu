@@ -56,7 +56,7 @@ export const getAnswerNormalAssistant = async (dataGetAnswer) => {
             ${user_name ? '- Please mention the user\'s name when chatting. The user\'s name is ' + user_name : ''}
             - Please answer directly to the point of the question, avoid rambling
             - Don't answer in letter form, don't be too formal, try to answer normal chat text type as if you were chatting to a friend. You can use icons to show the friendliness
-            - Please answer in VIETNAMESE. Double check 1.the spelling to see if it is correct 2. whether you returned the answer in Vietnamese
+            - Please answer in VIETNAMESE. Double check the spelling to see if it is correct whether you returned the answer in Vietnamese
           `
       },
       {

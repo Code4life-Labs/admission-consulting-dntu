@@ -2,95 +2,43 @@
 
 import dialogflow from '@google-cloud/dialogflow'
 import { dfConfig } from '~/config/dfConfig'
+import { uploadDocumentsToSupabaseCloud, uploadMultiWebsitesToSupabaseCloud, uploadWebsiteToSupabaseCloud } from '~/providers/chatbot/upload_documents'
 import { ChatGptProvider } from '~/providers/gpt/ChatGptProvider'
 
-const getTextConsulting = async (data) => {
+const uploadMultiDocsWebsite = async (data) => {
   // data = {
-  //  "question": "Hello cậu",
-  // "currentUserId": "acb-1341234"
+  //  websites: ["url1", "url2", "url3"]
+  //  chunkSize: 500,
+  //  chunkOverlap: 100
   // }
   try {
-    // connect to dialogflow api
-    const projectId = dfConfig.project_id
-    const sessionId = data.currentUserId
-
-
-    const credentials = {
-      client_email: dfConfig.client_email,
-      private_key: dfConfig.private_key
-    }
-
-    // Create a new session
-    const sessionClient = new dialogflow.SessionsClient({ credentials })
-    const sessionPath = sessionClient.projectAgentSessionPath(
-      projectId,
-      sessionId
-    )
-
-    const req = {
-      session: sessionPath,
-      queryInput: {
-        text: {
-          text: data.question,
-          languageCode: data.languageCode
-        }
-      }
-    }
-
-    const res = await sessionClient.detectIntent(req)
-
-    // return res
-    let action = res[0].queryResult.action
-    console.log('🚀 ~ file: chatbot.service.js:39 ~ getTextConsulting ~ action:', action)
-
-    let queryText = res[0].queryResult.queryText
-
-    let responseText = res[0].queryResult.fulfillmentMessages[0].text.text[0]
-    console.log('🚀 ~ file: chatbot.service.js:46 ~ getTextConsulting ~ responseText:', responseText)
-
-    if (action === 'input.unknown') {
-      // Nếu hành động không được xác định thì chuyển qua hỏi con chatGPT
-      // let result = await ChatGptProvider.textGeneration(queryText)
-      // result.action = action
-      // return result
-      return {
-        response: responseText,
-        action: action
-      }
-    } else {
-      return {
-        response: responseText,
-        action: action
-      }
-    }
+    const result = await uploadMultiWebsitesToSupabaseCloud(data.websites, data.selector, data.chunkSize, data.chunkSize)
+    return result
   } catch (error) {
-    console.log('🚀 ~ file: chatbot.service.js:67 ~ getTextConsulting ~ error:', error)
+    console.log('🚀 ~ file: chatbot.service.js:67 ~ uploadMultiDocsWebsite ~ error:', error)
     throw new Error(error)
   }
 }
 
-const generateTextGPT = async (data) => {
+const uploadMultiDocs = async (data) => {
   // data = {
-  //   textInitial: string,
-  //   textTranslated: string
+  // directory, type_file, chunkSize, chunkOverlap
   // }
   try {
-    const queryText = `textInitial="${data.textInitial}", textTranslated="${data.textTranslated}"`
-    let result = await ChatGptProvider.textGeneration(queryText)
+    const result = await uploadDocumentsToSupabaseCloud(data.directory, data.type_file, data.chunkSize, data.chunkOverlap)
     return result
   } catch (error) {
     throw new Error(error)
   }
 }
 
-const translateTextGPT = async (data) => {
+const testScratchWebsite = async (data) => {
   // data = {
   //   text: string,
   //   languageConvert: string
   // }
   try {
-    const queryText = `text="${data.text}", languageConvert="${data.languageConvert}"`
-    let result = await ChatGptProvider.translateText(queryText)
+    const result = await uploadWebsiteToSupabaseCloud(data.website, data.selector)
     return result
   } catch (error) {
     throw new Error(error)
@@ -98,7 +46,7 @@ const translateTextGPT = async (data) => {
 }
 
 export const ChatbotService = {
-  getTextConsulting,
-  generateTextGPT,
-  translateTextGPT
+  uploadMultiDocsWebsite,
+  uploadMultiDocs,
+  testScratchWebsite
 }
