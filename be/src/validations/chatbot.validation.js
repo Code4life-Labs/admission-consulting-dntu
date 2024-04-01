@@ -5,8 +5,8 @@ const uploadMultiDocsWebsite = async (req, res, next) => {
   const condition = Joi.object({
     websites: Joi.array(Joi.string).required(),
     selector: Joi.string().required(),
-    chunkSize: Joi.number,
-    chunkOverlap: Joi.number
+    chunkSize: Joi.number().required(),
+    chunkOverlap: Joi.number().required()
   })
   try {
     await condition.validateAsync(req.body, { abortEarly: false })
@@ -22,8 +22,8 @@ const uploadMultiDocs = async (req, res, next) => {
   const condition = Joi.object({
     directory: Joi.string().required(),
     type_file: Joi.string().required(),
-    chunkSize: Joi.string().required(),
-    chunkOverlap: Joi.string().required()
+    chunkSize: Joi.number().required(),
+    chunkOverlap: Joi.number().required()
   })
   try {
     await condition.validateAsync(req.body, { abortEarly: false })

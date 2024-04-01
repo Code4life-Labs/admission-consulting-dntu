@@ -8,7 +8,7 @@ export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
   const { sessionId, standaloneQuestion, question, user_name, io, socketIdMap, type } = dataGetAnswer
   // get vector
   const vectorStoreSupabase = await getVectorStoreSupabase()
-  const vectorResults = await vectorStoreSupabase.similaritySearchWithScore(standaloneQuestion, 5)
+  const vectorResults = await vectorStoreSupabase.similaritySearchWithScore(standaloneQuestion, 10)
   console.log('🚀 ~ getAnswerDocumentAssistant ~ vectorResults:', vectorResults)
   const vectorThresholds = vectorResults.filter(vector => vector[1] >= 0.85)
   console.log('🚀 ~ getAnswerDocumentAssistant ~ vectorThresholds:', vectorThresholds)
