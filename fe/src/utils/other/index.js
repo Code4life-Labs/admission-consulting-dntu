@@ -97,3 +97,114 @@ export const OtherUtils = {
   fromContentToJSXElement,
   wait
 };
+
+export const configMD = {
+  overrides: {
+    mark: {
+      props: {
+        className: "bg-yellow-200 px-1 rounded"
+      }
+    },
+    sup: {
+      props: {
+        className: "text-superscript"
+      }
+    },
+    img: {
+      props: {
+        className: "my-4 rounded-lg shadow-md h-[450px] w-[450px] mx-auto"
+      }
+    },
+    ul: {
+      props: {
+        className: 'ms-4 list-decimal ms-6'
+      },
+    },
+    ol: {
+      props: {
+        className: 'ms-4 list-decimal list-inside'
+      },
+    },
+    hr: {
+      props: {
+        className: 'h-px w-full bg-gray-400 my-3'
+      }
+    },
+    h1: {
+      props: {
+        className: 'font-bold text-neutral-700 text-3xl'
+      },
+    },
+    h2: {
+      props: {
+        className: 'font-bold text-neutral-700 text-2xl'
+      },
+    },
+    h3: {
+      props: {
+        className: 'font-bold text-neutral-700 text-xl'
+      },
+    },
+    h4: {
+      props: {
+        className: 'font-bold text-neutral-700 text-lg'
+      },
+    },
+    h5: {
+      props: {
+        className: 'font-bold text-neutral-700 text-base'
+      },
+    },
+    h6: {
+      props: {
+        className: 'font-bold text-neutral-700 text-sm'
+      },
+    },
+    a: {
+      props: {
+        target: '_blank',
+        className: 'text-sky-600 font-medium underline underline-offset-1 text-sm'
+      },
+    },
+    blockquote: {
+      props: {
+        className: 'ms-4 my-4 border-l-4 border-gray-300 bg-gray-100 italic p-4 rounded'
+      }
+    },
+    code: {
+      props: {
+        class: "mx-1 text-red-900 bg-gray-100 px-2 py-1 rounded-md"
+      }
+    },
+    table: {
+      props: {
+        class: "my-4 min-w-full"
+      }
+    },
+    thead : {
+      props: {
+        class: "text-xs text-gray-700 uppercase bg-gray-400 "
+      }
+    },
+    tr : {
+      props: {
+        class: "bg-gray-50 border border-gray-400 hover:bg-gray-200"
+      }
+    },
+    th : {
+      props: {
+        class: "bg-gray-300 border border-gray-400 px-6 py-3 bg-gray-50 text-left text-sm leading-4 font-bold text-gray-700 uppercase tracking-wider"
+      }
+    },
+    tbody : {
+      props: {
+        class: "bg-gray-400"
+      }
+    },
+    td : {
+      props: {
+        class: "border border-gray-400 px-6 py-4 whitespace-no-wrap"
+      }
+    },
+  }
+}
