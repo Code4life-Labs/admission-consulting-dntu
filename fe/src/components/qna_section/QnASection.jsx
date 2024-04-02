@@ -134,10 +134,11 @@ export default function QnASection() {
     let X = 0
     socketIoInstance.on('s_create_answer', (dataReturn) => {
       if (dataReturn.responseObj.content.trim() !== "" && X === 0) {
-        // qnaStateFns.updateIsResponding(false);
+        qnaStateFns.updateIsResponding(false);
         X++;
+      } else {
+        handleListenCreateAnswer(dataReturn)
       }
-      handleListenCreateAnswer(dataReturn)
     })
 
     socketIoInstance.on('s_create_relevant_info', (dataReturn) => {

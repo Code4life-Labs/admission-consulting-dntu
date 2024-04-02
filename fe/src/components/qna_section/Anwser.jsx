@@ -7,10 +7,11 @@ import { useStateWESSFns } from 'src/hooks/useStateWESSFns';
 import { SpeechAPI } from 'src/apis/speech';
 
 // Import from utils
-import { OtherUtils } from 'src/utils/other';
+import { OtherUtils, configMD } from 'src/utils/other';
 
 // Import local components
 import QnAMessage from './QnAMessage'
+import Markdown from 'markdown-to-jsx';
 
 /**
  * @typedef AnswerPropsType
@@ -198,16 +199,22 @@ export default function Anwser(props) {
     }
   }, [props.audioElement.src]);
 
+  // {props.content.split('\n').map((line, index) => (
+  //   <React.Fragment key={index}>
+  //     {line}
+  //     <br />
+  //   </React.Fragment>
+  // ))}
+  
   return (
     <QnAMessage avatar="/Logo_DNTU.png">
       <>
       <div className="rounded-xl ml-3 p-1 xl:ml-6 xl:p-3 rounded border-2">
-        {props.content.split('\n').map((line, index) => (
-          <React.Fragment key={index}>
-            {line}
-            <br />
-          </React.Fragment>
-        ))}
+        <Markdown
+          options={configMD}
+        >
+          {props.content}
+        </Markdown>
       </div>
         <div className="flex items-center ml-3 p-1 xl:ml-6 xl:p-3">
           <SpeechControlBtn
