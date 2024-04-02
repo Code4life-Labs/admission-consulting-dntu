@@ -34,7 +34,7 @@ export function useStateWESSFns(
     const $ = function(name, fn, preventUpdate) {
       set$(
         prevState => {
-          if(preventUpdate && preventUpdate(fn(prevState[name]))) return prevState;
+          if(preventUpdate && preventUpdate(prevState[name])) return prevState;
           return getState(prevState, name, fn);
         }
       );

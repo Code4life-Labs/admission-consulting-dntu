@@ -46,12 +46,12 @@ export default function createQnARenderer({ updateAudioURL, playAudio, pauseAudi
     }
 
     // type == "related_content"
-    if(!response.type == "related_content") return;
+    if(!response.type == "related_content" && typeof response.content != "object" || response.content == null) return;
     let result = [];
 
-    if(response.sourcesResult) result.push(<Ref key={"ref" + index} sources={response.sourcesResult} />);
-    if(response.imagesResult) result.push(<ImagesRef key={"images" + index} images={response.imagesResult} />);
-    if(response.videosResult) result.push(<VideosRef key={"videos" + index} videos={response.videosResult} />);
+    if(response.content.sourcesResult) result.push(<Ref key={"ref" + index} sources={response.content.sourcesResult} />);
+    if(response.content.imagesResult) result.push(<ImagesRef key={"images" + index} images={response.content.imagesResult} />);
+    if(response.content.videosResult) result.push(<VideosRef key={"videos" + index} videos={response.content.videosResult} />);
 
     return result;
   }
