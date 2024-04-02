@@ -59,35 +59,28 @@ export default function QnASection() {
         },
 
         /**
-         * Use this function to add loading message.
+         * Use this function to add loading message (suspended answer).
          */
-        appendLoadingAnswer: function() {
+        appendSuspendedMessage: function() {
           changeState("qna", function(data) {
             return [...data, { isLoading: true }]
           })
         },
 
         /**
-         * Use this function to update last message to response.
+         * Use this function to update last message (suspended answer) to response.
          * A response contains ref (link), answer (text), media ref (image and video).
          * Remove suspend message first.
          * @param {any} response 
          */
-        updateResponse: function(response) {
+        updateSuspendedMessage: function(response) {
           changeState("qna", function(data) {
-              // if (data?.length && data[data?.length - 1] && data[data?.length - 1].type !== 'related_content') data.pop();
-              data.pop();
-              const newState = [...data, ...response]
-              return newState
-          })
+            data.pop();
+            if(Array.isArray(response)) return [...data, ...response];
+            else return [...data, response];
+          }, function(data) { return !data[data.length - 1].isLoading; })
         },
-        updateResponseRelevantSrc: function(response) {
-          changeState("qna", function(data) {
-            // data.pop();
-              const newState = [...data, ...response]
-              return newState
-          })
-        },
+
         /**
          * Use this function to update `isResponding` state.
          * @param {bool} state 
@@ -126,26 +119,52 @@ export default function QnASection() {
     });
   }, [elementRefs.current.botAudio, qnaStateFns.updateAudioURL]);
 
+  const handleListenCreateAnswer = (dataReturn) => {
+    // đầu tiên sẽ update state response
+    if (dataReturn.isOver && dataReturn.isOver === 'DONE' && dataReturn.responseObj) {
+      console.log("🚀 ~ handleListenCreateAnswer ~ dataReturn.allText:", [dataReturn.responseObj]);
+      qnaStateFns.appendMessage(dataReturn.responseObj, dataReturn.responseObj.type);
+      // cuối cùng sẽ ngắt kết nối
+      socketIoInstance.removeAllListeners('s_create_answer');
+    } else {
+      // console.log("🚀 ~ handleListenCreateAnswer ~ dataReturn.messageReturn:", [dataReturn.responseObj])
+      qnaStateFns.appendMessage(dataReturn.responseObj, dataReturn.responseObj.type);
+    }
+  };
+
+  const appendMessageWithQuestionInputElement = function(inputElement) {
+    if(!inputElement) return;
+    let text = inputElement.value;
+    qnaStateFns.appendMessage(text, "question");
+    inputElement.value = "";
+  }
+
   // Tracking length of qna
   React.useEffect(function() {
     if(qnaState.qna.length === 0) return;
 
     // lắng nghe sự kiện mỗi lần có câu hỏi mới
     let X = 0
-    socketIoInstance.on('s_create_answer', (dataReturn) => {
-      if (dataReturn.responseObj.content.trim() !== "" && X === 0) {
-        qnaStateFns.updateIsResponding(false);
+    socketIoInstance.on('s_create_answer', (data) => {
+      if (data.responseObj.content.trim() !== "" && X === 0) {
+        // qnaStateFns.updateIsResponding(false);
         X++;
-      } else {
-        handleListenCreateAnswer(dataReturn)
       }
+      handleListenCreateAnswer(data)
     })
 
-    socketIoInstance.on('s_create_relevant_info', (dataReturn) => {
-      console.log("🚀 ~ socketIoInstance.on ~ s_create_relevant_info:", dataReturn)
-      socketIoInstance.removeAllListeners('s_create_relevant_info')
+    socketIoInstance.on('s_create_relevant_info', (data) => {
+      console.log("🚀 ~ socketIoInstance.on ~ s_create_relevant_info:", data);
+      socketIoInstance.removeAllListeners('s_create_relevant_info');
       qnaStateFns.updateIsResponding(false);
-      qnaStateFns.updateResponseRelevantSrc([dataReturn]);
+
+      let content = {};
+
+      if(data.imagesResult) content.imagesResult = data.imagesResult;
+      if(data.videosResult) content.videosResult = data.videosResult;
+      if(data.sourcesResult) content.sourcesResult = data.sourcesResult;
+
+      qnaStateFns.appendMessage(content, data.type);
     })
 
 
@@ -153,42 +172,43 @@ export default function QnASection() {
     let lastMessage = qnaState.qna[N - 1];
     console.log("🚀 ~ React.useEffect ~ lastMessage:", lastMessage)
 
-    if(lastMessage.type === "question") {
-      qnaStateFns.appendLoadingAnswer();
-      qnaStateFns.updateIsResponding(true);
-      
-      const requestEmit = {
-        sessionId: localStorage.getItem("SESSION_USER_ID"),
-        question: lastMessage.content, 
-        user_name: "" // username có thể lấy khi nhập dùng mở ô chatbot lên đầu tiên và mình sẽ hỏi tên sau đó lưu vào local stored lần sau thì không hỏi nữa
-      } 
-      console.log("🚀 ~ React.useEffect ~ requestEmit:", requestEmit)
-      console.log("🚀 ~ React.useEffect ~qnaState.qna:", qnaState.qna)
+    if(lastMessage.type !== "question") return;
 
-      // emit sự kiện
-      socketIoInstance.emit('c_create_answer', requestEmit)
-      // // Request a fake answer
-      // OtherUtils.wait(function() {
-      //   return qnaSectionData.responses;
-      // }, 1000).then(answer => {
-      //   console.log("🚀 ~ OtherUtils.wait ~ answer:", answer)
-      //   // Update suspend message
-      //   qnaStateFns.updateResponse([
-      //     {
-      //       type: "anwser",
-      //       content: "ừ"
-      //     }
-      //   ]);
-
-      //   qnaStateFns.updateResponse([
-      //     {
-      //       type: "anwser",
-      //       content: "ừ nha"
-      //     }
-      //   ]);
-      //   qnaStateFns.updateIsResponding(false);
-      // })
+    qnaStateFns.appendSuspendedMessage();
+    qnaStateFns.updateIsResponding(true);
+    
+    const requestEmit = {
+      sessionId: localStorage.getItem("SESSION_USER_ID"),
+      question: lastMessage.content, 
+      user_name: "" // username có thể lấy khi nhập dùng mở ô chatbot lên đầu tiên và mình sẽ hỏi tên sau đó lưu vào local stored lần sau thì không hỏi nữa
     }
+    
+    console.log("🚀 ~ React.useEffect ~ requestEmit:", requestEmit)
+    console.log("🚀 ~ React.useEffect ~ qnaState.qna:", qnaState.qna)
+
+    // emit sự kiện
+    socketIoInstance.emit('c_create_answer', requestEmit);
+    // // Request a fake answer
+    // OtherUtils.wait(function() {
+    //   return qnaSectionData.responses;
+    // }, 1000).then(answer => {
+    //   console.log("🚀 ~ OtherUtils.wait ~ answer:", answer)
+    //   // Update suspend message
+    //   qnaStateFns.updateResponse([
+    //     {
+    //       type: "anwser",
+    //       content: "ừ"
+    //     }
+    //   ]);
+
+    //   qnaStateFns.updateResponse([
+    //     {
+    //       type: "anwser",
+    //       content: "ừ nha"
+    //     }
+    //   ]);
+    //   qnaStateFns.updateIsResponding(false);
+    // })
   }, [qnaState.qna, qnaState.qna.length, qnaStateFns]);
 
   React.useEffect(function() {
@@ -198,19 +218,6 @@ export default function QnASection() {
     }
   }, [qnaState.audioURL]);
 
-
-  const handleListenCreateAnswer = (dataReturn) => {
-    // đầu tiên sẽ update state response
-      if (dataReturn.isOver && dataReturn.isOver === 'DONE' && dataReturn.responseObj) {
-        console.log("🚀 ~ handleListenCreateAnswer ~ dataReturn.allText:", [dataReturn.responseObj])
-        qnaStateFns.updateResponse([dataReturn.responseObj]);
-        // cuối cùng sẽ ngắt kết nối
-        socketIoInstance.removeAllListeners('s_create_answer')
-      } else {
-        // console.log("🚀 ~ handleListenCreateAnswer ~ dataReturn.messageReturn:", [dataReturn.responseObj])
-        qnaStateFns.updateResponse([dataReturn.responseObj]);
-      }
-  }
   return (
     <section className="flex flex-col mt-4">
       {/* Q and A will appear here */}
@@ -238,9 +245,7 @@ export default function QnASection() {
           placeholder="Bạn có thể nhập câu hỏi ở đây..."
           onKeyDown={(e) => {
             if (e.key === "Enter"){
-              let text = elementRefs.current.questionInput.value;
-              qnaStateFns.appendMessage(text, "question");
-              elementRefs.current.questionInput.value = "";
+              appendMessageWithQuestionInputElement(elementRefs.current.questionInput);
             }
           }
         }
@@ -250,11 +255,7 @@ export default function QnASection() {
           extendClassName="p-2"
           color="rose-800" hoverColor="rose-700" activeColor="rose-950"
           disabled={qnaState.isResponsding}
-          onClick={() => {
-            let text = elementRefs.current.questionInput.value;
-            qnaStateFns.appendMessage(text, "question");
-            elementRefs.current.questionInput.value = "";
-          }}
+          onClick={() => appendMessageWithQuestionInputElement(elementRefs.current.questionInput)}
         >
           <span className="material-symbols-outlined block text-white">send</span>
         </Button>
