@@ -15,7 +15,7 @@ export const createAnswerFromAI = (io, socket, socketIdMap) => {
       socketIdMap,
       type: 'STREAMING'
     }
-    console.log('🚀 ~ socket.on ~ dataGetAnswer:', dataGetAnswer)
+    // console.log('🚀 ~ socket.on ~ dataGetAnswer:', dataGetAnswer)
     await getAnswerChatBot(dataGetAnswer)
   })
 }

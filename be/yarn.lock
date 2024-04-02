@@ -1439,6 +1439,11 @@
   resolved "https://registry.npmjs.org/@types/caseless/-/caseless-0.12.5.tgz"
   integrity sha512-hWtVTC2q7hc7xZ/RLbxapMvDMgUnDvKvMOpKal4DrMyfGBUfB1oKaZlIRr6mJL+If3bAP6sV/QneGzF6tJjZDg==
 
+"@types/chai@^4.2.14":
+  version "4.3.14"
+  resolved "https://registry.npmjs.org/@types/chai/-/chai-4.3.14.tgz"
+  integrity sha512-Wj71sXE4Q4AkGdG9Tvq1u/fquNz9EdG4LIJMwVVII7ashjD/8cf8fyIfJAjRr6YcsXnSE8cOGQPq1gqeR8z+3w==
+
 "@types/cookie@^0.4.1":
   version "0.4.1"
   resolved "https://registry.npmjs.org/@types/cookie/-/cookie-0.4.1.tgz"
@@ -1455,6 +1460,11 @@
   version "4.0.2"
   resolved "https://registry.npmjs.org/@types/long/-/long-4.0.2.tgz"
   integrity sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==
+
+"@types/mocha@^8.2.0":
+  version "8.2.3"
+  resolved "https://registry.npmjs.org/@types/mocha/-/mocha-8.2.3.tgz"
+  integrity sha512-ekGvFhFgrc2zYQoX4JeZPmVzZxw6Dtllga7iGHzfbYIYkAMUx/sAFP2GdFpLff+vdHXu5fl7WX9AT+TtqYcsyw==
 
 "@types/node-fetch@^2.6.4":
   version "2.6.9"
@@ -3881,6 +3891,14 @@ make-fetch-happen@^9.1.0:
     socks-proxy-agent "^6.0.0"
     ssri "^8.0.0"
 
+markdown-to-text@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.npmjs.org/markdown-to-text/-/markdown-to-text-0.1.1.tgz"
+  integrity sha512-co/J5l8mJ2RK9wD/nQRGwO7JxoeyfvVNtOZll016EdAX2qYkwCWMdtYvJO42b41Ho7GFEJMuly9llf0Nj+ReQw==
+  dependencies:
+    "@types/chai" "^4.2.14"
+    "@types/mocha" "^8.2.0"
+
 md5@^2.3.0:
   version "2.3.0"
   resolved "https://registry.npmjs.org/md5/-/md5-2.3.0.tgz"
@@ -5542,6 +5560,11 @@ vary@^1, vary@~1.1.2:
   version "1.1.2"
   resolved "https://registry.npmjs.org/vary/-/vary-1.1.2.tgz"
   integrity sha512-BNGbWLfd0eUPabhkXUVm0j8uuvREyTh5ovRa/dyow/BqAbZJyC+5fU+IzQOzmAKzYqYRAISoRhdQr3eIZ/PXqg==
+
+vn-badwords@^1.2.1-fix-2:
+  version "1.2.1-fix-2"
+  resolved "https://registry.npmjs.org/vn-badwords/-/vn-badwords-1.2.1-fix-2.tgz"
+  integrity sha512-MVj/efEtOyGYelXdAO5Hts0jw3RlMhkbH4rFtD9+N+cY2jkP8gBm8vBtPvU/NgaZQM3J/X+na4050pIwwHGUtw==
 
 web-streams-polyfill@^3.2.1:
   version "3.2.1"

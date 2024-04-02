@@ -39,10 +39,11 @@ export const getAnswerNormalAssistant = async (dataGetAnswer) => {
   // return respone
   const { sessionId, question, user_name, io, socketIdMap, type } = dataGetAnswer
 
-  const openai = new OpenAI({
-    baseURL: 'https://api.groq.com/openai/v1',
-    apiKey: env.GROQ_API_KEY
-  })
+  const openai = new OpenAI({ apiKey: env.OPENAI_API_KEY })
+  // const openai = new OpenAI({
+  //   baseURL: 'https://api.groq.com/openai/v1',
+  //   apiKey: process.env.GROQ_API_KEY,
+  // });
 
   let chat_history = await getChatHistoryConvertString(sessionId)
   chat_history += '\nHuman: ' + question
@@ -51,11 +52,14 @@ export const getAnswerNormalAssistant = async (dataGetAnswer) => {
       {
         role: 'system',
         content: `${promptRole}
+        Please answer the question, and make sure you follow ALL of the rules below:
             - Here is query: ${question}, respond back with an answer for user is as long as possible. You can based on history chat that human provided below
             - Don't try to make up an answer. If you really don't know the answer, say "I'm sorry, I don't know the answer to that." then direct the questioner to email tuyensinh@dntu.edu.vn to assist. 
             ${user_name ? '- Please mention the user\'s name when chatting. The user\'s name is ' + user_name : ''}
-            - Please answer directly to the point of the question, avoid rambling
+            - Answer questions in a helpful manner that straight to the point, with clear structure & all relevant information that might help users answer the question
             - Don't answer in letter form, don't be too formal, try to answer normal chat text type as if you were chatting to a friend. You can use icons to show the friendliness
+            - Anwser should be formatted in Markdown
+            - if there are relevant images, video, links, they are very important reference data, please include them as part of the answer
             - Please answer in VIETNAMESE. Double check the spelling to see if it is correct whether you returned the answer in Vietnamese
           `
       },
@@ -65,10 +69,11 @@ export const getAnswerNormalAssistant = async (dataGetAnswer) => {
       },
       {
         role: 'assistant',
-        content:  '(vietnamese answer)'
+        content:  '(ANSWER IN VIETNAMESE)'
       }
     ],
-    model: 'mixtral-8x7b-32768'
+    model: 'gpt-3.5-turbo-1106'
+    // model: "mixtral-8x7b-32768"
   }
 
   if (type === 'STREAMING') dataChatchatCompletion.stream = true
