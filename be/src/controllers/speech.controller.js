@@ -75,7 +75,28 @@ async function getSpeechByText(req, res) {
   }
 }
 
+/**
+ * Use this function to get URL of Speech directly.
+ * @param {Request} req
+ * @param {Response} res
+ * @returns
+ */
+async function getSpeechURL(req, res) {
+  try {
+    const { text } = req.body
+    const response = await FPTBotServices.getSpeech(text)
+    const data = await response.json()
+
+    return res.status(HttpStatusCode.OK).json({ audio: data.async })
+  } catch (error) {
+    return res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      errors: error.message
+    })
+  }
+}
+
 export const SpeechController = {
   createSpeech,
-  getSpeechByText
+  getSpeechByText,
+  getSpeechURL
 }

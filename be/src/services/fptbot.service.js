@@ -11,13 +11,22 @@ const _channel_ = 'api'
 const _api_ = {
   chatbot: '/api/get_answer',
   predict: '/api/v3/predict',
-  tts: `/hmi/tts/v5?api_key=${env.FPT_TTS_API_KEY}&voice=linhsan`
+  tts: `/hmi/tts/v5?api_key=${env.FPT_TTS_API_KEY}&voice=linhsan`,
+  raw_tts: '/hmi/tts/v5'
 }
+
+const _voices_ = {
+  female: {
+    linhsan: 'linhsan'
+  }
+}
+
 const _type_ = 'text'
 
 const BOT_URL = _botBaseURL_ + _api_.chatbot
 const PREDICT_URL = _v3APIBaseURL_ + _api_.predict
 const TTS_URL = _apiBaseURL_ + _api_.tts
+const RAW_TTS_URL = _apiBaseURL_ + _api_.raw_tts
 
 /**
  * __Local function__
