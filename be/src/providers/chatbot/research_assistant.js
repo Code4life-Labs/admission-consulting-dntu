@@ -1,15 +1,38 @@
-import { OpenAIEmbeddings } from '@langchain/openai'
+import {
+  OpenAIEmbeddings
+} from '@langchain/openai'
 import OpenAI from 'openai'
-import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
-import { MemoryVectorStore } from 'langchain/vectorstores/memory'
-import { BraveSearch } from '@langchain/community/tools/brave_search'
+import {
+  RecursiveCharacterTextSplitter
+} from 'langchain/text_splitter'
+import {
+  MemoryVectorStore
+} from 'langchain/vectorstores/memory'
+import {
+  BraveSearch
+} from '@langchain/community/tools/brave_search'
 import cheerio from 'cheerio'
-import { getChatHistoryConvertString } from './utils/upstash_chat_history'
-import { promptRole } from './utils/prompt'
-import { env } from '~/config/environment'
+import {
+  getChatHistoryConvertString
+} from './utils/upstash_chat_history'
+import {
+  promptRole
+} from './utils/prompt'
+import {
+  env
+} from '~/config/environment'
+import TurndownService from 'turndown'
+import { Document } from '@langchain/core/documents'
+import { uploadWithTextSplitter } from './upload_documents'
+
+
+const turndownService = new TurndownService()
+
 
 // 2. Initialize OpenAI client with Groq API
-const openai = new OpenAI({ apiKey: env.OPENAI_API_KEY })
+const openai = new OpenAI({
+  apiKey: env.OPENAI_API_KEY
+})
 
 // 4. Fetch search results from Brave Search API
 async function getSources(standaloneQuestion) {
@@ -17,8 +40,7 @@ async function getSources(standaloneQuestion) {
   const encodedMessage = encodeURI(standaloneQuestion)
   try {
     const response = await fetch(
-      `https://api.search.brave.com/res/v1/web/search?q=${encodedMessage}&count=10&search_lang=vi`,
-      {
+      `https://api.search.brave.com/res/v1/web/search?q=${encodedMessage}&count=10&search_lang=vi`, {
         headers: {
           Accept: 'application/json',
           'Accept-Encoding': 'gzip',
@@ -70,11 +92,13 @@ async function get10BlueLinksContents(sources) {
       throw error
     }
   }
+
   function extractMainContent(html) {
     try {
       const $ = cheerio.load(html)
-      $('script, style, head, nav, footer, iframe, img').remove()
-      return $('body').text().replace(/\s+/g, ' ').trim()
+      $('script, noscript, style, head, nav, footer, iframe, svg, symbol, path, aside, article, button, input, form').remove()
+      // return $('body').text().replace(/\s+/g, ' ').trim()
+      return $('body').html()
     } catch (error) {
       console.error('Error extracting main content:', error)
       throw error
@@ -90,8 +114,14 @@ async function get10BlueLinksContents(sources) {
           )
         }
         const html = await response.text()
-        const mainContent = extractMainContent(html)
-        return { ...source, html: mainContent }
+        const mainContentHTML = extractMainContent(html)
+        console.log('🚀 ~ mainContent:', mainContentHTML)
+        // mainContentHTML :html => md
+        const mainContentMarkdown = turndownService.turndown(mainContentHTML)
+        return {
+          ...source,
+          markdown: mainContentMarkdown
+        }
       } catch (error) {
         console.error(`Error processing ${source.link}:`, error)
         return null
@@ -109,7 +139,7 @@ async function get10BlueLinksContents(sources) {
 
 // 6. Process and vectorize content using LangChain
 async function processAndVectorizeContent(
-  contents,
+  markdownContentArr,
   query,
   textChunkSize = 1000,
   textChunkOverlap = 400,
@@ -117,17 +147,29 @@ async function processAndVectorizeContent(
 ) {
   try {
     const embeddings = new OpenAIEmbeddings()
-    for (let i = 0; i < contents.length; i++) {
-      const content = contents[i]
-      if (content.html.length > 0) {
+    for (let i = 0; i < markdownContentArr.length; i++) {
+      const content = markdownContentArr[i]
+      if (content.markdown.length > 0) {
         try {
           const splitText = await new RecursiveCharacterTextSplitter({
             chunkSize: textChunkSize,
             chunkOverlap: textChunkOverlap
-          }).splitText(content.html)
+          }).splitText(content.markdown)
+
+
+          // lưu vào database để trả lời cho lần sau
+          // await uploadWithTextSplitter([
+          //   new Document({ pageContent: content.markdown, metadata: {
+          //     title: content.title,
+          //     link: content.link
+          //   } })
+          // ], 1000, 500)
+
           const vectorStore = await MemoryVectorStore.fromTexts(
-            splitText,
-            { title: content.title, link: content.link },
+            splitText, {
+              title: content.title,
+              link: content.link
+            },
             embeddings
           )
           return await vectorStore.similaritySearch(
@@ -145,12 +187,12 @@ async function processAndVectorizeContent(
     throw error
   }
 }
+
 // 7. Fetch image search results from Brave Search API
 async function getImages(standaloneQuestion) {
   try {
     const response = await fetch(
-      `https://api.search.brave.com/res/v1/images/search?q=${standaloneQuestion}&spellcheck=1`,
-      {
+      `https://api.search.brave.com/res/v1/images/search?q=${standaloneQuestion}&spellcheck=1`, {
         method: 'GET',
         headers: {
           Accept: 'application/json',
@@ -170,7 +212,9 @@ async function getImages(standaloneQuestion) {
         const link = result.properties.url
         if (typeof link === 'string') {
           try {
-            const imageResponse = await fetch(link, { method: 'HEAD' })
+            const imageResponse = await fetch(link, {
+              method: 'HEAD'
+            })
             if (imageResponse.ok) {
               const contentType = imageResponse.headers.get('content-type')
               if (contentType && contentType.startsWith('image/')) {
@@ -223,11 +267,16 @@ async function getVideos(standaloneQuestion) {
         const imageUrl = video.imageUrl
         if (typeof imageUrl === 'string') {
           try {
-            const imageResponse = await fetch(imageUrl, { method: 'HEAD' })
+            const imageResponse = await fetch(imageUrl, {
+              method: 'HEAD'
+            })
             if (imageResponse.ok) {
               const contentType = imageResponse.headers.get('content-type')
               if (contentType && contentType.startsWith('image/')) {
-                return { imageUrl, link: video.link }
+                return {
+                  imageUrl,
+                  link: video.link
+                }
               }
             }
           } catch (error) {
@@ -250,13 +299,18 @@ async function getVideos(standaloneQuestion) {
 const relevantQuestions = async (responseText) => {
   console.log('🚀 ~ relevantQuestions ~ responseText:', responseText)
   const groqResponse = await openai.chat.completions.create({
-    messages: [
-      { role: 'system', content: 'You are a question generator. Generate 3 follow-up questions based on the provided text. Return the questions in an array format.' },
-      { role: 'user', content: 'You must create questions in Vietnamese.' },
-      {
-        role: 'user',
-        content: `Generate 3 follow-up Vietnamese questions based on the following text:\n\n${responseText}\n\nReturn the Vietnamese questions in the following format: ["Vietnamese Question 1", "Vietnamese Question 2", "Vietnamese Question 3"]`
-      }
+    messages: [{
+      role: 'system',
+      content: 'You are a question generator. Generate 3 follow-up questions based on the provided text. Return the questions in an array format.'
+    },
+    {
+      role: 'user',
+      content: 'You must create questions in Vietnamese.'
+    },
+    {
+      role: 'user',
+      content: `Generate 3 follow-up Vietnamese questions based on the following text:\n\n${responseText}\n\nReturn the Vietnamese questions in the following format: ["Vietnamese Question 1", "Vietnamese Question 2", "Vietnamese Question 3"]`
+    }
     ],
     model: 'gpt-3.5-turbo-1106'
   })
@@ -267,10 +321,9 @@ const relevantQuestions = async (responseText) => {
 
 const followUpQuestions = async (sources) => {
   const groqResponse = await openai.chat.completions.create({
-    messages: [
-      {
-        role: 'system',
-        content: `
+    messages: [{
+      role: 'system',
+      content: `
         You are a Question in Vietnamese generate who generates in JSON an array of 3 follow up questions in vietnamese.
          The JSON schema should include {
           "followUp": [
@@ -280,14 +333,16 @@ const followUpQuestions = async (sources) => {
           ]
          }
         `
-      },
-      {
-        role: 'user',
-        content: ` - Here are the top results from a similarity search: ${JSON.stringify(sources)}. `
-      }
+    },
+    {
+      role: 'user',
+      content: ` - Here are the top results from a similarity search: ${JSON.stringify(sources)}. `
+    }
     ],
     model: 'gpt-3.5-turbo-1106',
-    response_format: { type: 'json_object' }
+    response_format: {
+      type: 'json_object'
+    }
   })
 
   const groqResponseParse = JSON.parse(groqResponse?.choices[0]?.message?.content ?? '{}')
@@ -298,7 +353,15 @@ const followUpQuestions = async (sources) => {
 
 // 10. Main action function that orchestrates the entire process
 export async function getAnswerResearchAssistant(dataGetAnswer) {
-  const { sessionId, standaloneQuestion, question, user_name, io, socketIdMap, type } = dataGetAnswer
+  const {
+    sessionId,
+    standaloneQuestion,
+    question,
+    user_name,
+    io,
+    socketIdMap,
+    type
+  } = dataGetAnswer
   const embedSourcesInLLMResponse = type === 'STREAMING' ? false : true
 
   console.log('standaloneQuestion', standaloneQuestion)
@@ -321,9 +384,10 @@ export async function getAnswerResearchAssistant(dataGetAnswer) {
   } else {
     sources = await getSources(standaloneQuestion)
   }
-  const html = await get10BlueLinksContents(sources)
+  const markdownContentArr = await get10BlueLinksContents(sources)
   const a = Date.now()
-  const vectorResults = await processAndVectorizeContent(html, standaloneQuestion)
+  const vectorResults = await processAndVectorizeContent(markdownContentArr, standaloneQuestion)
+
   console.log('🚀 ~ getAnswerResearchAssistant ~ vectorResults:', vectorResults)
   const b = Date.now()
   console.log(
@@ -334,33 +398,32 @@ export async function getAnswerResearchAssistant(dataGetAnswer) {
   chat_history += '\nHuman: ' + question
 
   const dataChatchatCompletion = {
-    messages: [
-      {
-        role: 'system',
-        content: `${promptRole}
+    messages: [{
+      role: 'system',
+      content: `${promptRole}
         Please answer the question, and make sure you follow ALL of the rules below:
         - Here is query: ${question}, respond back with an answer for user is as long as possible. You can based on history chat that human provided below
         - Don't try to make up an answer. If you really don't know the answer, say "I'm sorry, I don't know the answer to that." then direct the questioner to email tuyensinh@dntu.edu.vn to assist. 
         ${user_name ? '- Please mention the user\'s name when chatting. The user\'s name is' + user_name : ''}
         - Answer questions in a helpful manner that straight to the point, with clear structure & all relevant information that might help users answer the question
         - Don't answer in letter form, don't be too formal, try to answer normal chat text type as if you were chatting to a friend. You can use icons to show the friendliness
-        - Anwser should be formatted in Markdown
-        - if there are relevant images, video, links, they are very important reference data, please include them as part of the answer
+        ${type === 'STREAMING' ? '- Anwser should be formatted in Markdown (IMPORTANT) \n- If there are relevant markdown syntax have type: IMAGES, VIDEO, LINKS, TABLE (keep markdown syntax in Table), CODE, ... You must include them as part of the answer and must keep the markdown syntax'
+    : '- Please return an answer in plain text NOT MARKDOWN SYNTAX'}
         - Please answer in VIETNAMESE. Double check the spelling to see if it is correct whether you returned the answer in Vietnamese
         - ${embedSourcesInLLMResponse ? 'Return the sources used in the response with iterable numbered style.' : ''}`
-      },
-      {
-        role: 'user',
-        content:  `History chat: ${chat_history}`
-      },
-      {
-        role: 'user',
-        content: ` - Here are the top results from a similarity search: ${JSON.stringify(vectorResults)}. `
-      },
-      {
-        role: 'assistant',
-        content: '(ANSWER IN VIETNAMESE)'
-      }
+    },
+    {
+      role: 'user',
+      content: `History chat: ${chat_history}`
+    },
+    {
+      role: 'user',
+      content: ` - Here are the top results from a similarity search: ${JSON.stringify(vectorResults)}. `
+    },
+    {
+      role: 'assistant',
+      content: `(VIETNAMESE ANSWER ${type === 'STREAMING' ? 'FORMATTED IN MARKDOWN' : 'FORMATTED IN PLAIN TEXT'})`
+    }
     ],
     model: 'gpt-3.5-turbo-1106'
   }

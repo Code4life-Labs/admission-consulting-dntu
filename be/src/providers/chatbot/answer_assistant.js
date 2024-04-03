@@ -58,8 +58,8 @@ export const getAnswerNormalAssistant = async (dataGetAnswer) => {
             ${user_name ? '- Please mention the user\'s name when chatting. The user\'s name is ' + user_name : ''}
             - Answer questions in a helpful manner that straight to the point, with clear structure & all relevant information that might help users answer the question
             - Don't answer in letter form, don't be too formal, try to answer normal chat text type as if you were chatting to a friend. You can use icons to show the friendliness
-            - Anwser should be formatted in Markdown
-            - if there are relevant images, video, links, they are very important reference data, please include them as part of the answer
+            ${type === 'STREAMING' ? '- Anwser should be formatted in Markdown (IMPORTANT) \n- If there are relevant markdown syntax have type: IMAGES, VIDEO, LINKS, TABLE (keep markdown syntax in Table), CODE, ... You must include them as part of the answer and must keep the markdown syntax'
+    : '- Please return an answer in plain text NOT MARKDOWN SYNTAX'}
             - Please answer in VIETNAMESE. Double check the spelling to see if it is correct whether you returned the answer in Vietnamese
           `
       },
@@ -69,7 +69,7 @@ export const getAnswerNormalAssistant = async (dataGetAnswer) => {
       },
       {
         role: 'assistant',
-        content:  '(ANSWER IN VIETNAMESE)'
+        content:  `(VIETNAMESE ANSWER ${type === 'STREAMING' ? 'FORMATTED IN MARKDOWN' : 'FORMATTED IN PLAIN TEXT'})`
       }
     ],
     model: 'gpt-3.5-turbo-1106'

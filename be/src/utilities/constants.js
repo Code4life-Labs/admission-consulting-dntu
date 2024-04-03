@@ -28,3 +28,23 @@ export const LOGO_DNTU = 'https://res.cloudinary.com/duimhuxyz/image/upload/v171
 export const sleep = (milliseconds) => {
   return new Promise((resolve) => setTimeout(resolve, milliseconds))
 }
+
+export const dataLink = [
+  {
+    title: '22 NGÀNH ĐÀO TẠO THỰC TIỄN ĐÁP ỨNG NHU CẦU XÃ HỘI TẠI DNTU',
+    url: 'https://dntu.edu.vn/tuyen-sinh/tin-tuyen-sinh/22-nganh-dao-tao-thuc-tien-dap-ung-nhu-cau-xa-hoi-tai-dntu'
+  },
+  {
+    title: 'Các giá trị thương hiệu',
+    url: 'https://dntu.edu.vn/cac-gia-tri-thuong-hieu'
+  },
+  {
+    title: 'Công nghệ kỹ thuật điện, điện tử',
+    url: 'https://dntu.edu.vn/dao-tao/khoa-ky-thuat/cong-nghe-ky-thuat-dien-dien-tu'
+  },
+  {
+    title: 'Công nghệ Kỹ thuật Hóa học',
+    url: 'https://dntu.edu.vn/dao-tao/khoa-cong-nghe/Cong-nghe-Ky-thuat-Hoa-hoc'
+  }
+
+]
