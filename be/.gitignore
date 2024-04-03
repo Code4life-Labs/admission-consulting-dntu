@@ -10,7 +10,7 @@
 
 # production
 /build
-/src/documents
+/src/documents/*
 # other
 /src/temp
 

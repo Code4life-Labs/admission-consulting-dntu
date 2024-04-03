@@ -7,6 +7,10 @@ import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
 import { SupabaseVectorStore } from 'langchain/vectorstores/supabase'
 import { TextLoader } from 'langchain/document_loaders/fs/text'
 import { Document } from '@langchain/core/documents'
+import { deleteFolder, streamUploadMutiple, uploadFilePdf } from '../cloudinary/index'
+
+import fs from 'fs'
+import { LOGO_DNTU, sleep } from '~/utilities/constants'
 
 export const uploadDocumentsToSupabaseCloud = async (directory = 'src/documents/upload', type_file = '.pdf .txt', chunkSize = 1000, chunkOverlap = 500) => {
   const typeFileArr = type_file.split(' ')
@@ -123,34 +127,138 @@ export const uploadMultiWebsitesToSupabaseCloud = async (websiteUrls, selector =
   }
 }
 
-export const extractUrlTextInMD = () => {
+const readBufferImagePromise = (_filePath, fileName) => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(_filePath, (err, fileBuffer) => {
+      if (err) {
+        console.error('Không thể đọc tệp hình ảnh:', err)
+        reject(err)
+      } else
+        resolve({
+          origin_file_name: fileName,
+          buffer: fileBuffer
+        })
+    })
+  })
+}
 
+
+const processFileMD = (_rootFolder, _folderName) => {
+  return new Promise((resolve, reject) => {
+    // Get text in file named .md
+    // console.log(`${_rootFolder}/${_folderName}/${_folderName}.md`)
+    fs.readFile(`${_rootFolder}/${_folderName}/${_folderName}.md`, 'utf8', async (err, plainText) => {
+      if (err) {
+        reject(err)
+        return
+      }
+
+      // regex detch string in ![](_file_name) not display start with http:// or https://
+      const regex = /!\[.*?\]\((?!https?:\/\/)(.*?\.(png|jpeg))\)/g
+      const filenames = []
+
+      let match
+      while ((match = regex.exec(plainText)) !== null) {
+        filenames.push(match[1])
+      }
+
+      console.log(filenames)
+
+      console.log('filenames', filenames)
+
+      let imageBufferArr = []
+      const promises = []
+      filenames.forEach(fileName => promises.push(readBufferImagePromise(`${_rootFolder}/${_folderName}/${fileName}`, fileName)))
+
+
+      await Promise.all(promises)
+        .then((results) => {
+          imageBufferArr = results
+        })
+        .catch((err) => {
+          console.log('🚀 ~ getMutilImage ~ err:', err)
+          reject(err)
+        })
+
+      await deleteFolder(`PdfImages/${_folderName}`)
+
+      // upload all to cloudinary
+      const urlPdfImages = await streamUploadMutiple(imageBufferArr, {
+        folder: `PdfImages/${_folderName}`,
+        //để auto cloudinary tự động nhận file
+        resource_type: 'auto'
+      })
+
+      let plainTextClone = plainText
+      // console.log('🚀 ~ urlPdfImages ~ urlPdfImages:', urlPdfImages)
+      urlPdfImages.forEach(obj => {
+        plainTextClone = plainTextClone.replace(obj.origin_file_name, obj.url)
+      })
+
+      // console.log('🚀 ~ fs.readFile ~ plainTextClone:', plainTextClone)
+      // uploadFilePdf
+
+      const pdfUrlAndID = await uploadFilePdf(_folderName)
+
+      fs.writeFile(`src/documents/process_md/${_folderName}.md`, plainTextClone, err => {
+        if (err) {
+          console.error(`File ${_folderName}.md written error!`)
+          reject(err)
+        } else {
+          console.log(`File ${_folderName}.md written successfully!`)
+          resolve(new Document({ pageContent:  plainTextClone, metadata: {
+            id: pdfUrlAndID.id,
+            title: _folderName + '.pdf',
+            link: pdfUrlAndID.url,
+            favicon: LOGO_DNTU,
+            snippet: _folderName
+          }
+          }))
+        }
+      })
+    })
+  })
+}
+
+const chunkPromises = (promises, chunkSize) => {
+  const chunks = []
+  for (let i = 0; i < promises.length; i += chunkSize) {
+    chunks.push(promises.slice(i, i + chunkSize))
+  }
+  return chunks
 }
 
 export const uploadSingleDocMDToSupabase = async (data) => {
   const { chunkSize = 1000, chunkOverlap = 500 } = data
 
-  // fake
-  const textMD = `
-  Mọi thắc mắc cần tư vấn, thí sinh có thể liên hệ theo thông tin sau:
-  **TRƯỜNG ĐẠI HỌC CÔNG NGHỆ ĐỒNG NAI - 𝐃𝐨𝐧𝐠 𝐍𝐚𝐢 𝐓𝐞𝐜𝐡𝐧𝐨𝐥𝐨𝐠𝐲 (DNTU)**
-  - Mã trường: 𝐃𝐂𝐃
-  - Địa chỉ: Đường Nguyễn Khuyến, Khu phố 5, P. Trảng Dài, TP. Biên Hòa, Tỉnh Đồng Nai
-  - Website: [https://dntu.edu.vn](https://dntu.edu.vn)
-  - Fanpage: [https://facebook.com/dntuedu](https://facebook.com/dntuedu)
-  - Hotline/ Zalo: 0986.39.7733 - 0904.39.7733 hoặc (0251) 261 2241
-  - E-mail: [tuyensinh@dntu.edu.vn](mailto:tuyensinh@dntu.edu.vn)
-  - Xét tuyển online: [https://xetonline.dntu.edu.vn](https://xetonline.dntu.edu.vn)
-  - 360 virtual: [https://360campus.dntu.edu.vn](https://360campus.dntu.edu.vn)
-  `
+  const _rootFolder = 'src/documents/md'
+  const chunkSizePromise = 5
+  const promises = []
+  let documents = []
+
+  await fs.readdirSync(_rootFolder).forEach(_folderName => {
+    promises.push(processFileMD(_rootFolder, _folderName))
+  })
+
+  // Chia nhỏ mảng promises thành các chunk và thực hiện Promise.all cho từng chunk
+  const chunks = chunkPromises(promises, chunkSizePromise)
+  for (const chunk of chunks) {
+    await Promise.all(chunk)
+      .then(async results => {
+        documents = documents.concat(results)
+      })
+      .catch(err => {
+        console.log('🚀 ~ getMutilImage ~ err:', err)
+      })
+  }
+
   const textSplitter = new RecursiveCharacterTextSplitter({
     chunkSize,
     chunkOverlap
   })
 
-  const splitDocs = await textSplitter.splitDocuments([
-    new Document({ pageContent: textMD })
-  ])
+  console.log('🚀 ~ uploadSingleDocMDToSupabase ~ documents:', documents)
+  const splitDocs = await textSplitter.splitDocuments(documents)
 
   const sbApiKey = process.env.SUPABASE_API_KEY
   const sbUrl = process.env.SUPABASE_URL_LC_CHATBOT
@@ -168,3 +276,4 @@ export const uploadSingleDocMDToSupabase = async (data) => {
   )
   console.log('🚀 ~ uploadDocumentsToSupabaseCloud ~ result:', result)
 }
+

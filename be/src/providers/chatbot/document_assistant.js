@@ -8,7 +8,7 @@ export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
   const { sessionId, standaloneQuestion, question, user_name, io, socketIdMap, type } = dataGetAnswer
   // get vector
   const vectorStoreSupabase = await getVectorStoreSupabase()
-  const vectorResults = await vectorStoreSupabase.similaritySearchWithScore(standaloneQuestion, 3)
+  const vectorResults = await vectorStoreSupabase.similaritySearchWithScore(standaloneQuestion, 5)
   console.log('🚀 ~ getAnswerDocumentAssistant ~ vectorResults:', vectorResults)
   const vectorThresholds = vectorResults.filter(vector => vector[1] >= 0.83)
   console.log('🚀 ~ getAnswerDocumentAssistant ~ vectorThresholds:', vectorThresholds)
@@ -17,16 +17,30 @@ export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
     return 'NO_ANSWER'
   }
 
+  const sourcesResult = []
+  vectorThresholds.forEach(vectorThreshold => {
+    const metadataId = vectorThreshold[0].metadata?.id
+    const existId = sourcesResult.find(s => s.id === metadataId)
+    if (!existId) sourcesResult.push(vectorThreshold[0].metadata)
+  })
+  console.log('🚀 ~ getAnswerDocumentAssistant ~ sourcesResult:', sourcesResult)
+  if (type === 'STREAMING') {
+    io.to(socketIdMap[sessionId]).emit('s_create_relevant_info', {
+      type: 'related_content',
+      sourcesResult: sourcesResult
+    })
+  }
+
   const openai = new OpenAI({ apiKey: env.OPENAI_API_KEY })
 
   let chat_history = await getChatHistoryConvertString(sessionId)
   chat_history += '\nHuman: ' + question
-  // - Don't try to make up an answer. If you really don't know the answer, say "I'm sorry, I don't know the answer to that." then direct the questioner to email tuyensinh@dntu.edu.vn to assist.
 
   const dataChatchatCompletion = {
     messages: [
       {
         role: 'system',
+        // - Don't try to make up an answer. If you really don't know the answer, say "I'm sorry, I don't know the answer to that." then direct the questioner to email tuyensinh@dntu.edu.vn to assist.
         content: `${promptRole}
         Please answer the question, and make sure you follow ALL of the rules below:
         - Here is query: ${question}, respond back with an answer for user is as long as possible. You can based on history chat that human provided below
@@ -36,6 +50,7 @@ export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
         - Anwser should be formatted in Markdown (IMPORTANT)
         - If there are relevant markdown syntax have type: IMAGES, VIDEO, LINKS, TABLE (keep markdown syntax in Table), CODE, ... You must include them as part of the answer and must keep the markdown syntax
         - Please answer in VIETNAMESE. Double check the spelling to see if it is correct whether you returned the answer in Vietnamese
+        - ${type !== 'STREAMING' ? 'Return the sources used in the response with iterable numbered style.' : ''}
       `
       },
       {

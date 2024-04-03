@@ -14,6 +14,7 @@ import removeMarkdown from 'markdown-to-text'
 async function getSpeechByText(req, res) {
   try {
     const text = removeMarkdown(req.body.text)
+    console.log('🚀 ~ getSpeechByText ~ text:', text)
     const format = 'aac'
     const buf = await ChatGptProvider.generateSpeech(text)
     res.setHeader('Content-Type', 'audio/' + format)

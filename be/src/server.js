@@ -81,8 +81,7 @@ const bootServer = () => {
   })
 
   server.listen(process.env.PORT || env.APP_PORT, () => {
-    console.log(`Hello
-    FSN, I'm running at port: ${process.env.PORT || env.APP_PORT}`)
+    console.log(`🤖 Hello FSN, I'm running at port: ${process.env.PORT || env.APP_PORT}`)
     // getAnswerNormalAssistant({
     //   sessionId: 'dasd',
     //   question: 'Sựu khác nhau giữa coder và dev',
