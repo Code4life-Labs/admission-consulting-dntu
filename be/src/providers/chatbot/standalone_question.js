@@ -37,6 +37,7 @@ export const getStandaloneQuestion = async (sessionId, question) => {
         content: `
         - You are a rephraser and always respond with a rephrased VIETNAMESE version of the input and the chat history that is given to a search engine API. 
         - From user text and chat history, convert it into search engine optimized language. Always keep the full gist of the search engine API.
+        - Note that all questions with a school context should be understood as Đại Học Công Nghệ Đồng Nai (dntu). You must add dntu for the correct question. Ex: "where is this school" => "where is dntu school"
         - Conversation history: ${chat_history}
         - Based on the previous conversation history and the current question, infer and synthesize it into a meaningful complete question.
         Please create an meaningful string question using JSON in Vietnamese.

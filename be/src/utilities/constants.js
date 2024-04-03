@@ -23,3 +23,8 @@ if (env.BUILD_MODE === 'production') {
 }
 
 export const WEBSITE_DOMAIN = websiteDomain
+
+export const LOGO_DNTU = 'https://res.cloudinary.com/duimhuxyz/image/upload/v1712133135/logo/Logo-DH-Cong-Nghe-Dong-Nai-DNTU_ceqecf.webp'
+export const sleep = (milliseconds) => {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds))
+}

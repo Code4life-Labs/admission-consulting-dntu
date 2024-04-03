@@ -21,7 +21,7 @@ export default function Ref(props) {
         {
           props.sources.map((source, index) => (
             <p className="flex items-center mb-2" key={index}>
-              <img className="w-4 h-4 xl:w-6 xl:h-6" src={source.favicon} />
+              <img className="w-4 h-4 xl:w-6 xl:h-6 ms-4 object-contain" src={source.favicon} />
               <a className="ml-5 underline decoration-1 text-cyan-600 hover:text-cyan-800" target="_blank" href={source.link} rel="noreferrer">{source.title}</a>
             </p>
           ))
