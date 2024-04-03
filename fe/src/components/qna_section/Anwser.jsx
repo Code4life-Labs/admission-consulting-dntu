@@ -171,7 +171,18 @@ export default function Anwser(props) {
       answerStateFns.updateSpeechRequestStatus(SpeechRequestStatus.fulfilled);
       answerStateFns.toggleSpeechPlaying();
     }).catch(function() {
-      answerStateFns.updateSpeechRequestStatus(SpeechRequestStatus.static);
+      // If false, request to fpt ai
+      SpeechAPI.FPTAI.getSpeechURLAsync()
+      .then(function(data) {
+        const url = data.audio;
+        props.updateAudioURL(url);
+        answerStateFns.updateLocalAudioURL(url);
+        answerStateFns.updateSpeechRequestStatus(SpeechRequestStatus.fulfilled);
+        answerStateFns.toggleSpeechPlaying();
+      })
+      .catch(function() {
+        answerStateFns.updateSpeechRequestStatus(SpeechRequestStatus.static);
+      })
     });
 
     // Request fake speech
