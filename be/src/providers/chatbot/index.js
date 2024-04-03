@@ -4,12 +4,17 @@ import { getAnswerNormalAssistant } from './answer_assistant'
 import { getAnswerResearchAssistant } from './research_assistant'
 import { getStandaloneQuestion } from './standalone_question'
 import { getAnswerDocumentAssistant } from './document_assistant'
+import { getAnswerModerationAssistant } from './moderation_assistant'
+import { badWords } from 'vn-badwords'
 
 
 export const getAnswerChatBot = async (dataGetAnswer) => {
+  let response = ''
+  // Check moderation
+  const sensitiveDeteched = await getAnswerModerationAssistant(dataGetAnswer)
+  if (sensitiveDeteched) return sensitiveDeteched
   // simplify question output
   const classification = await getClassificationResult(dataGetAnswer.sessionId, dataGetAnswer.question)
-  let response = ''
   if (classification === 'ANSWER_NORMAL') {
     console.log('🤖 Agent: ', 'I\'m looking to in ANSWER NORMAL....')
     const answerNormalAssistant = await getAnswerNormalAssistant(dataGetAnswer)

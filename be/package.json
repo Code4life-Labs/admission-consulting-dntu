@@ -37,6 +37,7 @@
     "joi": "^17.12.2",
     "langchain": "^0.1.30",
     "langsmith": "^0.1.14",
+    "markdown-to-text": "^0.1.1",
     "mongodb": "^6.3.0",
     "openai": "^4.29.2",
     "pdf-lib": "^1.17.1",
@@ -44,6 +45,7 @@
     "rimraf": "^5.0.5",
     "socket.io": "^4.7.5",
     "sqlite3": "^5.1.7",
+    "vn-badwords": "^1.2.1-fix-2",
     "zod": "^3.22.4"
   },
   "devDependencies": {

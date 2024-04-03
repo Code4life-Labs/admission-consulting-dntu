@@ -5,7 +5,7 @@ import { ChatGptProvider } from '~/providers/gpt/ChatGptProvider'
 
 // Import from utils
 import { HttpStatusCode } from '~/utilities/constants'
-
+import removeMarkdown from 'markdown-to-text'
 /**
  * Use this function to insert a speech to database.
  * @param {Request} req
@@ -13,7 +13,7 @@ import { HttpStatusCode } from '~/utilities/constants'
  */
 async function getSpeechByText(req, res) {
   try {
-    const text = req.body.text
+    const text = removeMarkdown(req.body.text)
     const format = 'aac'
     const buf = await ChatGptProvider.generateSpeech(text)
     res.setHeader('Content-Type', 'audio/' + format)

@@ -2,7 +2,7 @@
 
 import dialogflow from '@google-cloud/dialogflow'
 import { dfConfig } from '~/config/dfConfig'
-import { uploadDocumentsToSupabaseCloud, uploadMultiWebsitesToSupabaseCloud, uploadWebsiteToSupabaseCloud } from '~/providers/chatbot/upload_documents'
+import { uploadDocumentsToSupabaseCloud, uploadMultiWebsitesToSupabaseCloud, uploadSingleDocMDToSupabase, uploadWebsiteToSupabaseCloud } from '~/providers/chatbot/upload_documents'
 import { ChatGptProvider } from '~/providers/gpt/ChatGptProvider'
 
 const uploadMultiDocsWebsite = async (data) => {
@@ -45,8 +45,23 @@ const testScratchWebsite = async (data) => {
   }
 }
 
+const uploadSingleDocMD = async (data) => {
+  console.log('🚀 ~ uploadSingleDocMD ~ data:', data)
+  // data = {
+  //   text: string,
+  //   languageConvert: string
+  // }
+  try {
+    const result = await uploadSingleDocMDToSupabase(data)
+    return result
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const ChatbotService = {
   uploadMultiDocsWebsite,
   uploadMultiDocs,
-  testScratchWebsite
+  testScratchWebsite,
+  uploadSingleDocMD
 }

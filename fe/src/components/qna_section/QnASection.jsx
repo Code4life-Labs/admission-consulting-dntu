@@ -38,7 +38,7 @@ function Introduction() {
  * @returns 
  */
 export default function QnASection() {
-
+  const [count, setCount] = React.useState(0)
   const [qnaState, qnaStateFns] = useStateWESSFns(
     {
       qna: [],
@@ -54,6 +54,21 @@ export default function QnASection() {
          */
         appendMessage: function(content, type) {
           changeState("qna", function(data) {
+            console.log("🚀 ~ changeState ~ data:", data)
+            if(data && data[data.length - 1] && (data[data.length - 1]?.isLoading || (data[data.length - 1]?.type === "related_content" && data[data.length - 2]?.type === "related_content")) ) data.pop();
+            return [...data, { content, type }]
+          })
+        },
+
+
+        /**
+         * Use this function to update last message, it can be question or answer, to `qna` and update state.
+         * @param {string} content 
+         * @param {string} type 
+         */
+        updateLastMessage: function(content, type) {
+          changeState("qna", function(data) {
+            if (data && data[data.length - 1] && data[data.length - 1]?.type !== "related_content") data.pop()
             return [...data, { content, type }]
           })
         },
@@ -122,13 +137,15 @@ export default function QnASection() {
   const handleListenCreateAnswer = (dataReturn) => {
     // đầu tiên sẽ update state response
     if (dataReturn.isOver && dataReturn.isOver === 'DONE' && dataReturn.responseObj) {
-      console.log("🚀 ~ handleListenCreateAnswer ~ dataReturn.allText:", [dataReturn.responseObj]);
-      qnaStateFns.appendMessage(dataReturn.responseObj, dataReturn.responseObj.type);
+      // console.log("🚀 ~ handleListenCreateAnswer ~ dataReturn.allText:", [dataReturn.responseObj]);
+      qnaStateFns.updateLastMessage(dataReturn.responseObj.content, dataReturn.responseObj.type);
+      setCount(0);
+      console.log("🚀 ~ handleListenCreateAnswer ~ setCount:", count)
       // cuối cùng sẽ ngắt kết nối
-      socketIoInstance.removeAllListeners('s_create_answer');
+      // socketIoInstance.removeAllListeners('s_create_answer');
     } else {
       // console.log("🚀 ~ handleListenCreateAnswer ~ dataReturn.messageReturn:", [dataReturn.responseObj])
-      qnaStateFns.appendMessage(dataReturn.responseObj, dataReturn.responseObj.type);
+      qnaStateFns.updateLastMessage(dataReturn.responseObj.content, dataReturn.responseObj.type);
     }
   };
 
@@ -138,39 +155,44 @@ export default function QnASection() {
     qnaStateFns.appendMessage(text, "question");
     inputElement.value = "";
   }
+  React.useEffect(() => {
+    socketIoInstance.on('s_create_relevant_info', (data) => {
+      if (count === 0) {
+        setCount(count + 1);
+        console.log("🚀 ~ socketIoInstance.on ~ count:", count)
+        console.log("🚀 ~ socketIoInstance.on ~ s_create_relevant_info:", data);
+        // socketIoInstance.removeAllListeners('s_create_relevant_info');
+        // qnaStateFns.updateIsResponding(false);
+  
+        let content = {};
+  
+        if(data.imagesResult && data.imagesResult.length) content.imagesResult = data.imagesResult;
+        if(data.videosResult && data.videosResult.length) content.videosResult = data.videosResult;
+        if(data.sourcesResult && data.sourcesResult.length) content.sourcesResult = data.sourcesResult;
+  
+        qnaStateFns.appendMessage(content, data.type);
 
-  // Tracking length of qna
-  React.useEffect(function() {
-    if(qnaState.qna.length === 0) return;
+        qnaStateFns.appendSuspendedMessage();
+      }
+    })
 
     // lắng nghe sự kiện mỗi lần có câu hỏi mới
-    let X = 0
     socketIoInstance.on('s_create_answer', (data) => {
-      if (data.responseObj.content.trim() !== "" && X === 0) {
-        // qnaStateFns.updateIsResponding(false);
-        X++;
+      if (data.responseObj.content.trim() !== "") {
+        qnaStateFns.updateIsResponding(false);
       }
       handleListenCreateAnswer(data)
     })
-
-    socketIoInstance.on('s_create_relevant_info', (data) => {
-      console.log("🚀 ~ socketIoInstance.on ~ s_create_relevant_info:", data);
-      socketIoInstance.removeAllListeners('s_create_relevant_info');
-      qnaStateFns.updateIsResponding(false);
-
-      let content = {};
-
-      if(data.imagesResult) content.imagesResult = data.imagesResult;
-      if(data.videosResult) content.videosResult = data.videosResult;
-      if(data.sourcesResult) content.sourcesResult = data.sourcesResult;
-
-      qnaStateFns.appendMessage(content, data.type);
-    })
+  }, [])
+  // Tracking length of qna
+  React.useEffect(function() {
+    if(qnaState.qna.length === 0) return;
+    console.log("🚀 ~ React.useEffect ~ qnaState.qna:", qnaState.qna)
 
 
     let N = qnaState.qna.length;
     let lastMessage = qnaState.qna[N - 1];
-    console.log("🚀 ~ React.useEffect ~ lastMessage:", lastMessage)
+    // console.log("🚀 ~ React.useEffect ~ lastMessage:", lastMessage)
 
     if(lastMessage.type !== "question") return;
 
@@ -183,8 +205,8 @@ export default function QnASection() {
       user_name: "" // username có thể lấy khi nhập dùng mở ô chatbot lên đầu tiên và mình sẽ hỏi tên sau đó lưu vào local stored lần sau thì không hỏi nữa
     }
     
-    console.log("🚀 ~ React.useEffect ~ requestEmit:", requestEmit)
-    console.log("🚀 ~ React.useEffect ~ qnaState.qna:", qnaState.qna)
+    // console.log("🚀 ~ React.useEffect ~ requestEmit:", requestEmit)
+    // console.log("🚀 ~ React.useEffect ~ qnaState.qna:", qnaState.qna)
 
     // emit sự kiện
     socketIoInstance.emit('c_create_answer', requestEmit);
