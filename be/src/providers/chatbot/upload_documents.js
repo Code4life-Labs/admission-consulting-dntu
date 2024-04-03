@@ -10,7 +10,36 @@ import { Document } from '@langchain/core/documents'
 import { deleteFolder, streamUploadMutiple, uploadFilePdf } from '../cloudinary/index'
 
 import fs from 'fs'
-import { LOGO_DNTU, sleep } from '~/utilities/constants'
+import { LOGO_DNTU, dataLink, sleep } from '~/utilities/constants'
+import { getRandomID } from '~/utilities/func'
+
+export const uploadWithTextSplitter = async (docs, chunkSize = 1000, chunkOverlap = 500) => {
+
+
+  const textSplitter = new RecursiveCharacterTextSplitter({
+    chunkSize,
+    chunkOverlap
+  })
+
+  const splitDocs = await textSplitter.splitDocuments(docs)
+
+  const sbApiKey = process.env.SUPABASE_API_KEY
+  const sbUrl = process.env.SUPABASE_URL_LC_CHATBOT
+  const openAIApiKey = process.env.OPENAI_API_KEY
+
+  const client = createClient(sbUrl || '', sbApiKey || '')
+
+  const result = await SupabaseVectorStore.fromDocuments(
+    splitDocs,
+    new OpenAIEmbeddings({ openAIApiKey }),
+    {
+      client,
+      tableName: 'documents'
+    }
+  )
+
+  return result
+}
 
 export const uploadDocumentsToSupabaseCloud = async (directory = 'src/documents/upload', type_file = '.pdf .txt', chunkSize = 1000, chunkOverlap = 500) => {
   const typeFileArr = type_file.split(' ')
@@ -27,27 +56,7 @@ export const uploadDocumentsToSupabaseCloud = async (directory = 'src/documents/
 
     const docs = await directoryLoader.load()
 
-    const textSplitter = new RecursiveCharacterTextSplitter({
-      chunkSize,
-      chunkOverlap
-    })
-
-    const splitDocs = await textSplitter.splitDocuments(docs)
-
-    const sbApiKey = process.env.SUPABASE_API_KEY
-    const sbUrl = process.env.SUPABASE_URL_LC_CHATBOT
-    const openAIApiKey = process.env.OPENAI_API_KEY
-
-    const client = createClient(sbUrl || '', sbApiKey || '')
-
-    const result = await SupabaseVectorStore.fromDocuments(
-      splitDocs,
-      new OpenAIEmbeddings({ openAIApiKey }),
-      {
-        client,
-        tableName: 'documents'
-      }
-    )
+    const result = await uploadWithTextSplitter(docs, chunkSize, chunkOverlap)
     console.log('🚀 ~ uploadDocumentsToSupabaseCloud ~ result:', result)
     return 'OK'
   } catch (err) {
@@ -166,56 +175,72 @@ const processFileMD = (_rootFolder, _folderName) => {
 
       console.log('filenames', filenames)
 
-      let imageBufferArr = []
-      const promises = []
-      filenames.forEach(fileName => promises.push(readBufferImagePromise(`${_rootFolder}/${_folderName}/${fileName}`, fileName)))
+      // trường hợp file name không có  gì để upload
+      if (filenames && filenames.length) {
+
+        let imageBufferArr = []
+        const promises = []
+        filenames.forEach(fileName => promises.push(readBufferImagePromise(`${_rootFolder}/${_folderName}/${fileName}`, fileName)))
 
 
-      await Promise.all(promises)
-        .then((results) => {
-          imageBufferArr = results
+        await Promise.all(promises)
+          .then((results) => {
+            imageBufferArr = results
+          })
+          .catch((err) => {
+            console.log('🚀 ~ getMutilImage ~ err:', err)
+            reject(err)
+          })
+
+        await deleteFolder(`PdfImages/${_folderName}`)
+
+        // upload all to cloudinary
+        const urlPdfImages = await streamUploadMutiple(imageBufferArr, {
+          folder: `PdfImages/${_folderName}`,
+          //để auto cloudinary tự động nhận file
+          resource_type: 'auto'
         })
-        .catch((err) => {
-          console.log('🚀 ~ getMutilImage ~ err:', err)
-          reject(err)
+
+        let plainTextClone = plainText
+        // console.log('🚀 ~ urlPdfImages ~ urlPdfImages:', urlPdfImages)
+        urlPdfImages.forEach(obj => {
+          plainTextClone = plainTextClone.replace(obj.origin_file_name, obj.url)
         })
 
-      await deleteFolder(`PdfImages/${_folderName}`)
+        // console.log('🚀 ~ fs.readFile ~ plainTextClone:', plainTextClone)
+        // uploadFilePdf
 
-      // upload all to cloudinary
-      const urlPdfImages = await streamUploadMutiple(imageBufferArr, {
-        folder: `PdfImages/${_folderName}`,
-        //để auto cloudinary tự động nhận file
-        resource_type: 'auto'
-      })
+        const pdfUrlAndID = await uploadFilePdf(_folderName)
 
-      let plainTextClone = plainText
-      // console.log('🚀 ~ urlPdfImages ~ urlPdfImages:', urlPdfImages)
-      urlPdfImages.forEach(obj => {
-        plainTextClone = plainTextClone.replace(obj.origin_file_name, obj.url)
-      })
-
-      // console.log('🚀 ~ fs.readFile ~ plainTextClone:', plainTextClone)
-      // uploadFilePdf
-
-      const pdfUrlAndID = await uploadFilePdf(_folderName)
-
-      fs.writeFile(`src/documents/process_md/${_folderName}.md`, plainTextClone, err => {
-        if (err) {
-          console.error(`File ${_folderName}.md written error!`)
-          reject(err)
-        } else {
-          console.log(`File ${_folderName}.md written successfully!`)
-          resolve(new Document({ pageContent:  plainTextClone, metadata: {
-            id: pdfUrlAndID.id,
-            title: _folderName + '.pdf',
-            link: pdfUrlAndID.url,
-            favicon: LOGO_DNTU,
-            snippet: _folderName
+        fs.writeFile(`src/documents/process_md/${_folderName}.md`, plainTextClone, err => {
+          if (err) {
+            console.error(`File ${_folderName}.md written error!`)
+            reject(err)
+          } else {
+            console.log(`File ${_folderName}.md written successfully!`)
+            resolve(new Document({ pageContent:  plainTextClone, metadata: {
+              id: pdfUrlAndID.id,
+              title: _folderName + '.pdf',
+              link: pdfUrlAndID.url,
+              favicon: LOGO_DNTU,
+              snippet: _folderName
+            }
+            }))
           }
-          }))
-        }
-      })
+        })
+      } else {
+        // tạo ngẫu nhiên ID
+        const id = getRandomID()
+        const linkObj = dataLink.find(i => i.title === _folderName)
+
+        resolve(new Document({ pageContent:  plainText, metadata: {
+          id, // tự tạo ra id
+          title: _folderName,
+          link: linkObj.url, // kiếm từ list
+          favicon: LOGO_DNTU,
+          snippet: _folderName
+        } }))
+      }
     })
   })
 }

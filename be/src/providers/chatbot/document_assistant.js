@@ -8,9 +8,9 @@ export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
   const { sessionId, standaloneQuestion, question, user_name, io, socketIdMap, type } = dataGetAnswer
   // get vector
   const vectorStoreSupabase = await getVectorStoreSupabase()
-  const vectorResults = await vectorStoreSupabase.similaritySearchWithScore(standaloneQuestion, 5)
+  const vectorResults = await vectorStoreSupabase.similaritySearchWithScore(standaloneQuestion, 3)
   console.log('🚀 ~ getAnswerDocumentAssistant ~ vectorResults:', vectorResults)
-  const vectorThresholds = vectorResults.filter(vector => vector[1] >= 0.83)
+  const vectorThresholds = vectorResults.filter(vector => vector[1] >= 0.88)
   console.log('🚀 ~ getAnswerDocumentAssistant ~ vectorThresholds:', vectorThresholds)
 
   if (vectorThresholds.length === 0) {
@@ -47,10 +47,10 @@ export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
         ${user_name ? '- Please mention the user\'s name when chatting. The user\'s name is' + user_name : ''}
         - Answer questions in a helpful manner that straight to the point, with clear structure & all relevant information that might help users answer the question
         - Don't answer in letter form, don't be too formal, try to answer normal chat text type as if you were chatting to a friend. You can use icons to show the friendliness
-        - Anwser should be formatted in Markdown (IMPORTANT)
-        - If there are relevant markdown syntax have type: IMAGES, VIDEO, LINKS, TABLE (keep markdown syntax in Table), CODE, ... You must include them as part of the answer and must keep the markdown syntax
+        ${type === 'STREAMING' ? '- Anwser should be formatted in Markdown (IMPORTANT) \n- If there are relevant markdown syntax have type: IMAGES, VIDEO, LINKS, TABLE (keep markdown syntax in Table), CODE, ... You must include them as part of the answer and must keep the markdown syntax'
+    : '- Please return an answer in plain text NOT MARKDOWN SYNTAX'}
         - Please answer in VIETNAMESE. Double check the spelling to see if it is correct whether you returned the answer in Vietnamese
-        - ${type !== 'STREAMING' ? 'Return the sources used in the response with iterable numbered style.' : ''}
+        ${type !== 'STREAMING' ? '- Return the sources used in the response with iterable numbered style.' : ''}
       `
       },
       {
@@ -63,7 +63,7 @@ export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
       },
       {
         role: 'assistant',
-        content:  '(VIETNAMESE ANSWER FORMATTED IN MARKDOWN.)'
+        content:  `(VIETNAMESE ANSWER ${type === 'STREAMING' ? 'FORMATTED IN MARKDOWN' : 'FORMATTED IN PLAIN TEXT'})`
       }
     ],
     model: 'gpt-3.5-turbo-1106'
