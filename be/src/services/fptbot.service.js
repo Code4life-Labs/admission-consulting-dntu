@@ -92,7 +92,8 @@ async function getSpeech(text) {
   const headers = {
     api_key: env.FPT_TTS_API_KEY,
     voice: 'linhsan',
-    callback_url: env.MY_DOMAIN + 'v1/speech/fpt/callback'
+    callback_url: env.MY_DOMAIN + 'v1/speech/fpt/callback',
+    speed: '+1'
   }
 
   return axios.post(TTS_URL, { text }, { headers })
