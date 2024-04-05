@@ -35,8 +35,12 @@ export const updateCallbackAudioSocket = (key, value) => {
       ...callbackAudioSocket,
       [key]: value
     }
+  console.log('🚀 ~ updateCallbackAudioSocket ~ callbackAudioSocket:', callbackAudioSocket)
 }
 
+export const deleteCallbackAudioSocket = (key) => {
+  delete callbackAudioSocket[key]
+}
 // Phuong: sử dụng express
 const app = express()
 app.use((req, res, next) => {
