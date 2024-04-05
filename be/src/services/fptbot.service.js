@@ -3,7 +3,7 @@ import { env } from '~/config/environment'
 import { getAnswerChatBot } from '~/providers/chatbot'
 import { addChatHistory } from '~/providers/chatbot/utils/upstash_chat_history'
 import axios from 'axios'
-import { callbackAudioSocket, io, socketIdMap } from '~/server'
+import { callbackAudioSocket, deleteCallbackAudioSocket, io, socketIdMap } from '~/server'
 
 const _botBaseURL_ = 'https://bot.fpt.ai'
 const _v3APIBaseURL_ = 'https://v3-api.fpt.ai'
@@ -155,10 +155,12 @@ const getCallBack = async (data) => {
       console.log('success!')
       const sessionID = callbackAudioSocket[data.message]
 
+      console.log('io!', io)
+
       io.to(socketIdMap[sessionID]).emit('s_callback_audio_success', data.message)
 
       // cuối cùng nhớ xóa để giải phóng bộ nhớ
-      delete callbackAudioSocket[data.message]
+      deleteCallbackAudioSocket(data.message)
 
       return
     } else {

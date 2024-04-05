@@ -91,7 +91,6 @@ async function getSpeechURL(req, res) {
     // vào mảng global state
     // eslint-disable-next-line no-import-assign
     updateCallbackAudioSocket(url, sessionId)
-    console.log('🚀 ~ getSpeechURL ~ callbackAudioSocket:', callbackAudioSocket)
 
     return res.status(HttpStatusCode.OK).json({ audio: url })
   } catch (error) {
