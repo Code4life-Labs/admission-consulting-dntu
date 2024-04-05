@@ -30,7 +30,7 @@ export default function VideosRef(props) {
           href={props.videos[i].link} target="_blank" rel="noreferrer"
         >
           <span
-            className="material-symbols-outlined relative w-full h-full z-10 flex justify-center items-center text-4xl text-white bg-zinc-400/50"
+            className="material-symbols-outlined relative w-full h-full z-[4] flex justify-center items-center text-4xl text-white bg-zinc-400/50"
           >play_circle</span>
           <img className="w-full absolute object-cover rounded-xl text-white" src={props.videos[i].imageUrl} />
         </a>

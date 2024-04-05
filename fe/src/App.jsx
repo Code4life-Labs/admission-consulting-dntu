@@ -33,7 +33,7 @@ function App() {
       <HomePage />
       {/* Modal */}
       <TunangnModal
-        className="fixed hidden w-full h-screen top-0 left-0 bg-black-200 z-50"
+        className="fixed hidden w-full h-screen top-0 left-0 bg-black-300 z-50"
         items={{
           [DialogNames.normal]: {
             type: "dialog",

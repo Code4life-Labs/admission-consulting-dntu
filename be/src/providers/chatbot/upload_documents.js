@@ -11,7 +11,7 @@ import { deleteFolder, streamUploadMutiple, uploadFilePdf } from '../cloudinary/
 
 import fs from 'fs'
 import { LOGO_DNTU, dataLink, sleep } from '~/utilities/constants'
-import { getRandomID } from '~/utilities/func'
+import { convertToSlug, getRandomID } from '~/utilities/func'
 
 export const uploadWithTextSplitter = async (docs, chunkSize = 1000, chunkOverlap = 500) => {
 
@@ -192,11 +192,12 @@ const processFileMD = (_rootFolder, _folderName) => {
             reject(err)
           })
 
-        await deleteFolder(`PdfImages/${_folderName}`)
+        const slugFolderName = convertToSlug(_folderName)
+        // await deleteFolder(`PdfImages/${slugFolderName}`)
 
         // upload all to cloudinary
         const urlPdfImages = await streamUploadMutiple(imageBufferArr, {
-          folder: `PdfImages/${_folderName}`,
+          folder: `PdfImages/${slugFolderName}`,
           //để auto cloudinary tự động nhận file
           resource_type: 'auto'
         })
@@ -210,7 +211,7 @@ const processFileMD = (_rootFolder, _folderName) => {
         // console.log('🚀 ~ fs.readFile ~ plainTextClone:', plainTextClone)
         // uploadFilePdf
 
-        const pdfUrlAndID = await uploadFilePdf(_folderName)
+        const pdfUrlAndID = await uploadFilePdf(slugFolderName)
 
         fs.writeFile(`src/documents/process_md/${_folderName}.md`, plainTextClone, err => {
           if (err) {

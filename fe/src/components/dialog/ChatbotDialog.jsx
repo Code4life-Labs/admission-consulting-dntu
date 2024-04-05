@@ -31,10 +31,10 @@ export default function ChatbotDialog(props) {
 
   return (
     <DialogLayout
-      className="w-screen h-screen bg-transparent flex overflow-auto p-6"
+      className="w-screen h-screen bg-transparent flex overflow-auto p-8"
     >
-      <div className="w-full bg-white rounded-xl max-w-[1280px] m-auto p-3">
-        <header className="w-full flex justify-between">
+      <div className="w-full bg-white rounded-xl max-w-[1280px] m-auto pt-3 pb-8">
+        <header className="w-full flex justify-between px-3">
           <h1 className="font-bold text-2xl text-rose-800">DNTU AI</h1>
           <Button
             hasPadding={false}

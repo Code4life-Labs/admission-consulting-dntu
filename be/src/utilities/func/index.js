@@ -9,3 +9,7 @@ export const getRandomID = (length = 18) => {
   }
   return result
 }
+
+export function convertToSlug(text) {
+  return text.toLowerCase().replace(/ /g, '_')
+}

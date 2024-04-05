@@ -16,6 +16,7 @@ import http from 'http'
 import socketIo from 'socket.io'
 import { createSocketIdMap } from './sockets/userSocket'
 import { createAnswerFromAI } from './sockets/answerSocket'
+import { generateTextFromVoice } from './providers/gpt/ChatGptProvider'
 
 
 connectDB()
@@ -26,32 +27,43 @@ connectDB()
     process.exit(1)
   })
 
+export let callbackAudioSocket = {}
+
+export const updateCallbackAudioSocket = (key, value) => {
+  if (!callbackAudioSocket[key])
+    callbackAudioSocket = {
+      ...callbackAudioSocket,
+      [key]: value
+    }
+}
+
+// Phuong: sử dụng express
+const app = express()
+app.use((req, res, next) => {
+  res.set('Cache-Control', 'no-store')
+  next()
+})
+
+app.use(cookieParser())
+
+app.use(cors({ origin: '*' }))
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
+app.use('/v1', apiV1)
+
+export let socketIdMap = {}
+
+const server = http.createServer(app)
+export const io = socketIo(server, {
+  cors: {
+    origin: env.BUILD_MODE === 'dev' ? 'http://localhost:5173' : 'https://admission-consulting-dntu-drab.vercel.app',
+    methods: ['GET', 'POST']
+  }
+})
 
 const bootServer = () => {
-  // Phuong: sử dụng express
-  const app = express()
-  app.use((req, res, next) => {
-    res.set('Cache-Control', 'no-store')
-    next()
-  })
 
-  app.use(cookieParser())
-
-  app.use(cors({ origin: '*' }))
-  app.use(express.json())
-  app.use(express.urlencoded({ extended: true }))
-
-  app.use('/v1', apiV1)
-
-  let socketIdMap = {}
-
-  const server = http.createServer(app)
-  const io = socketIo(server, {
-    cors: {
-      origin: env.BUILD_MODE === 'dev' ? 'http://localhost:5173' : 'https://admission-consulting-dntu-drab.vercel.app',
-      methods: ['GET', 'POST']
-    }
-  })
   io.on('connection', (socket) => {
     // cho id tham gia vào mạng
     socket.join(socket.id)
@@ -82,6 +94,7 @@ const bootServer = () => {
 
   server.listen(process.env.PORT || env.APP_PORT, () => {
     console.log(`🤖 Hello FSN, I'm running at port: ${process.env.PORT || env.APP_PORT}`)
+    // generateTextFromVoice()
     // getAnswerNormalAssistant({
     //   sessionId: 'dasd',
     //   question: 'Sựu khác nhau giữa coder và dev',

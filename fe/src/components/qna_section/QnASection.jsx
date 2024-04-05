@@ -16,6 +16,9 @@ import qnaSectionData from "src/assets/data/qnasection.json"
 import createQnARenderer from './features/createQnARenderer';
 import { socketIoInstance } from 'src/App';
 
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
+import { models } from 'src/utils/other';
+
 /**
  * Use this function to render introduction text of DNTU AI
  * @returns 
@@ -38,6 +41,15 @@ function Introduction() {
  * @returns 
  */
 export default function QnASection() {
+
+  const {
+    listening,
+    resetTranscript,
+    interimTranscript
+  } = useSpeechRecognition();
+
+  const [showStopGenerate, setShowStopGenerate] = React.useState(false)
+  const [model, setModel] = React.useState(models[0].id)
   const [count, setCount] = React.useState(0)
   const [qnaState, qnaStateFns] = useStateWESSFns(
     {
@@ -54,7 +66,7 @@ export default function QnASection() {
          */
         appendMessage: function(content, type) {
           changeState("qna", function(data) {
-            console.log("🚀 ~ changeState ~ data:", data)
+            // console.log("🚀 ~ changeState ~ data:", data)
             if(data && data[data.length - 1] && (data[data.length - 1]?.isLoading || (data[data.length - 1]?.type === "related_content" && data[data.length - 2]?.type === "related_content")) ) data.pop();
             return [...data, { content, type }]
           })
@@ -95,6 +107,18 @@ export default function QnASection() {
             else return [...data, response];
           }, function(data) { return !data[data.length - 1].isLoading; })
         },
+
+        /**
+         * Use this function to update last message (suspended answer) to response.
+         * A response contains ref (link), answer (text), media ref (image and video).
+         * Remove suspend message first.
+         * @param {any} response 
+         */
+        // removeLoading: function() {
+        //   changeState("qna", function(data) {
+        //     return data.pop()
+        //   })
+        // },
 
         /**
          * Use this function to update `isResponding` state.
@@ -142,7 +166,9 @@ export default function QnASection() {
       setCount(0);
       console.log("🚀 ~ handleListenCreateAnswer ~ setCount:", count)
       // cuối cùng sẽ ngắt kết nối
-      // socketIoInstance.removeAllListeners('s_create_answer');
+      socketIoInstance.removeAllListeners('s_create_answer');
+      setShowStopGenerate(false)
+
     } else {
       // console.log("🚀 ~ handleListenCreateAnswer ~ dataReturn.messageReturn:", [dataReturn.responseObj])
       qnaStateFns.updateLastMessage(dataReturn.responseObj.content, dataReturn.responseObj.type);
@@ -150,12 +176,40 @@ export default function QnASection() {
   };
 
   const appendMessageWithQuestionInputElement = function(inputElement) {
-    if(!inputElement) return;
     let text = inputElement.value;
+    if(!inputElement || !text) return;
     qnaStateFns.appendMessage(text, "question");
     inputElement.value = "";
+    setShowStopGenerate(true)
+    handleListeningEvent()
   }
-  React.useEffect(() => {
+  const startMicroPhone = () => {
+    SpeechRecognition.startListening({ language: 'vi-VN', continuous: true })
+  }
+
+  const stopMicroPhone = () => {
+      SpeechRecognition.stopListening().then(() => {
+        // console.log("interimTranscript", interimTranscript)
+        // console.log("value", value)
+        // console.log("transcript", value)
+        if(!interimTranscript) return;
+        // qnaStateFns.appendMessage(interimTranscript, "question");
+        elementRefs.current.questionInput.value = interimTranscript;
+        resetTranscript()
+      })
+  }
+
+  const handleAbortAnswer  = () => {
+    // hủy lắng nghe sự kiện 
+    socketIoInstance.removeAllListeners('s_create_relevant_info')
+    socketIoInstance.removeAllListeners('s_create_answer');
+    // 
+    qnaStateFns.updateIsResponding(false);
+    qnaStateFns.removeLoading()
+    setShowStopGenerate(false)
+  }
+
+  const handleListeningEvent = () => {
     socketIoInstance.on('s_create_relevant_info', (data) => {
       if (count === 0) {
         setCount(count + 1);
@@ -173,6 +227,7 @@ export default function QnASection() {
         qnaStateFns.appendMessage(content, data.type);
 
         qnaStateFns.appendSuspendedMessage();
+        socketIoInstance.removeAllListeners('s_create_relevant_info')
       }
     })
 
@@ -183,7 +238,8 @@ export default function QnASection() {
       }
       handleListenCreateAnswer(data)
     })
-  }, [])
+  }
+
   // Tracking length of qna
   React.useEffect(function() {
     if(qnaState.qna.length === 0) return;
@@ -202,10 +258,11 @@ export default function QnASection() {
     const requestEmit = {
       sessionId: localStorage.getItem("SESSION_USER_ID"),
       question: lastMessage.content, 
-      user_name: "" // username có thể lấy khi nhập dùng mở ô chatbot lên đầu tiên và mình sẽ hỏi tên sau đó lưu vào local stored lần sau thì không hỏi nữa
+      user_name: "", // username có thể lấy khi nhập dùng mở ô chatbot lên đầu tiên và mình sẽ hỏi tên sau đó lưu vào local stored lần sau thì không hỏi nữa
+      model
     }
     
-    // console.log("🚀 ~ React.useEffect ~ requestEmit:", requestEmit)
+    console.log("🚀 ~ React.useEffect ~ requestEmit:", requestEmit)
     // console.log("🚀 ~ React.useEffect ~ qnaState.qna:", qnaState.qna)
 
     // emit sự kiện
@@ -258,31 +315,91 @@ export default function QnASection() {
       </div>
 
       {/* Input container */}
-      <div className="flex items-center py-2 mt-3">
-        <input
-          ref={ref => elementRefs.current.questionInput = ref}
-          type="text"
-          className="w-full bg-gray-100 focus:ring-rose-800 focus:outline-none focus:ring rounded-lg border-2 p-2 px-4 me-3"
-          disabled={qnaState.isResponsding}
-          placeholder="Bạn có thể nhập câu hỏi ở đây..."
-          onKeyDown={(e) => {
-            if (e.key === "Enter"){
-              appendMessageWithQuestionInputElement(elementRefs.current.questionInput);
+      <div className="sticky bottom-0 right-0 left-0">
+        {/* {
+          showStopGenerate && 
+          <div 
+            onClick={handleAbortAnswer}
+            className='flex flex-row hover:cursor-pointer bg-rose-800 absolute bottom-[100px] right-[44px] justify-center py-1 px-2 rounded'>
+            <span className="material-symbols-outlined text-base text-white me-1">
+            stop_circle
+            </span>
+            <div className='text-white text-sm' style={{marginTop: '2px'}}>Ngừng tạo</div>
+          </div>
+        } */}
+        <div className="flex items-center lg:px-[44px] ">
+          <input
+            ref={ref => elementRefs.current.questionInput = ref}
+            type="text"
+            className="w-full bg-gray-100 focus:ring-rose-800 focus:outline-none focus:ring rounded-lg border-2 p-2 px-4 me-3"
+            disabled={qnaState.isResponsding}
+            placeholder="Bạn có thể nhập câu hỏi ở đây..."
+            onKeyDown={(e) => {
+              if (e.key === "Enter"){
+                appendMessageWithQuestionInputElement(elementRefs.current.questionInput);
+              }
             }
           }
-        }
-        />
-        <Button
-          hasPadding={false}
-          extendClassName="p-2"
-          color="rose-800" hoverColor="rose-700" activeColor="rose-950"
-          disabled={qnaState.isResponsding}
-          onClick={() => appendMessageWithQuestionInputElement(elementRefs.current.questionInput)}
-        >
-          <span className="material-symbols-outlined block text-white">send</span>
-        </Button>
-      </div>
+          />
 
+          <Button
+            hasPadding={false}
+            extendClassName="h-[45px] w-[45px] me-2 bg-gray-400"
+            color={listening ? "rose-800" : "gray-400"} hoverColor="gray-500" activeColor='gray-600' focusColor='gray-600'
+            disabled={qnaState.isResponsding}
+            onTouchStart={startMicroPhone}
+            onMouseDown={startMicroPhone}
+            onTouchEnd={stopMicroPhone}
+            onMouseUp={stopMicroPhone}
+          >
+            <span className="material-symbols-outlined text-white mt-2">mic</span>
+          </Button>
+          
+          <Button
+            hasPadding={false}
+            extendClassName="h-[45px] w-[45px]"
+            color={qnaState.isResponsding ? "gray-400" : "rose-800"} hoverColor={qnaState.isResponsding ? "gray-400" : "rose-700"} activeColor="rose-950"
+            disabled={qnaState.isResponsding}
+            onClick={() => appendMessageWithQuestionInputElement(elementRefs.current.questionInput)}
+          >
+            {
+              qnaState.isResponsding
+              ? <div
+                  className="inline-block h-5 w-5 animate-spin rounded-full border-4 border-solid border-current border-e-transparent align-[-0.125em] text-surface motion-reduce:animate-[spin_1.5s_linear_infinite] dark:text-white"
+                  role="status">
+                  <span
+                    className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]"
+                    >Loading...</span
+                  >
+                </div>
+              : <span className="material-symbols-outlined block text-white">send</span>
+            }
+          </Button>
+        </div>
+        <div className='flex flex-row text-gray-600 ms-[44px] py-2'>
+          <div>Mô hình: </div>
+          <select 
+            defaultValue={models[0].title}
+            onChange={e => setModel(e.target.value)} 
+            className='bg-white underline mx-1'>
+            {
+              models.map((item) => {
+                return(
+                  <option
+                    key={item.id}
+                    value={item.title}
+                  >
+                    {item.title}
+                  </option>
+                )
+              })
+            }
+          </select>
+          <div>Chú ý: chọn mô hình sẽ làm thay đổi độ chính xác nội dung và tốc độ trả về</div>
+        </div>
+        <div className={`absolute inset-0 ${qnaState.qna.length ? 'h-[125px]' : 'h-[60px]'}  rounded-b-[15px] bg-white m-block top-0 bottom-0 left-0 right-0 z-[-1]`}></div>
+        
+      </div>
       {/* Audio */}
       <audio id="botAudio" src={qnaState.audioURL} ref={ref => elementRefs.current.botAudio = ref}></audio>
     </section>

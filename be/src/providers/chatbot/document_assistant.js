@@ -3,9 +3,12 @@ import OpenAI from 'openai'
 import { env } from '../../config/environment'
 import { getVectorStoreSupabase } from './utils/retriever'
 import { promptRole } from './utils/prompt'
+import { getModelOptional } from './utils/get_llm'
 
 export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
-  const { sessionId, standaloneQuestion, question, user_name, io, socketIdMap, type } = dataGetAnswer
+  const { sessionId, standaloneQuestion, question, user_name, io, socketIdMap, type, model } = dataGetAnswer
+  console.log('🚀 ~ Using ~ model:', model)
+
   // get vector
   const vectorStoreSupabase = await getVectorStoreSupabase()
   const vectorResults = await vectorStoreSupabase.similaritySearchWithScore(standaloneQuestion, 3)
@@ -31,7 +34,7 @@ export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
     })
   }
 
-  const openai = new OpenAI({ apiKey: env.OPENAI_API_KEY })
+  const openai = getModelOptional(model)
 
   let chat_history = await getChatHistoryConvertString(sessionId)
   chat_history += '\nHuman: ' + question
@@ -66,7 +69,7 @@ export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
         content:  `(VIETNAMESE ANSWER ${type === 'STREAMING' ? 'FORMATTED IN MARKDOWN' : 'FORMATTED IN PLAIN TEXT'})`
       }
     ],
-    model: 'gpt-3.5-turbo-1106'
+    model
   }
 
   if (type === 'STREAMING') dataChatchatCompletion.stream = true

@@ -38,5 +38,6 @@ export const env = {
   LANGCHAIN_PROJECT: process.env.LANGCHAIN_PROJECT,
   // supabase
   SUPABASE_API_KEY: process.env.SUPABASE_API_KEY,
-  SUPABASE_URL_LC_CHATBOT: process.env.SUPABASE_URL_LC_CHATBOT
+  SUPABASE_URL_LC_CHATBOT: process.env.SUPABASE_URL_LC_CHATBOT,
+  MY_DOMAIN: process.env.MY_DOMAIN
 }

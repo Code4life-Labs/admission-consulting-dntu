@@ -24,15 +24,11 @@ import {
 import TurndownService from 'turndown'
 import { Document } from '@langchain/core/documents'
 import { uploadWithTextSplitter } from './upload_documents'
+import { getModelOptional } from './utils/get_llm'
 
 
 const turndownService = new TurndownService()
 
-
-// 2. Initialize OpenAI client with Groq API
-const openai = new OpenAI({
-  apiKey: env.OPENAI_API_KEY
-})
 
 // 4. Fetch search results from Brave Search API
 async function getSources(standaloneQuestion) {
@@ -318,7 +314,7 @@ const relevantQuestions = async (responseText) => {
   console.log('🚀 ~ relevantQuestions ~ groqResponse:', groqResponseParse)
   return groqResponseParse
 }
-
+const openai = new OpenAI({ apiKey: env.OPENAI_API_KEY })
 const followUpQuestions = async (sources) => {
   const groqResponse = await openai.chat.completions.create({
     messages: [{
@@ -360,9 +356,14 @@ export async function getAnswerResearchAssistant(dataGetAnswer) {
     user_name,
     io,
     socketIdMap,
-    type
+    type,
+    model
   } = dataGetAnswer
+  console.log('🚀 ~ Using ~ model:', model)
+
   const embedSourcesInLLMResponse = type === 'STREAMING' ? false : true
+
+  const openai = getModelOptional(model)
 
   console.log('standaloneQuestion', standaloneQuestion)
   let sources
@@ -425,7 +426,7 @@ export async function getAnswerResearchAssistant(dataGetAnswer) {
       content: `(VIETNAMESE ANSWER ${type === 'STREAMING' ? 'FORMATTED IN MARKDOWN' : 'FORMATTED IN PLAIN TEXT'})`
     }
     ],
-    model: 'gpt-3.5-turbo-1106'
+    model
   }
 
   if (type === 'STREAMING') dataChatchatCompletion.stream = true

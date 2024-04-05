@@ -12,6 +12,7 @@ import { OtherUtils, configMD } from 'src/utils/other';
 // Import local components
 import QnAMessage from './QnAMessage'
 import Markdown from 'markdown-to-jsx';
+import { socketIoInstance } from 'src/App';
 
 /**
  * @typedef AnswerPropsType
@@ -147,6 +148,7 @@ export default function Anwser(props) {
     }
   });
 
+  
   const copyContent = function() {
     if(answerState.isCopied) return;
     navigator.clipboard.writeText(props.content).then(() => {
@@ -171,14 +173,19 @@ export default function Anwser(props) {
       answerStateFns.updateSpeechRequestStatus(SpeechRequestStatus.fulfilled);
       answerStateFns.toggleSpeechPlaying();
     }).catch(function() {
+      const sessionId = localStorage.getItem("SESSION_USER_ID")
       // If false, request to fpt ai
-      SpeechAPI.FPTAI.getSpeechURLAsync()
+      SpeechAPI.FPTAI.getSpeechURLAsync(props.content, sessionId)
       .then(function(data) {
-        const url = data.audio;
-        props.updateAudioURL(url);
-        answerStateFns.updateLocalAudioURL(url);
-        answerStateFns.updateSpeechRequestStatus(SpeechRequestStatus.fulfilled);
-        answerStateFns.toggleSpeechPlaying();
+        console.log("🚀 ~ .then ~ data:", data)
+        socketIoInstance.on('s_callback_audio_success', (url_calback) => {
+          props.updateAudioURL(url_calback);
+          answerStateFns.updateLocalAudioURL(url_calback);
+          answerStateFns.updateSpeechRequestStatus(SpeechRequestStatus.fulfilled);
+          answerStateFns.toggleSpeechPlaying();
+
+          socketIoInstance.removeAllListeners('s_callback_audio_success') 
+        })
       })
       .catch(function() {
         answerStateFns.updateSpeechRequestStatus(SpeechRequestStatus.static);
@@ -193,6 +200,7 @@ export default function Anwser(props) {
     //   answerStateFns.toggleSpeechPlaying();
     // }, 2000);
   }
+  
 
   // If audio's url isn't empty and is change and audio start playing, update new url.
   React.useEffect(() => {
@@ -210,6 +218,7 @@ export default function Anwser(props) {
     }
   }, [props.audioElement.src]);
 
+  
   // {props.content.split('\n').map((line, index) => (
   //   <React.Fragment key={index}>
   //     {line}

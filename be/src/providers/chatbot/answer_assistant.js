@@ -1,5 +1,5 @@
 import { ChatPromptTemplate } from '@langchain/core/prompts'
-import { getModelOpenAI } from './utils/get_llm'
+import { getModelOpenAI, getModelOptional } from './utils/get_llm'
 import { StringOutputParser } from 'langchain/schema/output_parser'
 import { RunnableSequence } from '@langchain/core/runnables'
 import { promptRole } from './utils/prompt'
@@ -37,13 +37,11 @@ export const getAnswerNormalAssistant = async (dataGetAnswer) => {
   //   question
   // })
   // return respone
-  const { sessionId, question, user_name, io, socketIdMap, type } = dataGetAnswer
+  const { sessionId, question, user_name, io, socketIdMap, type, model } = dataGetAnswer
 
-  const openai = new OpenAI({ apiKey: env.OPENAI_API_KEY })
-  // const openai = new OpenAI({
-  //   baseURL: 'https://api.groq.com/openai/v1',
-  //   apiKey: process.env.GROQ_API_KEY,
-  // });
+  console.log('🚀 ~ Using ~ model:', model)
+
+  const openai = getModelOptional(model)
 
   let chat_history = await getChatHistoryConvertString(sessionId)
   chat_history += '\nHuman: ' + question
@@ -72,8 +70,7 @@ export const getAnswerNormalAssistant = async (dataGetAnswer) => {
         content:  `(VIETNAMESE ANSWER ${type === 'STREAMING' ? 'FORMATTED IN MARKDOWN' : 'FORMATTED IN PLAIN TEXT'})`
       }
     ],
-    model: 'gpt-3.5-turbo-1106'
-    // model: "mixtral-8x7b-32768"
+    model: model ?? 'mixtral-8x7b-32768'
   }
 
   if (type === 'STREAMING') dataChatchatCompletion.stream = true
@@ -108,8 +105,6 @@ export const getAnswerNormalAssistant = async (dataGetAnswer) => {
           }
         })
         clearInterval(intervalId)
-        // console.log('🚀 ~ forawait ~ messageReturn:', messageReturn)
-
         return messageReturn
       }
     }
