@@ -1,5 +1,6 @@
 import OpenAI from 'openai'
 import { env } from '~/config/environment'
+import fs from 'fs'
 
 const openai = new OpenAI({
   apiKey: env.CHATGPT_API_KEY
@@ -92,7 +93,7 @@ const translateText = async (queryText) => {
 }
 
 const generateSpeech = async (text) => {
-  const model = 'tts-1'
+  const model = 'tts-1-1106'
   const voice = 'alloy'
   const format = 'aac'
   const mp3 = await openai.audio.speech.create({
@@ -104,6 +105,16 @@ const generateSpeech = async (text) => {
   const buf = await mp3.arrayBuffer()
   return buf
 }
+
+export async function generateTextFromVoice() {
+  const transcription = await openai.audio.transcriptions.create({
+    file: fs.createReadStream('src/audio/dntu.mp4a'),
+    model: 'whisper-1'
+  })
+
+  console.log(transcription.text)
+}
+
 
 export const ChatGptProvider = {
   textGeneration,

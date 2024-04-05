@@ -23,4 +23,8 @@ router
   .route('/fpt/url')
   .post(SpeechController.getSpeechURL)
 
+router
+  .route('/fpt/callback')
+  .post(SpeechController.getCallBack)
+
 export const speechRoutes = router

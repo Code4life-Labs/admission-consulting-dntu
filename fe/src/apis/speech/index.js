@@ -29,7 +29,7 @@ export async function getSpeechAsync(text) {
  * @param {string} text 
  * @returns 
  */
-export async function getSpeechURLAsync(text) {
+export async function getSpeechURLAsync(text, sessionId) {
   let url = getAPIRoot() + base + "/fpt/url";
   let response = await fetch(url, {
     method: "POST",
@@ -38,7 +38,8 @@ export async function getSpeechURLAsync(text) {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      text: text
+      text,
+      sessionId
     })
   });
   if(!response.ok) throw new Error(response.json());

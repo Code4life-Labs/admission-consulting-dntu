@@ -22,7 +22,7 @@ cloudinaryV2.config({
 
 export const uploadFilePdf = async (folderName) => {
   const byteArrayBuffer = fs.readFileSync(`src/documents/pdf/${folderName}.pdf`)
-  await deleteFolder(`PdfImages/${folderName}`)
+  // await deleteFolder(`PdfImages/${folderName}`)
   const promiseHandle = () => {
     return new Promise((resolve) => {
       cloudinary.v2.uploader.upload_stream( {

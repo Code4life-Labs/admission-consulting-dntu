@@ -208,3 +208,26 @@ export const configMD = {
     },
   }
 }
+
+export const models = [
+  {
+    "id": "gpt-3.5-turbo-1106",
+    "title": "gpt-3.5-turbo-1106"
+  },
+  {
+    "id": "gpt-3.5-turbo-0125",
+    "title": "gpt-3.5-turbo-0125"
+  },
+  {
+    "id": "llama2-70b-4096",
+    "title": "llama2-70b-4096"
+  },
+  {
+    "id": "mixtral-8x7b-32768",
+    "title": "mixtral-8x7b-32768"
+  },
+  {
+    "id": "gemma-7b-it",
+    "title": "gemma-7b-it"
+  }
+]

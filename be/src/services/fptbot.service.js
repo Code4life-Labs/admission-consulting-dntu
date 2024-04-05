@@ -2,6 +2,8 @@
 import { env } from '~/config/environment'
 import { getAnswerChatBot } from '~/providers/chatbot'
 import { addChatHistory } from '~/providers/chatbot/utils/upstash_chat_history'
+import axios from 'axios'
+import { callbackAudioSocket, io, socketIdMap } from '~/server'
 
 const _botBaseURL_ = 'https://bot.fpt.ai'
 const _v3APIBaseURL_ = 'https://v3-api.fpt.ai'
@@ -86,10 +88,14 @@ async function getPredict(text) {
  * @param {string} text
  */
 async function getSpeech(text) {
-  return fetch(TTS_URL, {
-    method: 'post',
-    body: text
-  })
+
+  const headers = {
+    api_key: env.FPT_TTS_API_KEY,
+    voice: 'linhsan',
+    callback_url: env.MY_DOMAIN + 'v1/speech/fpt/callback'
+  }
+
+  return axios.post(TTS_URL, { text }, { headers })
 }
 
 const getAnswerAI = async (data) => {
@@ -142,10 +148,33 @@ const saveChatHistory = async (data) => {
   }
 }
 
+const getCallBack = async (data) => {
+  try {
+    console.log('🚀 ~ getAnswerAI ~ data:', data)
+    if (data?.success) {
+      console.log('success!')
+      const sessionID = callbackAudioSocket[data.message]
+
+      io.to(socketIdMap[sessionID]).emit('s_callback_audio_success', data.message)
+
+      // cuối cùng nhớ xóa để giải phóng bộ nhớ
+      delete callbackAudioSocket[data.message]
+
+      return
+    } else {
+      console.log('Dont success!')
+      return
+    }
+  } catch (error) {
+    throw new Error(error)
+  }
+}
+
 export const FPTBotServices = {
   getAnswer,
   getPredict,
   getSpeech,
   getAnswerAI,
-  saveChatHistory
+  saveChatHistory,
+  getCallBack
 }

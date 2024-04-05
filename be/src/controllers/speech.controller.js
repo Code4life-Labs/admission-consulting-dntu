@@ -1,5 +1,3 @@
-import { Request, Response } from 'express'
-
 // Import from models
 import { SpeechModel } from '~/models/speech'
 
@@ -9,6 +7,7 @@ import { CloudinaryService } from '~/services/cloudinary'
 
 // Import from utils
 import { HttpStatusCode } from '~/utilities/constants'
+import { callbackAudioSocket, updateCallbackAudioSocket } from '~/server'
 
 /**
  * Use this function to insert a speech to database.
@@ -83,11 +82,37 @@ async function getSpeechByText(req, res) {
  */
 async function getSpeechURL(req, res) {
   try {
-    const { text } = req.body
+    const { text, sessionId } = req.body
+    console.log('🚀 ~ getSpeechURL ~ sessionId:', sessionId)
+    console.log('🚀 ~ getSpeechURL ~ text:', text)
     const response = await FPTBotServices.getSpeech(text)
-    const data = await response.json()
 
-    return res.status(HttpStatusCode.OK).json({ audio: data.async })
+    const url = response?.data?.async
+    // vào mảng global state
+    // eslint-disable-next-line no-import-assign
+    updateCallbackAudioSocket(url, sessionId)
+    console.log('🚀 ~ getSpeechURL ~ callbackAudioSocket:', callbackAudioSocket)
+
+    return res.status(HttpStatusCode.OK).json({ audio: url })
+  } catch (error) {
+    return res.status(HttpStatusCode.INTERNAL_SERVER).json({
+      errors: error.message
+    })
+  }
+}
+
+
+/**
+ * Use this function to get URL of Speech directly.
+ * @param {Request} req
+ * @param {Response} res
+ * @returns
+ */
+async function getCallBack(req, res) {
+  try {
+    const result = await FPTBotServices.getCallBack(req.body)
+    res.status(HttpStatusCode.OK).json(result)
+
   } catch (error) {
     return res.status(HttpStatusCode.INTERNAL_SERVER).json({
       errors: error.message
@@ -98,5 +123,6 @@ async function getSpeechURL(req, res) {
 export const SpeechController = {
   createSpeech,
   getSpeechByText,
-  getSpeechURL
+  getSpeechURL,
+  getCallBack
 }

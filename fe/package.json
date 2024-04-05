@@ -16,6 +16,9 @@
     "markdown-to-jsx": "^7.4.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-scroll-to-bottom": "^4.2.0",
+    "react-speech-recognition": "^3.10.0",
+    "regenerator-runtime": "^0.14.1",
     "socket.io-client": "^4.7.5",
     "tunangn-react-modal": "^1.0.6"
   },
