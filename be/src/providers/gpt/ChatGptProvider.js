@@ -101,7 +101,7 @@ const generateSpeech = async (text) => {
     'input': text,
     'voice': voice,
     'response_format': format,
-    'speed': 1.5
+    'speed': 1.15
   })
   const buf = await mp3.arrayBuffer()
   return buf
