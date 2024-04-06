@@ -52,8 +52,8 @@ function SpeechControlBtn(props) {
   if(props.speechRequestStatus == SpeechRequestStatus.pending) {
     return (
       <span 
-        className="material-symbols-outlined cursor-pointer animate-spin text-gray-500 mr-3 hover:text-gray-800 select-none"
-        onClick={() => props.requestSpeech()}
+        disabled
+        className="material-symbols-outlined animate-spin text-gray-500 mr-3 hover:text-gray-800 select-none"
       >
         progress_activity
       </span>
@@ -208,6 +208,10 @@ export default function Anwser(props) {
     if(props.audioElement.src != "" && props.audioElement.src != answerState.localAudioURL) {
       console.log("Play new audio: ", answerState.localAudioURL);
       props.updateAudioURL(answerState.localAudioURL);
+      // phuong
+      props.audioElement.onended = () => {
+        console.log("end audio")
+      }
     }
   }, [answerState.isSpeechPlaying]);
 

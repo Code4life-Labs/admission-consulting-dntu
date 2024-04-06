@@ -50,7 +50,6 @@ export default function QnASection() {
 
   const [showStopGenerate, setShowStopGenerate] = React.useState(false)
   const [model, setModel] = React.useState(models[0].id)
-  const [count, setCount] = React.useState(0)
   const [qnaState, qnaStateFns] = useStateWESSFns(
     {
       qna: [],
@@ -109,18 +108,6 @@ export default function QnASection() {
         },
 
         /**
-         * Use this function to update last message (suspended answer) to response.
-         * A response contains ref (link), answer (text), media ref (image and video).
-         * Remove suspend message first.
-         * @param {any} response 
-         */
-        // removeLoading: function() {
-        //   changeState("qna", function(data) {
-        //     return data.pop()
-        //   })
-        // },
-
-        /**
          * Use this function to update `isResponding` state.
          * @param {bool} state 
          */
@@ -163,8 +150,6 @@ export default function QnASection() {
     if (dataReturn.isOver && dataReturn.isOver === 'DONE' && dataReturn.responseObj) {
       // console.log("🚀 ~ handleListenCreateAnswer ~ dataReturn.allText:", [dataReturn.responseObj]);
       qnaStateFns.updateLastMessage(dataReturn.responseObj.content, dataReturn.responseObj.type);
-      setCount(0);
-      console.log("🚀 ~ handleListenCreateAnswer ~ setCount:", count)
       // cuối cùng sẽ ngắt kết nối
       socketIoInstance.removeAllListeners('s_create_answer');
       setShowStopGenerate(false)
@@ -203,17 +188,14 @@ export default function QnASection() {
     // hủy lắng nghe sự kiện 
     socketIoInstance.removeAllListeners('s_create_relevant_info')
     socketIoInstance.removeAllListeners('s_create_answer');
-    // 
-    qnaStateFns.updateIsResponding(false);
-    qnaStateFns.removeLoading()
     setShowStopGenerate(false)
+    qnaStateFns.updateIsResponding(false);
+    qnaStateFns.appendMessage('Bạn đã ngưng tạo câu hỏi!', 'answer');
   }
 
   const handleListeningEvent = () => {
     socketIoInstance.on('s_create_relevant_info', (data) => {
-      if (count === 0) {
-        setCount(count + 1);
-        console.log("🚀 ~ socketIoInstance.on ~ count:", count)
+      socketIoInstance.removeAllListeners('s_create_relevant_info')
         console.log("🚀 ~ socketIoInstance.on ~ s_create_relevant_info:", data);
         // socketIoInstance.removeAllListeners('s_create_relevant_info');
         // qnaStateFns.updateIsResponding(false);
@@ -227,8 +209,6 @@ export default function QnASection() {
         qnaStateFns.appendMessage(content, data.type);
 
         qnaStateFns.appendSuspendedMessage();
-        socketIoInstance.removeAllListeners('s_create_relevant_info')
-      }
     })
 
     // lắng nghe sự kiện mỗi lần có câu hỏi mới
@@ -316,7 +296,7 @@ export default function QnASection() {
 
       {/* Input container */}
       <div className="sticky bottom-0 right-0 left-0">
-        {/* {
+        {
           showStopGenerate && 
           <div 
             onClick={handleAbortAnswer}
@@ -326,7 +306,7 @@ export default function QnASection() {
             </span>
             <div className='text-white text-sm' style={{marginTop: '2px'}}>Ngừng tạo</div>
           </div>
-        } */}
+        }
         <div className="flex items-center lg:px-[44px] ">
           <input
             ref={ref => elementRefs.current.questionInput = ref}
