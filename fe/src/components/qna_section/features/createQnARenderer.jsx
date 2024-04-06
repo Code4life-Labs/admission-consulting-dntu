@@ -17,7 +17,7 @@ export default function createQnARenderer({ updateAudioURL, playAudio, pauseAudi
     if(response.isLoading) {
       return (
         <QnAMessage avatar="/Logo_DNTU.png" key={index}>
-          <div className="flex flex-row rounded-xl ml-3 p-1 xl:ml-6 xl:p-3 rounded border-2">
+          <div className="flex flex-row rounded-xl ml-3 p-1 xl:ml-6 xl:p-3 border-2">
             <div className="animate-[bounce_1s_infinite] bg-gray-400 rounded-full w-[10px] h-[10px] me-1"></div>
             <div className="animate-[bounce_1s_infinite_100ms] bg-gray-400 rounded-full w-[10px] h-[10px] me-1"></div>
             <div className="animate-[bounce_1s_infinite_200ms] bg-gray-400 rounded-full w-[10px] h-[10px]"></div>
