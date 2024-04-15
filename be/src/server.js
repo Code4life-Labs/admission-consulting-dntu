@@ -2,7 +2,6 @@ import express from 'express'
 import cors from 'cors'
 
 // Import from config
-import { corsOptions } from './config/cors'
 import { env } from './config/environment'
 import { connectDB } from './config/mongodb'
 import cookieParser from 'cookie-parser'
