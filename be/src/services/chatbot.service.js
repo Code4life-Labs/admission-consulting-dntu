@@ -1,6 +1,6 @@
 /* eslint-disable no-unreachable */
 
-import { uploadDocumentsToSupabaseCloud, uploadMultiWebsitesToSupabaseCloud, uploadSingleDocMDToSupabase, uploadWebsiteToSupabaseCloud } from '../../src/providers/chatbot/upload_documents'
+// import { uploadDocumentsToSupabaseCloud, uploadMultiWebsitesToSupabaseCloud, uploadSingleDocMDToSupabase, uploadWebsiteToSupabaseCloud } from '../../src/providers/chatbot/upload_documents'
 
 const uploadMultiDocsWebsite = async (data) => {
   // data = {
