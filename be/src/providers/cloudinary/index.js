@@ -1,8 +1,8 @@
 import cloudinary from 'cloudinary'
 import streamifier from 'streamifier'
-import { env } from '~/config/environment'
 import fs from 'fs'
 import { rejects } from 'assert'
+import { env } from '../../config/environment'
 
 /**
  * Tài liệu tham khảo:

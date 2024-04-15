@@ -1,5 +1,3 @@
-import OpenAI from 'openai'
-import { env } from '~/config/environment'
 import { moderationDeteched, moderationDetechedMd } from './utils/prompt'
 import { PromptTemplate } from '@langchain/core/prompts'
 import { RunnableSequence } from '@langchain/core/runnables'

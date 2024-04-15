@@ -1,8 +1,8 @@
 import { ObjectId } from 'mongodb'
-import { getDB } from '~/config/mongodb'
 
 // Import schema
 import { SpeechSchema } from './speech.schema'
+import { getDB } from '../../config/mongodb'
 
 // INSERT
 /**

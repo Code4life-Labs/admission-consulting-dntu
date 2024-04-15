@@ -1,9 +1,9 @@
-// Import from config
-import { env } from '~/config/environment'
-import { getAnswerChatBot } from '~/providers/chatbot'
-import { addChatHistory } from '~/providers/chatbot/utils/upstash_chat_history'
+
 import axios from 'axios'
-import { callbackAudioSocket, deleteCallbackAudioSocket, io, socketIdMap } from '~/server'
+import { callbackAudioSocket, deleteCallbackAudioSocket, io, socketIdMap } from '../server'
+import { env } from '../config/environment'
+import { getAnswerChatBot } from '../providers/chatbot'
+import { addChatHistory } from '../providers/chatbot/utils/upstash_chat_history'
 
 const _botBaseURL_ = 'https://bot.fpt.ai'
 const _v3APIBaseURL_ = 'https://v3-api.fpt.ai'

@@ -1,6 +1,6 @@
 import OpenAI from 'openai'
-import { env } from '~/config/environment'
 import fs from 'fs'
+import { env } from '../../config/environment'
 
 const openai = new OpenAI({
   apiKey: env.CHATGPT_API_KEY

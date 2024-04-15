@@ -1,4 +1,5 @@
-import { getAnswerChatBot } from '~/providers/chatbot'
+import { getAnswerChatBot } from '../providers/chatbot'
+
 
 export const createAnswerFromAI = (io, socket, socketIdMap) => {
   socket.on('c_create_answer', async (data) => {

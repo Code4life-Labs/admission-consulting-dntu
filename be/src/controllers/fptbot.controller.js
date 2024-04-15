@@ -1,8 +1,6 @@
-// Import from services
-import { FPTBotServices } from '~/services/fptbot.service'
+import { FPTBotServices } from '../services/fptbot.service'
+import { HttpStatusCode } from '../utilities/constants'
 
-// Import from utils
-import { HttpStatusCode } from '~/utilities/constants'
 
 /**
  * Use this function to get answer from bot.

@@ -1,11 +1,9 @@
 import { Request, Response } from 'express'
 
-// Import from providers
-import { ChatGptProvider } from '~/providers/gpt/ChatGptProvider'
 
-// Import from utils
-import { HttpStatusCode } from '~/utilities/constants'
 import removeMarkdown from 'markdown-to-text'
+import { ChatGptProvider } from '../providers/gpt/ChatGptProvider'
+import { HttpStatusCode } from '../utilities/constants'
 /**
  * Use this function to insert a speech to database.
  * @param {Request} req

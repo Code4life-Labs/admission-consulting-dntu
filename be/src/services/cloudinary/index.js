@@ -2,10 +2,9 @@ import cloudinary from 'cloudinary'
 import path from 'path'
 import fs from 'fs'
 
-// Import from env
-import { env } from '~/config/environment'
 
 import { CloudinaryUtils } from './utils'
+import { env } from '../../config/environment'
 
 
 const cloudinaryV2 = cloudinary.v2

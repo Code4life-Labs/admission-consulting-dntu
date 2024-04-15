@@ -18,13 +18,11 @@ import {
 import {
   promptRole
 } from './utils/prompt'
-import {
-  env
-} from '~/config/environment'
 import TurndownService from 'turndown'
 import { Document } from '@langchain/core/documents'
 import { uploadWithTextSplitter } from './upload_documents'
 import { getModelOptional } from './utils/get_llm'
+import { env } from '../../config/environment'
 
 
 const turndownService = new TurndownService()
