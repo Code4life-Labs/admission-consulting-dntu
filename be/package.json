@@ -22,6 +22,7 @@
     "@langchain/openai": "^0.0.24",
     "@supabase/supabase-js": "^2.40.0",
     "@upstash/redis": "^1.29.0",
+    "axios": "^1.6.8",
     "cheerio": "^1.0.0-rc.12",
     "cloudinary": "^1.41.3",
     "cookie-parser": "^1.4.6",
