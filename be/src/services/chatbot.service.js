@@ -1,9 +1,6 @@
 /* eslint-disable no-unreachable */
 
-import dialogflow from '@google-cloud/dialogflow'
-import { dfConfig } from '~/config/dfConfig'
-import { uploadDocumentsToSupabaseCloud, uploadMultiWebsitesToSupabaseCloud, uploadSingleDocMDToSupabase, uploadWebsiteToSupabaseCloud } from '~/providers/chatbot/upload_documents'
-import { ChatGptProvider } from '~/providers/gpt/ChatGptProvider'
+import { uploadDocumentsToSupabaseCloud, uploadMultiWebsitesToSupabaseCloud, uploadSingleDocMDToSupabase, uploadWebsiteToSupabaseCloud } from '../../src/providers/chatbot/upload_documents'
 
 const uploadMultiDocsWebsite = async (data) => {
   // data = {

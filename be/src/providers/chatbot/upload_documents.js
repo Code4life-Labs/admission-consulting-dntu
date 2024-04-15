@@ -10,8 +10,8 @@ import { Document } from '@langchain/core/documents'
 import { deleteFolder, streamUploadMutiple, uploadFilePdf } from '../cloudinary/index'
 
 import fs from 'fs'
-import { LOGO_DNTU, dataLink, sleep } from '~/utilities/constants'
-import { convertToSlug, getRandomID } from '~/utilities/func'
+import { convertToSlug, getRandomID } from '../../utilities/func'
+import { LOGO_DNTU, dataLink } from '../../utilities/constants'
 
 export const uploadWithTextSplitter = async (docs, chunkSize = 1000, chunkOverlap = 500) => {
 

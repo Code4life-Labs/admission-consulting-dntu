@@ -1,13 +1,12 @@
 import express from 'express'
 
-// Import from utils
-import { HttpStatusCode } from '~/utilities/constants'
 
 // Import from routes
 import { chatbotRoutes } from './chatbot.route'
 import { webhookRoutes } from './webhook.route'
 import { fptbotRoutes } from './fptbot.route'
 import { speechRoutes } from './speech.route'
+import { HttpStatusCode } from '../../utilities/constants'
 
 const router = express.Router()
 

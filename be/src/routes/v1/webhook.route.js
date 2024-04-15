@@ -1,10 +1,7 @@
 import express from 'express'
+import { env } from '../../config/environment'
+import { HttpStatusCode } from '../../utilities/constants'
 
-// Import from config
-import { env } from '~/config/environment'
-
-// Import from utils
-import { HttpStatusCode } from '~/utilities/constants'
 
 const router = express.Router()
 

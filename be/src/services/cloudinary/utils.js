@@ -1,4 +1,5 @@
-import { FILE_URL_RULE } from '~/utilities/regex'
+import { FILE_URL_RULE } from '../../utilities/regex'
+
 
 /**
  * Regex này dùng để tách phần directory + filename ra khỏi url, chỗ tách sẽ là ở /v.*?/ trong url.

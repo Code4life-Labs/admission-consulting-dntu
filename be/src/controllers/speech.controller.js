@@ -1,13 +1,9 @@
-// Import from models
-import { SpeechModel } from '~/models/speech'
+import { SpeechModel } from '../models/speech'
+import { updateCallbackAudioSocket } from '../server'
+import { CloudinaryService } from '../services/cloudinary'
+import { FPTBotServices } from '../services/fptbot.service'
+import { HttpStatusCode } from '../utilities/constants'
 
-// Import from services
-import { FPTBotServices } from '~/services/fptbot.service'
-import { CloudinaryService } from '~/services/cloudinary'
-
-// Import from utils
-import { HttpStatusCode } from '~/utilities/constants'
-import { callbackAudioSocket, updateCallbackAudioSocket } from '~/server'
 
 /**
  * Use this function to insert a speech to database.
