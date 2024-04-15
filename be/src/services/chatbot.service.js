@@ -9,8 +9,8 @@ const uploadMultiDocsWebsite = async (data) => {
   //  chunkOverlap: 100
   // }
   try {
-    const result = await uploadMultiWebsitesToSupabaseCloud(data.websites, data.selector, data.chunkSize, data.chunkSize)
-    return result
+    // const result = await uploadMultiWebsitesToSupabaseCloud(data.websites, data.selector, data.chunkSize, data.chunkSize)
+    // return result
   } catch (error) {
     console.log('🚀 ~ file: chatbot.service.js:67 ~ uploadMultiDocsWebsite ~ error:', error)
     throw new Error(error)
@@ -22,8 +22,8 @@ const uploadMultiDocs = async (data) => {
   // directory, type_file, chunkSize, chunkOverlap
   // }
   try {
-    const result = await uploadDocumentsToSupabaseCloud(data.directory, data.type_file, data.chunkSize, data.chunkOverlap)
-    return result
+    // const result = await uploadDocumentsToSupabaseCloud(data.directory, data.type_file, data.chunkSize, data.chunkOverlap)
+    // return result
   } catch (error) {
     throw new Error(error)
   }
@@ -35,8 +35,8 @@ const testScratchWebsite = async (data) => {
   //   languageConvert: string
   // }
   try {
-    const result = await uploadWebsiteToSupabaseCloud(data.website, data.selector)
-    return result
+    // const result = await uploadWebsiteToSupabaseCloud(data.website, data.selector)
+    // return result
   } catch (error) {
     throw new Error(error)
   }
@@ -49,8 +49,8 @@ const uploadSingleDocMD = async (data) => {
   //   languageConvert: string
   // }
   try {
-    const result = await uploadSingleDocMDToSupabase(data)
-    return result
+    // const result = await uploadSingleDocMDToSupabase(data)
+    // return result
   } catch (error) {
     throw new Error(error)
   }
