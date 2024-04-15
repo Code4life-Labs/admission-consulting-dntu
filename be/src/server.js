@@ -7,15 +7,10 @@ import { connectDB } from './config/mongodb'
 import cookieParser from 'cookie-parser'
 // Import from routes
 import { apiV1 } from './routes/v1'
-import { uploadDocumentsToSupabaseCloud, uploadMultiWebsitesToSupabaseCloud, uploadWebsiteToSupabaseCloud } from './providers/chatbot/upload_documents'
-import { getAnswerDocumentAssistant } from './providers/chatbot/document_assistant'
-import { getAnswerNormalAssistant } from './providers/chatbot/answer_assistant'
 
 import http from 'http'
 import socketIo from 'socket.io'
-import { createSocketIdMap } from './sockets/userSocket'
 import { createAnswerFromAI } from './sockets/answerSocket'
-import { generateTextFromVoice } from './providers/gpt/ChatGptProvider'
 
 
 connectDB()
