@@ -5,7 +5,7 @@ import DialogLayout from 'src/layouts/modal_items/dialog_layout/DialogLayout';
 
 // Import from components
 import Button from '../button/Button';
-import QnASection from '../qna_section/QnASection';
+import { QnASection } from '../qna_section/QnASection';
 
 /**
  * @typedef DialogContentType

@@ -37,7 +37,7 @@ export const getAnswerNormalAssistant = async (dataGetAnswer) => {
   //   question
   // })
   // return respone
-  const { sessionId, question, user_name, io, socketIdMap, type, model } = dataGetAnswer
+  const { sessionId, question, user_name, io, socketIdMap, type, model='gpt-3.5-turbo-1106' } = dataGetAnswer
 
   console.log('🚀 ~ Using ~ model:', model)
 

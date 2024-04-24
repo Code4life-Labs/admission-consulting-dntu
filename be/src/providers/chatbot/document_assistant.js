@@ -6,14 +6,14 @@ import { promptRole } from './utils/prompt'
 import { getModelOptional } from './utils/get_llm'
 
 export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
-  const { sessionId, standaloneQuestion, question, user_name, io, socketIdMap, type, model } = dataGetAnswer
+  const { sessionId, standaloneQuestion, question, user_name, io, socketIdMap, type, model='gpt-3.5-turbo-1106' } = dataGetAnswer
   console.log('🚀 ~ Using ~ model:', model)
 
   // get vector
   const vectorStoreSupabase = await getVectorStoreSupabase()
   const vectorResults = await vectorStoreSupabase.similaritySearchWithScore(standaloneQuestion, 3)
   console.log('🚀 ~ getAnswerDocumentAssistant ~ vectorResults:', vectorResults)
-  const vectorThresholds = vectorResults.filter(vector => vector[1] >= 0.88)
+  const vectorThresholds = vectorResults.filter(vector => vector[1] >= 0.86)
   console.log('🚀 ~ getAnswerDocumentAssistant ~ vectorThresholds:', vectorThresholds)
 
   if (vectorThresholds.length === 0) {

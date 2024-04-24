@@ -1,5 +1,7 @@
 /* eslint-disable no-unreachable */
 
+import { uploadSingleDocMDToSupabase } from '~/providers/chatbot/upload_documents'
+
 // import { uploadDocumentsToSupabaseCloud, uploadMultiWebsitesToSupabaseCloud, uploadSingleDocMDToSupabase, uploadWebsiteToSupabaseCloud } from '../../src/providers/chatbot/upload_documents'
 
 const uploadMultiDocsWebsite = async (data) => {
@@ -44,13 +46,9 @@ const testScratchWebsite = async (data) => {
 
 const uploadSingleDocMD = async (data) => {
   console.log('🚀 ~ uploadSingleDocMD ~ data:', data)
-  // data = {
-  //   text: string,
-  //   languageConvert: string
-  // }
   try {
-    // const result = await uploadSingleDocMDToSupabase(data)
-    // return result
+    const result = await uploadSingleDocMDToSupabase(data)
+    return result
   } catch (error) {
     throw new Error(error)
   }

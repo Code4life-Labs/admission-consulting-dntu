@@ -3,6 +3,7 @@ import streamifier from 'streamifier'
 import fs from 'fs'
 import { rejects } from 'assert'
 import { env } from '../../config/environment'
+import { convertToSlug } from '~/utilities/func'
 
 /**
  * Tài liệu tham khảo:
@@ -23,10 +24,11 @@ cloudinaryV2.config({
 export const uploadFilePdf = async (folderName) => {
   const byteArrayBuffer = fs.readFileSync(`src/documents/pdf/${folderName}.pdf`)
   // await deleteFolder(`PdfImages/${folderName}`)
+  const slugFolderName = convertToSlug(folderName)
   const promiseHandle = () => {
     return new Promise((resolve) => {
       cloudinary.v2.uploader.upload_stream( {
-        folder: `Pdf/${folderName}`,
+        folder: `Pdf/${slugFolderName}`,
         //để auto cloudinary tự động nhận file
         resource_type: 'auto'
       }, (error, uploadResult) => {

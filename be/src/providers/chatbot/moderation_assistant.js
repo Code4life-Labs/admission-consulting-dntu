@@ -14,7 +14,7 @@ export async function getAnswerModerationAssistant(dataGetAnswer) {
   const checkBadWords = badWords(dataGetAnswer.question, { validate: true })
   console.log('🚀 ~ getAnswerModerationAssistant ~ checkBadWords:', checkBadWords)
   if (checkBadWords) {
-    if (respone === 'STREAMING') {
+    if (type === 'STREAMING') {
       io.to(socketIdMap[sessionId]).emit('s_create_answer', {
         responseObj: {
           content: moderationDetechedMd,
@@ -23,44 +23,44 @@ export async function getAnswerModerationAssistant(dataGetAnswer) {
       })
       return moderationDetechedMd
     } else return moderationDeteched
-  }
+  } else return ''
 
 
-  const promptTemplate = PromptTemplate.fromTemplate(`
-  Regarding the user question below, please classify it as about \`SAFE\`,\`UNSAFE\`.
-  Based on question:
-  if question is related to sensitive content, threats, harassment, pornography, and attacks on individuals and organizations return "UNSAFE",
-  if not return "SAFE"
-  Do not respond with more than one word.
-  
-  <question>
-  {question}
-  </question>
+  // const promptTemplate = PromptTemplate.fromTemplate(`
+  // Regarding the user question below, please classify it as about \`SAFE\`,\`UNSAFE\`.
+  // Based on question:
+  // if question is related to sensitive content, threats, harassment, pornography, and attacks on individuals and organizations return "UNSAFE",
+  // if not return "SAFE"
+  // Do not respond with more than one word.
 
-  Classification:`)
+  // <question>
+  // {question}
+  // </question>
 
-  const classificationChain = RunnableSequence.from([
-    promptTemplate,
-    getModelOpenAI(),
-    new StringOutputParser()
-  ])
+  // Classification:`)
 
-  const respone = await classificationChain.invoke({
-    question
-  })
+  // const classificationChain = RunnableSequence.from([
+  //   promptTemplate,
+  //   getModelOpenAI(),
+  //   new StringOutputParser()
+  // ])
 
-  console.log('🤖 data deteched:', respone)
+  // const respone = await classificationChain.invoke({
+  //   question
+  // })
 
-  if (type === 'STREAMING') {
-    if (respone === 'UNSAFE') {
-      io.to(socketIdMap[sessionId]).emit('s_create_answer', {
-        responseObj: {
-          content: moderationDetechedMd,
-          type: 'answer'
-        }
-      })
-      return moderationDetechedMd
-    } else return ''
-  } else if (respone === 'UNSAFE') return moderationDeteched
-  else return ''
+  // console.log('🤖 data deteched:', respone)
+
+  // if (type === 'STREAMING') {
+  //   if (respone === 'UNSAFE') {
+  //     io.to(socketIdMap[sessionId]).emit('s_create_answer', {
+  //       responseObj: {
+  //         content: moderationDetechedMd,
+  //         type: 'answer'
+  //       }
+  //     })
+  //     return moderationDetechedMd
+  //   } else return ''
+  // } else if (respone === 'UNSAFE') return moderationDeteched
+  // else return ''
 }

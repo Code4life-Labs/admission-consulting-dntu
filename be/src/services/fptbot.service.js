@@ -103,16 +103,16 @@ const getAnswerAI = async (data) => {
   try {
     console.log('🚀 ~ getAnswerAI ~ data:', data)
     const { sender_id, sender_input, sender_name } = data
-    let senderFirstNameOnly
-    if (sender_name) {
-      const senderNameArr = sender_name.split(' ')
-      senderFirstNameOnly = senderNameArr[senderNameArr.length - 1]
-    } else senderFirstNameOnly = sender_name
+    // let senderFirstNameOnly
+    // if (sender_name) {
+    //   const senderNameArr = sender_name.split(' ')
+    //   senderFirstNameOnly = senderNameArr[senderNameArr.length - 1]
+    // } else senderFirstNameOnly = sender_name
 
     const dataGetAnswer = {
       sessionId: sender_id,
       question: sender_input,
-      user_name: senderFirstNameOnly,
+      user_name: sender_name,
       type: 'NORMAL'
     }
 

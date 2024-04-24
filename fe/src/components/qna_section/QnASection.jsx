@@ -18,6 +18,7 @@ import { socketIoInstance } from 'src/App';
 
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 import { models } from 'src/utils/other';
+import { memo } from 'react';
 
 /**
  * Use this function to render introduction text of DNTU AI
@@ -40,15 +41,16 @@ function Introduction() {
  * Use this function to render a Question and Answer section with Chatbot.
  * @returns 
  */
-export default function QnASection() {
 
+export const QnASection = memo(function QnASection() {
+  
   const {
     listening,
     resetTranscript,
     interimTranscript
   } = useSpeechRecognition();
 
-  const [showStopGenerate, setShowStopGenerate] = React.useState(false)
+  // const [showStopGenerate, setShowStopGenerate] = React.useState(false)
   const [model, setModel] = React.useState(models[0].id)
   const [qnaState, qnaStateFns] = useStateWESSFns(
     {
@@ -152,7 +154,8 @@ export default function QnASection() {
       qnaStateFns.updateLastMessage(dataReturn.responseObj.content, dataReturn.responseObj.type);
       // cuối cùng sẽ ngắt kết nối
       socketIoInstance.removeAllListeners('s_create_answer');
-      setShowStopGenerate(false)
+      socketIoInstance.removeAllListeners('s_create_relevant_info')
+      // setShowStopGenerate(false)
 
     } else {
       // console.log("🚀 ~ handleListenCreateAnswer ~ dataReturn.messageReturn:", [dataReturn.responseObj])
@@ -165,7 +168,8 @@ export default function QnASection() {
     if(!inputElement || !text) return;
     qnaStateFns.appendMessage(text, "question");
     inputElement.value = "";
-    setShowStopGenerate(true)
+    // setShowStopGenerate(true)
+    console.log("So lan lap lai tai appendMessageWithQuestionInputElement")
     handleListeningEvent()
   }
   const startMicroPhone = () => {
@@ -184,17 +188,20 @@ export default function QnASection() {
       })
   }
 
-  const handleAbortAnswer  = () => {
-    // hủy lắng nghe sự kiện 
-    socketIoInstance.removeAllListeners('s_create_relevant_info')
-    socketIoInstance.removeAllListeners('s_create_answer');
-    setShowStopGenerate(false)
-    qnaStateFns.updateIsResponding(false);
-    qnaStateFns.appendMessage('Bạn đã ngưng tạo câu hỏi!', 'answer');
-  }
+  // const handleAbortAnswer  = () => {
+  //   // hủy lắng nghe sự kiện 
+  //   socketIoInstance.removeAllListeners('s_create_relevant_info')
+  //   socketIoInstance.removeAllListeners('s_create_answer');
+  //   setShowStopGenerate(false)
+  //   qnaStateFns.updateIsResponding(false);
+  //   qnaStateFns.appendMessage('Bạn đã ngưng tạo câu hỏi!', 'answer');
+  // }
 
   const handleListeningEvent = () => {
+    console.log("So lan lap lai tai handleListeningEvent")
     socketIoInstance.on('s_create_relevant_info', (data) => {
+    console.log("So lan lap lai tai socketIoInstance s_create_relevant_info")
+
       socketIoInstance.removeAllListeners('s_create_relevant_info')
         console.log("🚀 ~ socketIoInstance.on ~ s_create_relevant_info:", data);
         // socketIoInstance.removeAllListeners('s_create_relevant_info');
@@ -213,6 +220,8 @@ export default function QnASection() {
 
     // lắng nghe sự kiện mỗi lần có câu hỏi mới
     socketIoInstance.on('s_create_answer', (data) => {
+    console.log("So lan lap lai tai socketIoInstance s_create_answer")
+
       if (data.responseObj.content.trim() !== "") {
         qnaStateFns.updateIsResponding(false);
       }
@@ -296,7 +305,7 @@ export default function QnASection() {
 
       {/* Input container */}
       <div className="sticky bottom-0 right-0 left-0">
-        {
+        {/* {
           showStopGenerate && 
           <div 
             onClick={handleAbortAnswer}
@@ -306,7 +315,7 @@ export default function QnASection() {
             </span>
             <div className='text-white text-sm' style={{marginTop: '2px'}}>Ngừng tạo</div>
           </div>
-        }
+        } */}
         <div className="flex items-center lg:px-[44px] ">
           <input
             ref={ref => elementRefs.current.questionInput = ref}
@@ -384,4 +393,4 @@ export default function QnASection() {
       <audio id="botAudio" src={qnaState.audioURL} ref={ref => elementRefs.current.botAudio = ref}></audio>
     </section>
   )
-}
+});
