@@ -355,7 +355,8 @@ export async function getAnswerResearchAssistant(dataGetAnswer) {
     io,
     socketIdMap,
     type,
-    model='gpt-3.5-turbo-1106'
+    model='gpt-3.5-turbo-1106',
+    emitId
   } = dataGetAnswer
   console.log('🚀 ~ Using ~ model:', model)
 
@@ -372,7 +373,7 @@ export async function getAnswerResearchAssistant(dataGetAnswer) {
       getVideos(standaloneQuestion)
     ])
     // trả về client
-    io.to(socketIdMap[sessionId]).emit('s_create_relevant_info', {
+    io.to(socketIdMap[sessionId]).emit(`s_create_relevant_info_${emitId}`, {
       type: 'related_content',
       imagesResult,
       sourcesResult,
@@ -438,7 +439,7 @@ export async function getAnswerResearchAssistant(dataGetAnswer) {
     // mỗi 100 mili giây nó trả về một lần đến khi kết thúc
     // const intervalId = setInterval(() => {
 
-    //   io.to(socketIdMap[sessionId]).emit('s_create_answer', {
+    //   io.to(socketIdMap[sessionId]).emit(`s_create_answer_${emitId}`, {
     //     responseObj: {
     //       content: messageReturn,
     //       type: 'answer'
@@ -449,7 +450,7 @@ export async function getAnswerResearchAssistant(dataGetAnswer) {
       if (chunk.choices[0].delta && chunk.choices[0].finish_reason !== 'stop') {
         process.stdout.write(chunk.choices[0].delta.content)
         messageReturn += chunk.choices[0].delta.content
-        io.to(socketIdMap[sessionId]).emit('s_create_answer', {
+        io.to(socketIdMap[sessionId]).emit(`s_create_answer_${emitId}`, {
           responseObj: {
             content: messageReturn,
             type: 'answer'
@@ -460,7 +461,7 @@ export async function getAnswerResearchAssistant(dataGetAnswer) {
         console.log(`\n\n13. Generated follow-up questions:  ${JSON.stringify(responseObj.followUpQuestions)}`)
         responseObj.followUpQuestions = await followUpQuestions(sources)
         responseObj.messageReturn = messageReturn
-        io.to(socketIdMap[sessionId]).emit('s_create_answer', {
+        io.to(socketIdMap[sessionId]).emit(`s_create_answer_${emitId}`, {
           isOver: 'DONE',
           responseObj: {
             content: messageReturn,

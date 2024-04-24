@@ -6,8 +6,8 @@ import { promptRole } from './utils/prompt'
 import { getModelOptional } from './utils/get_llm'
 
 export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
-  const { sessionId, standaloneQuestion, question, user_name, io, socketIdMap, type, model='gpt-3.5-turbo-1106' } = dataGetAnswer
-  console.log('🚀 ~ Using ~ model:', model)
+  const { sessionId, standaloneQuestion, question, user_name, io, socketIdMap, type, model='gpt-3.5-turbo-1106', emitId } = dataGetAnswer
+  console.log('🚀 ~ getAnswerDocumentAssistant ~ type:', type)
 
   // get vector
   const vectorStoreSupabase = await getVectorStoreSupabase()
@@ -28,7 +28,7 @@ export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
   })
   console.log('🚀 ~ getAnswerDocumentAssistant ~ sourcesResult:', sourcesResult)
   if (type === 'STREAMING') {
-    io.to(socketIdMap[sessionId]).emit('s_create_relevant_info', {
+    io.to(socketIdMap[sessionId]).emit(`s_create_relevant_info_${emitId}`, {
       type: 'related_content',
       sourcesResult: sourcesResult
     })
@@ -50,7 +50,7 @@ export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
         ${user_name ? '- Please mention the user\'s name when chatting. The user\'s name is' + user_name : ''}
         - Answer questions in a helpful manner that straight to the point, with clear structure & all relevant information that might help users answer the question
         - Don't answer in letter form, don't be too formal, try to answer normal chat text type as if you were chatting to a friend. You can use icons to show the friendliness
-        ${type === 'STREAMING' ? '- Anwser should be formatted in Markdown (IMPORTANT) \n- If there are relevant markdown syntax have type: IMAGES, VIDEO, LINKS, TABLE (keep markdown syntax in Table), CODE, ... You must include them as part of the answer and must keep the markdown syntax'
+        ${type === 'STREAMING' ? '- Anwser should be formatted in Markdown (IMPORTANT) \n- Please prioritize IMAGES, VIDEO, LINKS, TABLE in markdown syntax (IMPORTANT), If there are relevant markdown syntax have type: IMAGES, VIDEO, LINKS, TABLE, CODE, ... You must include them as part of the answer and must keep the markdown syntax'
     : '- Please return an answer in plain text NOT MARKDOWN SYNTAX'}
         - Please answer in VIETNAMESE. Double check the spelling to see if it is correct whether you returned the answer in Vietnamese
         ${type !== 'STREAMING' ? '- Return the sources used in the response with iterable numbered style.' : ''}
@@ -83,7 +83,7 @@ export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
     // mỗi 100 mili giây nó trả về một lần đến khi kết thúc
     // const intervalId = setInterval(() => {
 
-    //   io.to(socketIdMap[sessionId]).emit('s_create_answer', {
+    //   io.to(socketIdMap[sessionId]).emit(`s_create_answer_${emitId}`, {
     //     responseObj: {
     //       content: messageReturn,
     //       type: 'answer'
@@ -94,14 +94,14 @@ export const getAnswerDocumentAssistant = async (dataGetAnswer) => {
       if (chunk.choices[0].delta && chunk.choices[0].finish_reason !== 'stop') {
         process.stdout.write(chunk.choices[0].delta.content)
         messageReturn += chunk.choices[0].delta.content
-        io.to(socketIdMap[sessionId]).emit('s_create_answer', {
+        io.to(socketIdMap[sessionId]).emit(`s_create_answer_${emitId}`, {
           responseObj: {
             content: messageReturn,
             type: 'answer'
           }
         })
       } else {
-        io.to(socketIdMap[sessionId]).emit('s_create_answer', {
+        io.to(socketIdMap[sessionId]).emit(`s_create_answer_${emitId}`, {
           responseObj: {
             content: messageReturn,
             type: 'answer'

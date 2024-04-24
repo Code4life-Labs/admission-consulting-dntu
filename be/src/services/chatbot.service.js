@@ -1,8 +1,5 @@
 /* eslint-disable no-unreachable */
-
-import { uploadSingleDocMDToSupabase } from '~/providers/chatbot/upload_documents'
-
-// import { uploadDocumentsToSupabaseCloud, uploadMultiWebsitesToSupabaseCloud, uploadSingleDocMDToSupabase, uploadWebsiteToSupabaseCloud } from '../../src/providers/chatbot/upload_documents'
+import { uploadDocumentsToSupabaseCloud, uploadSingleDocMDToSupabase } from '../../src/providers/chatbot/upload_documents'
 
 const uploadMultiDocsWebsite = async (data) => {
   // data = {
@@ -24,8 +21,8 @@ const uploadMultiDocs = async (data) => {
   // directory, type_file, chunkSize, chunkOverlap
   // }
   try {
-    // const result = await uploadDocumentsToSupabaseCloud(data.directory, data.type_file, data.chunkSize, data.chunkOverlap)
-    // return result
+    const result = await uploadDocumentsToSupabaseCloud(data.directory, data.type_file, data.chunkSize, data.chunkOverlap)
+    return result
   } catch (error) {
     throw new Error(error)
   }

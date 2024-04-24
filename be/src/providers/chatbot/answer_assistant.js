@@ -9,7 +9,7 @@ import OpenAI from 'openai'
 
 
 export const getAnswerNormalAssistant = async (dataGetAnswer) => {
-  console.log('🚀 ~ getAnswerNormalAssistant ~ dataGetAnswer:', dataGetAnswer)
+  // console.log('🚀 ~ getAnswerNormalAssistant ~ dataGetAnswer:', dataGetAnswer)
   // const promptTemplate = ChatPromptTemplate.fromMessages([
   //   ['system', `${promptRole}
   //     - Here is query: {question}, respond back with an answer for user is as long as possible. You can based on history chat that human provided below
@@ -37,7 +37,7 @@ export const getAnswerNormalAssistant = async (dataGetAnswer) => {
   //   question
   // })
   // return respone
-  const { sessionId, question, user_name, io, socketIdMap, type, model='gpt-3.5-turbo-1106' } = dataGetAnswer
+  const { sessionId, question, user_name, io, socketIdMap, type, model='gpt-3.5-turbo-1106', emitId } = dataGetAnswer
 
   console.log('🚀 ~ Using ~ model:', model)
 
@@ -85,7 +85,7 @@ export const getAnswerNormalAssistant = async (dataGetAnswer) => {
     // mỗi 100 mili giây nó trả về một lần đến khi kết thúc
     const intervalId = setInterval(() => {
 
-      io.to(socketIdMap[sessionId]).emit('s_create_answer', {
+      io.to(socketIdMap[sessionId]).emit(`s_create_answer_${emitId}`, {
         responseObj: {
           content: messageReturn,
           type: 'answer'
@@ -97,7 +97,7 @@ export const getAnswerNormalAssistant = async (dataGetAnswer) => {
         process.stdout.write(chunk.choices[0].delta.content)
         messageReturn += chunk.choices[0].delta.content
       } else {
-        io.to(socketIdMap[sessionId]).emit('s_create_answer', {
+        io.to(socketIdMap[sessionId]).emit(`s_create_answer_${emitId}`, {
           isOver: 'DONE',
           responseObj: {
             content: messageReturn,

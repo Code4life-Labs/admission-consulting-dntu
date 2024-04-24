@@ -9,7 +9,7 @@
 
   color-scheme: light dark;
   color: #262626;
-  background-color: #FFF;
+  background-color: #fff;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -23,4 +23,8 @@ body {
   place-items: center;
   min-width: 320px;
   min-height: 100vh;
+}
+
+li p {
+  display: inline !important;
 }

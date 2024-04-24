@@ -3,4 +3,4 @@ export const promptRole = 'You are playing the role of school named "Đại Họ
 export const moderationDeteched = 'Xin lưu ý rằng nội dung bạn đang gửi có tính chất nhạy cảm và không phù hợp với môi trường giáo dục. Bạn hãy hỏi câu hỏi khác để được giải đáp. Nếu bạn cần sự hỗ trợ hoặc muốn nói chuyện về bất kỳ vấn đề nào tôi vẫn sẽ ở đây để giúp đỡ bạn. Hoặc bạn có thể liên hệ qua email tuyensinh@dntu.edu.vn để được hỗ trợ sâu hơn nhé!'
 
 export const moderationDetechedMd = `Xin lưu ý rằng nội dung bạn đang gửi có tính chất nhạy cảm và không phù hợp với môi trường giáo dục. Bạn hãy hỏi câu hỏi khác để được giải đáp. Nếu bạn cần sự hỗ trợ hoặc muốn nói chuyện về bất kỳ vấn đề nào, tôi vẫn sẽ ở đây để giúp đỡ bạn. Hoặc bạn có thể [liên hệ qua email](mailto:tuyensinh@dntu.edu.vn) để được hỗ trợ sâu hơn nhé! 
-![Cảm ơn](https://res.cloudinary.com/duimhuxyz/image/upload/v1712071244/images_pdf/472108170_THANK_YOU_STICKER_400px_eekikz.gif)`
+![Cảm ơn](https://res.cloudinary.com/duimhuxyz/image/upload/v1713943571/logo/200w.gif_hwuwrd.gif)`

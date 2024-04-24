@@ -19,6 +19,7 @@ import { socketIoInstance } from 'src/App';
 import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition'
 import { models } from 'src/utils/other';
 import { memo } from 'react';
+import { StringUtils } from 'src/utils/string';
 
 /**
  * Use this function to render introduction text of DNTU AI
@@ -52,6 +53,7 @@ export const QnASection = memo(function QnASection() {
 
   // const [showStopGenerate, setShowStopGenerate] = React.useState(false)
   const [model, setModel] = React.useState(models[0].id)
+  const [emitId, setEmitId] = React.useState('')
   const [qnaState, qnaStateFns] = useStateWESSFns(
     {
       qna: [],
@@ -147,14 +149,14 @@ export const QnASection = memo(function QnASection() {
     });
   }, [elementRefs.current.botAudio, qnaStateFns.updateAudioURL]);
 
-  const handleListenCreateAnswer = (dataReturn) => {
+  const handleListenCreateAnswer = (dataReturn, id) => {
     // đầu tiên sẽ update state response
     if (dataReturn.isOver && dataReturn.isOver === 'DONE' && dataReturn.responseObj) {
       // console.log("🚀 ~ handleListenCreateAnswer ~ dataReturn.allText:", [dataReturn.responseObj]);
       qnaStateFns.updateLastMessage(dataReturn.responseObj.content, dataReturn.responseObj.type);
       // cuối cùng sẽ ngắt kết nối
-      socketIoInstance.removeAllListeners('s_create_answer');
-      socketIoInstance.removeAllListeners('s_create_relevant_info')
+      socketIoInstance.removeAllListeners(`s_create_answer_${id}`);
+      socketIoInstance.removeAllListeners(`s_create_relevant_info_${id}`)
       // setShowStopGenerate(false)
 
     } else {
@@ -170,7 +172,9 @@ export const QnASection = memo(function QnASection() {
     inputElement.value = "";
     // setShowStopGenerate(true)
     console.log("So lan lap lai tai appendMessageWithQuestionInputElement")
-    handleListeningEvent()
+    let id = StringUtils.getRandomID() ;
+    setEmitId(prev => id);
+    handleListeningEvent(id)
   }
   const startMicroPhone = () => {
     SpeechRecognition.startListening({ language: 'vi-VN', continuous: true })
@@ -197,12 +201,14 @@ export const QnASection = memo(function QnASection() {
   //   qnaStateFns.appendMessage('Bạn đã ngưng tạo câu hỏi!', 'answer');
   // }
 
-  const handleListeningEvent = () => {
+  const handleListeningEvent = (id) => {
+    console.log("EmitId", id)
+
     console.log("So lan lap lai tai handleListeningEvent")
-    socketIoInstance.on('s_create_relevant_info', (data) => {
+    socketIoInstance.on(`s_create_relevant_info_${id}`, (data) => {
     console.log("So lan lap lai tai socketIoInstance s_create_relevant_info")
 
-      socketIoInstance.removeAllListeners('s_create_relevant_info')
+      socketIoInstance.removeAllListeners(`s_create_relevant_info_${id}`)
         console.log("🚀 ~ socketIoInstance.on ~ s_create_relevant_info:", data);
         // socketIoInstance.removeAllListeners('s_create_relevant_info');
         // qnaStateFns.updateIsResponding(false);
@@ -219,13 +225,13 @@ export const QnASection = memo(function QnASection() {
     })
 
     // lắng nghe sự kiện mỗi lần có câu hỏi mới
-    socketIoInstance.on('s_create_answer', (data) => {
+    socketIoInstance.on(`s_create_answer_${id}`, (data) => {
     console.log("So lan lap lai tai socketIoInstance s_create_answer")
 
       if (data.responseObj.content.trim() !== "") {
         qnaStateFns.updateIsResponding(false);
       }
-      handleListenCreateAnswer(data)
+      handleListenCreateAnswer(data, id)
     })
   }
 
@@ -243,11 +249,13 @@ export const QnASection = memo(function QnASection() {
 
     qnaStateFns.appendSuspendedMessage();
     qnaStateFns.updateIsResponding(true);
-    
+
+    console.log("Create emitId", emitId)
     const requestEmit = {
       sessionId: localStorage.getItem("SESSION_USER_ID"),
+      emitId: emitId,
       question: lastMessage.content, 
-      user_name: "", // username có thể lấy khi nhập dùng mở ô chatbot lên đầu tiên và mình sẽ hỏi tên sau đó lưu vào local stored lần sau thì không hỏi nữa
+      user_name: "bạn", // username có thể lấy khi nhập dùng mở ô chatbot lên đầu tiên và mình sẽ hỏi tên sau đó lưu vào local stored lần sau thì không hỏi nữa
       model
     }
     

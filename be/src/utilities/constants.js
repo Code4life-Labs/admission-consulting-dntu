@@ -137,7 +137,7 @@ export const dataLink = [
     title: 'Tài chính - Ngân hàng',
     url: 'https://dntu.edu.vn/dao-tao/khoa-ke-toan-tai-chinh/tai-chinh-ngan-hang'
   },
-  { id: 'tài_liệu_canvas', title: 'Tài Liệu Canvas', url: '' },
+  { id: 'tài_liệu_canvas', title: 'Tài Liệu Canvas', url: 'https://qldt.dntu.edu.vn//Files/368/file/T%C3%A0i-li%E1%BB%87u-h%C6%B0%E1%BB%9Bng-d%E1%BA%ABn-s%E1%BB%AD-d%E1%BB%A5ng-Canvas-d%C3%A0nh-cho-sinh-vi%C3%AAn.pdf' },
   { id: 'tại_sao_chọn_dntu', title: 'Tại sao chọn DNTU', url: 'https://dntu.edu.vn/tai-sao-chon-dntu' },
   {
     id: 'tổng_quan_trường_đại_học_công_nghệ_đồng_nai',

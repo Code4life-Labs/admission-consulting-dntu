@@ -24,11 +24,12 @@ cloudinaryV2.config({
 export const uploadFilePdf = async (folderName) => {
   const byteArrayBuffer = fs.readFileSync(`src/documents/pdf/${folderName}.pdf`)
   // await deleteFolder(`PdfImages/${folderName}`)
-  const slugFolderName = convertToSlug(folderName)
+  // const slugFolderName = convertToSlug(folderName)
   const promiseHandle = () => {
     return new Promise((resolve) => {
       cloudinary.v2.uploader.upload_stream( {
-        folder: `Pdf/${slugFolderName}`,
+        // folder: `Pdf/${slugFolderName}`,
+        folder: 'Pdf',
         //để auto cloudinary tự động nhận file
         resource_type: 'auto'
       }, (error, uploadResult) => {

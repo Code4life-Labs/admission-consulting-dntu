@@ -272,11 +272,11 @@ export default function Anwser(props) {
                   className: 'h-px w-full bg-gray-400 my-3'
                 }
               },
-              p : {
-                props: {
-                  className: "inline"
-                }
-              },
+              // p : {
+              //   props: {
+              //     className: "inline"
+              //   }
+              // },
               h1: {
                 props: {
                   className: 'font-bold text-neutral-700 text-3xl'

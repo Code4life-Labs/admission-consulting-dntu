@@ -197,7 +197,8 @@ const processFileMD = (_rootFolder, _folderName) => {
 
         // upload all to cloudinary
         const urlPdfImages = await streamUploadMutiple(imageBufferArr, {
-          folder: `PdfImages/${slugFolderName}`,
+          // folder: `PdfImages/${slugFolderName}`,
+          folder: 'PdfImages',
           //để auto cloudinary tự động nhận file
           resource_type: 'auto'
         })
@@ -213,12 +214,12 @@ const processFileMD = (_rootFolder, _folderName) => {
 
         await writeFile(`src/documents/process_md/${_folderName}.md`, plainTextClone)
 
-        const id = _folderName.toLowerCase().split(' ').join('_')
+        // const id = _folderName.toLowerCase().split(' ').join('_')
         // ki
-        const metaData = dataLink.find(i => i.id === id)
+        const metaData = dataLink.find(i => i.title === _folderName)
 
         if (metaData) {
-          resolve(new Document({ pageContent:  plainText, metadata: {
+          resolve(new Document({ pageContent: plainTextClone, metadata: {
             id: metaData.id,
             title: metaData.title,
             link: metaData.url, // kiếm từ list
@@ -239,7 +240,7 @@ const processFileMD = (_rootFolder, _folderName) => {
       } else {
         const id = _folderName.toLowerCase().split(' ').join('_')
         // ki
-        const metaData = dataLink.find(i => i.id === id)
+        const metaData = dataLink.find(i => i.title === _folderName)
 
         if (metaData) {
           resolve(new Document({ pageContent:  plainText, metadata: {
@@ -307,6 +308,7 @@ export const uploadSingleDocMDToSupabase = async (data) => {
   console.log('🚀 ~ uploadSingleDocMDToSupabase ~ documents:', documents)
   const splitDocs = await textSplitter.splitDocuments(documents)
 
+  await writeFile('src/documents/upload/upload.txt', JSON.stringify(splitDocs))
   const sbApiKey = process.env.SUPABASE_API_KEY
   const sbUrl = process.env.SUPABASE_URL_LC_CHATBOT
   const openAIApiKey = process.env.OPENAI_API_KEY

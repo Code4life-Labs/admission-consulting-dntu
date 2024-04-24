@@ -5,7 +5,6 @@ import { getAnswerResearchAssistant } from './research_assistant'
 import { getStandaloneQuestion } from './standalone_question'
 import { getAnswerDocumentAssistant } from './document_assistant'
 import { getAnswerModerationAssistant } from './moderation_assistant'
-import { badWords } from 'vn-badwords'
 
 
 export const getAnswerChatBot = async (dataGetAnswer) => {
